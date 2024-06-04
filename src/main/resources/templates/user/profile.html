@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main_page.css">
+    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <a id="main__logo" href="/">프로프파일럿 ✈️</a>
+        </div>
+        <ul class="navbar__menu">
+            <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/}">대합실</a></li>
+            <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/lecture/main}">수업</a></li>
+            <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/member/profile/info}">개인정보</a></li>
+            <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/contract/main}">연락</a></li>
+            <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/user/logout}">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <br><br><br><br>
+    <h1 id="profile__headline">프로필: 내정보</h1>
+    <span id="profile_headline__explain">개인 정보를 확인하고 수정할 수 있습니다.</span>
+    <div id="profile__container">
+        <div id="select__profile__mode">
+            <a href="/member/profile/myinfo">내 정보</a>
+            <a href="/member/profile/cloud">클라우드</a>
+        </div>
+        <div id="personal__info">
+            <div class="personal__info_block">
+                <div class="block__title">
+                    개인정보 관리
+                </div>
+                <div class="personal__info__box">
+                    <div class="personal__info_text_block">이름: <span class="personal__info_text" th:text="${member.name}"></span></div>
+                    <div class="personal__info_text_block">전화번호: <span class="personal__info_text" th:text="${member.phone}"></span></div>
+                    <div class="personal__info_text_block">이메일: <span class="personal__info_text" th:text="${member.email}"></span></div>
+                </div>
+            </div>
+            <div class="personal__info_block">
+                <div class="block__title">
+                    학교정보 관리
+                </div>
+                <div class="personal__info__box">
+                    <div class="personal__info_text">학교: <span class="personal__info_text" th:text="${member.university}"></span></div>
+                    <div class="personal__info_text">학번: <span class="personal__info_text" th:text="${member.studentId}"></span></div>
+                    <div class="personal__info_text">전공: <span class="personal__info_text" th:text="${member.major}"></span></div>
+                </div>
+            </div>
+            <div class="personal__info_block">
+                <div class="block__title">
+                    등급관리:
+                </div>
+                <div class="personal__info__box">
+                    <div class="personal__info_text">맴버쉽: <span class="personal__info_text" th:text="${member.membership}"></span></div>
+                    <div class="personal__info_text">만료일: <span class="personal__info_text" th:text="${member.membershipExpire}"></span></div>
+                </div>
+            </div>
+            <div class="personal__info_block">
+                <div class="block__title">
+                    사이트권한 관리
+                </div>
+                <div class="personal__info__box">
+                    <div class="personal__info_text">역할: <span class="personal__info_text" th:text="${member.role}"></span></div>
+                    <div class="personal__info_text">상태: <span class="personal__info_text" th:text="${member.status}"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="/user/edit">Edit</a>
+</body>
+</html>

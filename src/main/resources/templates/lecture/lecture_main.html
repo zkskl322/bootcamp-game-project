@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main_page.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="navbar__logo">
+        <a id="main__logo" href="/">프로프파일럿 ✈️</a>
+    </div>
+    <ul class="navbar__menu">
+        <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/}">대합실</a></li>
+        <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/lecture/main}">수업</a></li>
+        <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/member/profile/info}">개인정보</a></li>
+        <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/contract/main}">연락</a></li>
+        <li class="navbar__menu_element"><a class="navbar__menu_element_content" th:href="@{/user/logout}">로그아웃</a></li>
+    </ul>
+</nav>
+</body>
+</html>

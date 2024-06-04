@@ -1,0 +1,53 @@
+:root {
+    --background-color:white;
+    --bodybackground-color: white
+    --text-color: black;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+    padding: 8px 12px;
+}
+
+
+body {
+    margin: 0;
+    background-color: var(--bodybackground-color);
+}
+
+.main__logo {
+    font-size: 20px;
+    font-family: "Gothic A1", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.navbar__menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding-left: 0;
+}
+
+.navbar__menu_element {
+    padding: 8px 30px;
+}
+
+.navbar__menu_element_content {
+    font-size: 13px;
+    font-family: "Gothic A1", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: var(--text-color);
+}
+
+

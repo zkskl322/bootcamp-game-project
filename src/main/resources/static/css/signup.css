@@ -1,0 +1,61 @@
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    width: 40%;
+    height: 50%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0);
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal_body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+    overflow-y: auto;
+}
+
+#modalTitle {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#modalContent {
+    text-align: left;
+    line-height: 1.6;
+}
+
+#modalContent strong {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#formGroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#emailLabel {
+    flex: 0 0 50%;
+}
+
+#email,
+#emailDomain {
+    flex: 0 0 50%;
+    margin-top: 10px;
+}

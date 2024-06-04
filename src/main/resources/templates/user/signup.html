@@ -1,0 +1,117 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Signup Form</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" href="/css/signup.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h2>회원가입</h2>
+    <form th:action="@{/member/signup}" th:object="${signupForm}" method="post">
+        <div class="form-group">
+            <label for="university">대학교</label>
+            <select th:field="*{university}" class="form-control" id="university">
+                <option value="">대학교를 선택해주세요.</option>
+                <option value="경희대학교">경희대학교</option>
+                <option value="서울대학교">서울대학교</option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('university')}" th:errors="*{university}"></div>
+        </div>
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <div class="input-email" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="이메일을 입력해주세요.(도메인 제외)">
+                <span>@</span>
+                <select class="box" th:field="*{emailDomain}" id="emailDomain">
+                    <option value="">도메인을 선택해주세요.</option>
+                    <option value="khu.ac.kr">khu.ac.kr</option>
+                    <option value="snu.ac.kr">snu.ac.kr</option>
+                </select>
+            </div>
+        </div>
+        <div class="email-form-group">
+            <button type="button" id="sendEmailButton" class="btn btn-primary">이메일 인증번호 전송</button><br><br>
+        </div>
+        <div class="form-group">
+            <label for="emailVerify">이메일 인증번호</label>
+            <div class="email-form-group" style="display: flex; align-items: center;">
+                <input type="text" class="form-control" id="emailVerify" placeholder="이메일로 전송된 인증번호를 입력해주세요." style="margin-right: 10px;">
+                <button type="button" class="btn btn-primary" id="emailVerifyButton">인증번호 확인</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="이름을 입력해주세요.">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div class="form-group">
+            <label for="studentId">학번</label>
+            <input type="text" th:field="*{studentId}" class="form-control" id="studentId" placeholder="학번을 입력해주세요.">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('studentId')}" th:errors="*{studentId}"></div>
+        </div>
+        <div class="form-group">
+            <label for="major">전공</label>
+            <input type="text" th:field="*{major}" class="form-control" id="major" placeholder="전공을 입력해주세요.">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('major')}" th:errors="*{major}"></div>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호 *(학교 비밀번호와는 다른 번호 해당 사이트만의 비밀번호를 입력해주세요.)</label>
+            <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="비밀번호를 입력해주세요.">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+        <div class="form-group">
+            <label for="role">역할</label>
+            <select th:field="*{role}" class="form-control" id="role">
+                <option value="" disabled selected>교수 또는 학생을 선택해주세요.</option>
+                <option value="학생">학생</option>
+                <option value="교수">교수</option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+        </div>
+        <div class="agree">
+            <input type="checkbox" id="agreeCheckbox"> 이용약관에 동의합니다.
+        </div>
+        <button type="submit" class="btn btn-primary" id="signupButton" disabled>회원가입</button>
+    </form>
+    <button id="openModalBtn">이용약관 보기</button>
+    <div class="modal" id="termsModal">
+        <div class="modal_body" id="modalBody">
+            <h2 id="modalTitle">이용약관</h2>
+            <p id="modalContent">
+                개인정보처리동의서<br><br>
+
+                profpilot(이하 '회사'라고 합니다)은(는) 개인정보보호법 등 관련 법령상의 개인정보보호 규정을 준수하며 귀하의 개인정보보호에 최선을 다하고 있습니다.
+                회사는 개인정보보호법에 근거하여 다음과 같은 내용으로 개인정보를 수집 및 처리하고자 합니다.<br><br>
+
+                다음의 내용을 자세히 읽어보시고 모든 내용을 이해하신 후에 동의 여부를 결정해주시기 바랍니다.<br><br>
+
+                <strong>제1조(개인정보 수집 및 이용 목적)</strong><br>
+                이용자가 제공한 모든 정보는 다음의 목적을 위해 활용하며, 목적 이외의 용도로는 사용되지 않습니다.<br>
+                - 본인확인, 서비스 제공, 서비스 개선, 신규 서비스 개발, 마케팅 및 광고 등 서비스 개발에 필요한 목적으로만 사용됩니다.<br><br>
+
+                <strong>제2조(개인정보 수집 및 이용 항목)</strong><br>
+                회사는 개인정보 수집 목적을 위하여 다음과 같은 정보를 수집합니다.<br>
+                - 성명, 전화번호, 이메일, 생년월일, 학번, 소속 학교 및 사용자가 동의한 정보<br><br>
+
+                <strong>제3조(개인정보 보유 및 이용 기간)</strong><br>
+                수집한 개인정보는 수집·이용 동의일로부터  3년간  보관 및 이용합니다.
+                3년이 경과한 후에는 다시 사용자의 동의를 받게 됩니다.
+                개인정보 보유기간의 경과, 처리목적의 달성 등 개인정보가 불필요하게 되었을 때에는 지체없이 해당 개인정보를 파기합니다.<br><br>
+
+                <strong>제4조(동의 거부 관리)</strong><br>
+                귀하는 본 안내에 따른 개인정보 수집·이용에 대하여 동의를 거부할 권리가 있습니다. 다만, 귀하가 개인정보 동의를 거부하시는 경우에 서비스 이용불가의 제한이 있을 수 있습니다.<br><br>
+
+                <strong>개인 정보 수집 및 이용 동의</strong><br>
+                본인은 위의 동의서 내용을 충분히 숙지하였으며, 회원가입 버튼 옆에 있는 개인정보 수집 체크 버튼을 누름으로써 위와 같이 개인정보를 수집·이용하는데 동의합니다.
+            </p>
+        </div>
+    </div>
+    <script type="text/javascript" src="/js/signup.js"></script>
+</div>
+</body>
+</html>

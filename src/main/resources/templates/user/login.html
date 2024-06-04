@@ -1,0 +1,10 @@
+<html lang="ko" layout:decorate="~{layout}">
+<div layout:fragment="content" class="w-[800px] mx-auto flex flex-col gap-7">
+    <form th:action="@{/member/login}" class="flex flex-col gap-7" method="post">
+        <input type="text" name="email" class="input" placeholder="이메일">
+        <input type="password" name="password" class="input" placeholder="비밀번호">
+        <input type="submit" class="btn" value="로그인">
+    </form>
+    <a href="/member/signup" class="btn ">회원 가입</a>
+</div>
+</html>
