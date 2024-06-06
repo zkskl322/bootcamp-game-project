@@ -4,11 +4,48 @@ import 'package:flutter/services.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class Msg {
-  final String chattingId;
+  final String GameId;
   final String content;
   final String uuid;
 
-  Msg({required this.chattingId, required this.content, required this.uuid});
+  Msg({required this.GameId, required this.content, required this.uuid});
+}
+
+// who_has_ball:                    0: no one, 1: player1, 2: player2
+// player_control_player:           1. player_offender1, 2. player_offender2, 3. player_defender1, 4. player_defender2
+// player_direction:                0: stop, 1: up, 2: down 3: left, 4: right
+
+class GamePlayer {
+  final double player_x;
+  final double player_y;
+  final int? player_direction;
+
+  GamePlayer({
+    required this.player_x,
+    required this.player_y,
+    required this.player_direction,
+  });
+
+  factory GamePlayer.fromJson(Map<String, dynamic> json) {
+    return GamePlayer(
+      player_x: json['player_x'].toDouble(),
+      player_y: json['player_y'].toDouble(),
+      player_direction: json['player_direction'],
+    );
+  }
+}
+
+class GameSoccerTeam {
+  List<GamePlayer> players;
+
+  GameSoccerTeam({required this.players});
+
+  factory GameSoccerTeam.fromJson(Map<String, dynamic> json) {
+    var playersFromJson = json['players'] as List;
+    List<GamePlayer> playersList =
+        playersFromJson.map((i) => GamePlayer.fromJson(i)).toList();
+    return GameSoccerTeam(players: playersList);
+  }
 }
 
 class Game {
@@ -17,39 +54,50 @@ class Game {
   final int score1;
   final int score2;
   final int time;
+  final int who_has_ball;
 
-  final double direction_x;
-  final double direction_y;
+  final double ball_direction_x;
+  final double ball_direction_y;
   final double ball_x;
   final double ball_y;
 
+  final int player1_control_player;
   final double player1_x;
   final double player1_y;
+  final int player1_direction;
+  final bool player1_possession;
+  final GameSoccerTeam player1_players;
+
+  final int player2_control_player;
   final double player2_x;
   final double player2_y;
-  final int player1_direction;
   final int player2_direction;
-  final bool player1_possession;
   final bool player2_possession;
+  final GameSoccerTeam player2_players;
 
   Game({
     required this.gameId,
     required this.gameStatus,
     required this.score1,
-    required this.score2,
     required this.time,
-    required this.direction_x,
-    required this.direction_y,
+    required this.score2,
+    required this.who_has_ball,
+    required this.ball_direction_x,
+    required this.ball_direction_y,
     required this.ball_x,
     required this.ball_y,
+    required this.player1_control_player,
     required this.player1_x,
     required this.player1_y,
+    required this.player1_direction,
+    required this.player1_possession,
+    required this.player1_players,
+    required this.player2_control_player,
     required this.player2_x,
     required this.player2_y,
-    required this.player1_direction,
     required this.player2_direction,
-    required this.player1_possession,
     required this.player2_possession,
+    required this.player2_players,
   });
 }
 
@@ -63,26 +111,81 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Chatting App',
+      title: 'Soccer Game',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: GameRoomPage(chattingId: '1', myUuid: '1'),
+      home: LobbyPage(),
+    );
+  }
+}
+
+class LobbyPage extends StatefulWidget {
+  @override
+  State<LobbyPage> createState() => _LobbyPageState();
+}
+
+class _LobbyPageState extends State<LobbyPage> {
+  final TextEditingController _uuidController = TextEditingController();
+  final TextEditingController _gameIdController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Soccer Game'),
+      ),
+      body: Column(
+        children: [
+          Container(
+            child: TextField(
+              controller: _uuidController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Game ID',
+              ),
+            ),
+          ),
+          Container(
+            child: TextField(
+              controller: _gameIdController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'UUID',
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GameRoomPage(
+                    GameId: _uuidController.text,
+                    myUuid: _gameIdController.text,
+                  ),
+                ),
+              );
+            },
+            child: Text('Join Game'),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class GameRoomPage extends StatefulWidget {
-  final String chattingId;
+  final String GameId;
   final String myUuid;
 
-  GameRoomPage({required this.chattingId, required this.myUuid});
+  GameRoomPage({required this.GameId, required this.myUuid});
 
   @override
-  State<GameRoomPage> createState() => _ChattingPageState();
+  State<GameRoomPage> createState() => _GamePageState();
 }
 
-class _ChattingPageState extends State<GameRoomPage> {
+class _GamePageState extends State<GameRoomPage> {
   StompClient? stompClient;
   final TextEditingController _textController = TextEditingController();
   late final FocusNode _focusNode;
@@ -91,7 +194,7 @@ class _ChattingPageState extends State<GameRoomPage> {
 
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
-      destination: '/topic/game/${widget.chattingId}',
+      destination: '/topic/game/${widget.GameId}',
       callback: (frame) {
         if (frame.body != null) {
           Map<String, dynamic> obj = json.decode(frame.body!);
@@ -101,18 +204,27 @@ class _ChattingPageState extends State<GameRoomPage> {
             score1: obj['score1'],
             score2: obj['score2'],
             time: obj['time'],
-            direction_x: obj['direction_x'],
-            direction_y: obj['direction_y'],
+            who_has_ball: obj['who_has_ball'],
+            ball_direction_x: obj['ball_direction_x'],
+            ball_direction_y: obj['ball_direction_y'],
             ball_x: obj['ball_x'],
             ball_y: obj['ball_y'],
+            // player1 ------------------------------ //
+            player1_control_player: obj['player1_control_player'],
             player1_x: obj['player1_x'],
             player1_y: obj['player1_y'],
+            player1_direction: obj['player1_direction'],
+            player1_possession: obj['player1_possession'],
+            player1_players: GameSoccerTeam.fromJson(obj['player1_players']),
+            // -------------------------------------- //
+            // player2 ------------------------------ //
+            player2_control_player: obj['player2_control_player'],
             player2_x: obj['player2_x'],
             player2_y: obj['player2_y'],
-            player1_direction: obj['player1_direction'],
             player2_direction: obj['player2_direction'],
-            player1_possession: obj['player1_possession'],
             player2_possession: obj['player2_possession'],
+            player2_players: GameSoccerTeam.fromJson(obj['player2_players']),
+            // -------------------------------------- //
           );
           setState(() {
             gameList.add(game);
@@ -127,7 +239,7 @@ class _ChattingPageState extends State<GameRoomPage> {
       stompClient!.send(
         destination: '/app/action',
         body: json.encode({
-          'gameId': widget.chattingId,
+          'gameId': widget.GameId,
           'playerId': widget.myUuid,
           'action': _textController.text,
         }),
@@ -171,7 +283,7 @@ class _ChattingPageState extends State<GameRoomPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chatting : ${widget.chattingId}'),
+        title: Text('Game : ${widget.GameId}'),
       ),
       body: KeyboardListener(
         focusNode: _focusNode,
@@ -279,14 +391,23 @@ class MyPainter extends CustomPainter {
     Game currentGame = gameList.last;
     gameList.clear();
 
-    // 컨테이너 크기와 볼 위치를 계산합니다.
+    // 컨테이너 크기와 볼 위치를 계산합니다. --- //
     double scale = 1000 / 10;
     double ballX = currentGame.ball_x * scale;
     double ballY = currentGame.ball_y * scale;
+    // -------------------------------------- //
+
+    // player1 ------------------------------ //
     double player1_X = currentGame.player1_x * scale;
     double player1_Y = currentGame.player1_y * scale;
+    int player1_control_player = currentGame.player1_control_player;
+    // -------------------------------------- //
+
+    // player2 ------------------------------ //
     double player2_X = currentGame.player2_x * scale;
     double player2_Y = currentGame.player2_y * scale;
+    int player2_control_player = currentGame.player2_control_player;
+    // -------------------------------------- //
 
     Paint paint_ball = Paint()
       ..color = Colors.red
@@ -303,6 +424,23 @@ class MyPainter extends CustomPainter {
     canvas.drawCircle(Offset(ballX, ballY), 10, paint_ball);
     canvas.drawCircle(Offset(player1_X, player1_Y), 10, paint_player1);
     canvas.drawCircle(Offset(player2_X, player2_Y), 10, paint_player2);
+
+    int i = -1;
+    for (var player in currentGame.player1_players.players) {
+      i++;
+      if (i == player1_control_player) continue;
+      double player1_X = player.player_x * scale;
+      double player1_Y = player.player_y * scale;
+      canvas.drawCircle(Offset(player1_X, player1_Y), 10, paint_player1);
+    }
+    i = -1;
+    for (var player in currentGame.player2_players.players) {
+      i++;
+      if (i == player2_control_player) continue;
+      double player2_X = player.player_x * scale;
+      double player2_Y = player.player_y * scale;
+      canvas.drawCircle(Offset(player2_X, player2_Y), 10, paint_player2);
+    }
   }
 
   @override
