@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 // flutter 포트로 변경
-                .allowedOrigins("http://localhost:flutterPort")
+                .allowedOrigins("http://localhost:19999")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true)
