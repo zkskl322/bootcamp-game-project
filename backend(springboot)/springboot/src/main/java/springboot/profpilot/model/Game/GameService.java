@@ -1,29 +1,27 @@
 package springboot.profpilot.model.Game;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import springboot.profpilot.model.DTO.auth.SignUpDTO;
+import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
-// who_has_ball:                    0: no one, 1: player1, 2: player2
-// player_control_player:           1. player_offender1, 2. player_offender2, 3. player_defender1, 4. player_defender2
-// player_direction:                0: stop, 1: up, 2: down 3: left, 4: right
-
-
 @Service
+@RequiredArgsConstructor
 public class GameService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     private long lastUpdateTime = System.currentTimeMillis();
-
-    // 게임 상태를 저장하는 맵 (단순 예시, 실제로는 더 복잡할 수 있음)
     private Map<String, GameState> games = new ConcurrentHashMap<>();
-
+    private final GoalkeeperAiService goalkeeperAiService;
     public GameState startGame(String gameId) {
 
         GameState gameState = new GameState();
@@ -33,33 +31,41 @@ public class GameService {
         gameState.setGameStatus("STARTED");
         gameState.setScore1(0);
         gameState.setScore2(0);
-        gameState.setTime(0);
         gameState.setWho_has_ball(0);
+
+
+        // 시간 초기화 ------------------------ //
+        gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        gameState.setTime(0);
+        gameState.setMax_time(120);
+        gameState.setIsFirstHalf(1);
+        gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         // ------------------------------------ //
 
         // 공 초기화 ------------------------ //
         gameState.setBall_direction_x(0.0f);
         gameState.setBall_direction_y(0.0f);
-        gameState.setBall_x(1);
-        gameState.setBall_y(5);
+        gameState.setBall_x(5.5); // 중앙에 배치
+        gameState.setBall_y(3.5); // 중앙에 배치
         // ------------------------------------ //
 
 
         // player1 setting ------------------------ //
         gameState.setPlayer1_control_player(0);
         gameState.setPlayer1_x(1.5);
-        gameState.setPlayer1_y(7);
-        gameState.setPlayer1_direction(3);
+        gameState.setPlayer1_y(5);
+        gameState.setPlayer1_direction(4);
         gameState.setPlayer1_possession(false);
 
         GameSoccerTeam player1_players = new GameSoccerTeam();
 
         List<GamePlayer> players1 = player1_players.getPlayers();
         // 0. player_offender1 1. player_offender2 2. player_defender1 3. player_defender2
-        players1.add(new GamePlayer(1.5, 7, 3));
-        players1.add(new GamePlayer(1.5, 3, 3));
-        players1.add(new GamePlayer(0.5, 7, 3));
-        players1.add(new GamePlayer(0.5, 3, 3));
+        players1.add(new GamePlayer(1.5, 5, 4));
+        players1.add(new GamePlayer(1.5, 2, 4));
+        players1.add(new GamePlayer(0.5, 5, 4));
+        players1.add(new GamePlayer(0.5, 2, 4));
+        players1.add(new GamePlayer(0.1, 3.5, 4)); // goalkeeper
 
         player1_players.setPlayers(players1);
         gameState.setPlayer1_players(player1_players);
@@ -68,19 +74,20 @@ public class GameService {
 
         // player2 setting ------------------------ //
         gameState.setPlayer2_control_player(0);
-        gameState.setPlayer2_x(8.5);
-        gameState.setPlayer2_y(7);
-        gameState.setPlayer2_direction(4);
+        gameState.setPlayer2_x(9.5);
+        gameState.setPlayer2_y(5);
+        gameState.setPlayer2_direction(3);
         gameState.setPlayer2_possession(false);
 
         GameSoccerTeam player2_players = new GameSoccerTeam();
 
         List<GamePlayer> players2 = player2_players.getPlayers();
         // 0. player_offender1 1. player_offender2 2. player_defender1 3. player_defender2
-        players2.add(new GamePlayer(8.5, 7, 4)); // player_offender1
-        players2.add(new GamePlayer(8.5, 3, 4)); // player_offender2
-        players2.add(new GamePlayer(9.5, 7, 4)); // player_defender1
-        players2.add(new GamePlayer(9.5, 3, 4)); // player_defender2
+        players2.add(new GamePlayer(9.5, 5, 3)); // player_offender1
+        players2.add(new GamePlayer(9.5, 2, 3)); // player_offender2
+        players2.add(new GamePlayer(10.5, 5, 3)); // player_defender1
+        players2.add(new GamePlayer(10.5, 2, 3)); // player_defender2
+        players2.add(new GamePlayer(10.9, 3.5, 3)); // goalkeeper
 
         player2_players.setPlayers(players2);
         gameState.setPlayer2_players(player2_players);
@@ -89,7 +96,6 @@ public class GameService {
         games.put(gameId, gameState);
         return gameState;
     }
-
     public GameState endGame(String gameId) {
         GameState gameState = games.get(gameId);
         if (gameState == null) {
@@ -99,10 +105,111 @@ public class GameService {
         games.remove(gameId);
         return gameState;
     }
+    public void setGameReset(GameState gameState) {
 
-    // 게이머의 행동을 처리하는 메소드
+        gameState.setBall_x(5.5);
+        gameState.setBall_y(3.5);
+        gameState.setBall_direction_x(0);
+        gameState.setBall_direction_y(0);
+
+        if (gameState.getIsFirstHalf() == 1) {
+            gameState.setPlayer1_x(1.5);
+            gameState.setPlayer1_y(5);
+            gameState.setPlayer1_direction(4);
+            gameState.setPlayer1_control_player(0);
+            gameState.setPlayer1_possession(false);
+
+            gameState.setPlayer2_x(9.5);
+            gameState.setPlayer2_y(5);
+            gameState.setPlayer2_direction(3);
+            gameState.setPlayer2_control_player(0);
+            gameState.setPlayer2_possession(false);
+
+            List<GamePlayer> players1 = gameState.getPlayer1_players().getPlayers();
+            players1.get(0).setPlayer_x(1.5);
+            players1.get(0).setPlayer_y(5);
+            players1.get(0).setPlayer_direction(4);
+            players1.get(1).setPlayer_x(1.5);
+            players1.get(1).setPlayer_y(2);
+            players1.get(1).setPlayer_direction(4);
+            players1.get(2).setPlayer_x(0.5);
+            players1.get(2).setPlayer_y(5);
+            players1.get(2).setPlayer_direction(4);
+            players1.get(3).setPlayer_x(0.5);
+            players1.get(3).setPlayer_y(2);
+            players1.get(3).setPlayer_direction(4);
+            players1.get(4).setPlayer_x(0.1);
+            players1.get(4).setPlayer_y(3.5);
+
+            List <GamePlayer> players2 = gameState.getPlayer2_players().getPlayers();
+            players2.get(0).setPlayer_x(9.5);
+            players2.get(0).setPlayer_y(5);
+            players2.get(0).setPlayer_direction(3);
+            players2.get(1).setPlayer_x(9.5);
+            players2.get(1).setPlayer_y(2);
+            players2.get(1).setPlayer_direction(3);
+            players2.get(2).setPlayer_x(10.5);
+            players2.get(2).setPlayer_y(5);
+            players2.get(2).setPlayer_direction(3);
+            players2.get(3).setPlayer_x(10.5);
+            players2.get(3).setPlayer_y(2);
+            players2.get(3).setPlayer_direction(3);
+            players2.get(4).setPlayer_x(10.9);
+            players2.get(4).setPlayer_y(3.5);
+
+
+        } else {
+            gameState.setPlayer1_x(8.5);
+            gameState.setPlayer1_y(5);
+            gameState.setPlayer1_direction(3);
+            gameState.setPlayer1_control_player(0);
+            gameState.setPlayer1_possession(false);
+
+            gameState.setPlayer2_x(1.5);
+            gameState.setPlayer2_y(5);
+            gameState.setPlayer2_direction(4);
+            gameState.setPlayer2_control_player(0);
+            gameState.setPlayer2_possession(false);
+
+            List<GamePlayer> players1 = gameState.getPlayer1_players().getPlayers();
+            players1.get(0).setPlayer_x(9.5);
+            players1.get(0).setPlayer_y(5);
+            players1.get(0).setPlayer_direction(3);
+            players1.get(1).setPlayer_x(9.5);
+            players1.get(1).setPlayer_y(2);
+            players1.get(1).setPlayer_direction(3);
+            players1.get(2).setPlayer_x(10.5);
+            players1.get(2).setPlayer_y(5);
+            players1.get(2).setPlayer_direction(3);
+            players1.get(3).setPlayer_x(10.5);
+            players1.get(3).setPlayer_y(2);
+            players1.get(3).setPlayer_direction(3);
+            players1.get(4).setPlayer_x(10.9);
+            players1.get(4).setPlayer_y(3.5);
+
+
+            List<GamePlayer> players2 = gameState.getPlayer2_players().getPlayers();
+            players2.get(0).setPlayer_x(1.5);
+            players2.get(0).setPlayer_y(5);
+            players2.get(0).setPlayer_direction(4);
+            players2.get(1).setPlayer_x(1.5);
+            players2.get(1).setPlayer_y(2);
+            players2.get(1).setPlayer_direction(4);
+            players2.get(2).setPlayer_x(0.5);
+            players2.get(2).setPlayer_y(5);
+            players2.get(2).setPlayer_direction(4);
+            players2.get(3).setPlayer_x(0.5);
+            players2.get(3).setPlayer_y(2);
+            players2.get(3).setPlayer_direction(4);
+            players2.get(4).setPlayer_x(0.1);
+            players2.get(4).setPlayer_y(3.5);
+        }
+    }
     public void processAction(GameAction action) {
-
+        if (action.isDone()) {
+            return;
+        }
+        action.setDone(true);
         // 1. 게임이 존재하는지 확인
         GameState gameState = games.get(action.getGameId());
         if (gameState == null) {
@@ -135,197 +242,260 @@ public class GameService {
 
         // 2-2. 공 정보 가져오기
         double ball_x = gameState.getBall_x(), ball_y = gameState.getBall_y();
-
-
-        // 3. 슛 처리
-        if (action.getAction().equals("SHOOT")) {
-            if (player_possession) {
-                double direction_x = 0, direction_y = 0;
-                switch (player_direction) {
-                    case 1:
-                        direction_x = 0;
-                        direction_y = -2;
-                        break;
-                    case 2:
-                        direction_x = 0;
-                        direction_y = 2;
-                        break;
-                    case 3:
-                        direction_x = -2;
-                        direction_y = 0;
-                        break;
-                    case 4:
-                        direction_x = 2;
-                        direction_y = 0;
-                        break;
+        switch (action.getAction()) {
+            case "UP":
+                player_y -= 0.08;
+                player_direction = 1;
+                if (player_possession) {
+                    ball_x = player_x;
+                    ball_y = player_y - 0.2;
                 }
-                gameState.setBall_direction_x(direction_x);
-                gameState.setBall_direction_y(direction_y);
-                gameState.setPlayer1_possession(false);
-                gameState.setPlayer2_possession(false);
+                break;
+            case "DOWN":
+                player_y += 0.08;
+                player_direction = 2;
+                if (player_possession) {
+                    ball_x = player_x;
+                    ball_y = player_y + 0.2;
+                }
+                break;
+            case "LEFT":
+                player_x -= 0.08;
+                player_direction = 3;
+                if (player_possession) {
+                    ball_x = player_x - 0.2;
+                    ball_y = player_y;
+                }
+                break;
+            case "RIGHT":
+                player_x += 0.08;
+                player_direction = 4;
+                if (player_possession) {
+                    ball_x = player_x + 0.2;
+                    ball_y = player_y;
+                }
+                break;
+        }
 
+        if (player_possession) {
+            // 공 소유 + S Key = 패스
+            if (action.getAction().equals("KEY_S")) {
+                int player_shoot_direction = -1;
 
-                // error: 공을 가지고 있는 플레이어가 슛을 했을 때, 공과 가장 가까운 플레이어에가 조종(플레이)하는 플레이어가 됨
-                // 위에 로직은 에러가 있음 -> 공을 찼을 때 가까운 유저가 다음 유저가 되는 것보단,
-                // 플레이어1이 슛을 했을 때
                 if (player == 1) {
-                    double move_ball_x = gameState.getBall_x();
-                    double move_ball_y = gameState.getBall_y();
-
-                    if (player_direction == 1) {
-                        move_ball_y -= 1.4;
-                    } else if (player_direction == 2) {
-                        move_ball_y += 1.4;
-                    } else if (player_direction == 3) {
-                        move_ball_x -= 1.4;
-                    } else if (player_direction == 4) {
-                        move_ball_x += 1.4;
-                    }
-
-                    double min_distance = Integer.MAX_VALUE;
-                    int index = 0, count = 0;
-
-                    for (GamePlayer next_player : gameState.getPlayer1_players().getPlayers()) {
-                        double distance = Math.sqrt(Math.pow(next_player.getPlayer_x() - move_ball_x, 2) + Math.pow(next_player.getPlayer_y() - move_ball_y, 2));
-                        if (distance < min_distance) {
-                            min_distance = distance;
-                            index = count;
-                        }
-                        count++;
-                    }
-
-                    // 지금까지 움직인 축구 선수의 위치를 저장
-                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_x(gameState.getPlayer1_x());
-                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_y(gameState.getPlayer1_y());
-                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_direction(gameState.getPlayer1_direction());
+                    player_shoot_direction = gameState.getPlayer1_control_player();
+                    // 1. up 2. down 3. left 4. right
+                    // 해당 방향을 기준으로 좌우로 60도 => 120도 안에 있는 선수에게 패스
 
 
-                    // 다음 플레이어의 위치를 내가 조종하는 플레이어로 변경
-                    GamePlayer next_player = gameState.getPlayer1_players().getPlayers().get(index);
-                    gameState.setPlayer1_x(next_player.getPlayer_x());
-                    gameState.setPlayer1_y(next_player.getPlayer_y());
-                    gameState.setPlayer1_control_player(index);
-                    gameState.setPlayer1_direction(next_player.getPlayer_direction());
                 } else {
-                    double move_ball_x = gameState.getBall_x();
-                    double move_ball_y = gameState.getBall_y();
-
-                    if (player_direction == 1) {
-                        move_ball_y -= 1.4;
-                    } else if (player_direction == 2) {
-                        move_ball_y += 1.4;
-                    } else if (player_direction == 3) {
-                        move_ball_x -= 1.4;
-                    } else if (player_direction == 4) {
-                        move_ball_x += 1.4;
-                    }
-
-                    double min_distance = Integer.MAX_VALUE;
-                    int index = 0, count = 0;
-
-                    for (GamePlayer next_player : gameState.getPlayer2_players().getPlayers()) {
-                        double distance = Math.sqrt(Math.pow(next_player.getPlayer_x() - move_ball_x, 2) + Math.pow(next_player.getPlayer_y() - move_ball_y, 2));
-                        if (distance < min_distance) {
-                            min_distance = distance;
-                            index = count;
-                        }
-                        count++;
-                    }
-
-                    // 지금까지 움직인 축구 선수의 위치를 저장
-                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_x(gameState.getPlayer2_x());
-                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_y(gameState.getPlayer2_y());
-                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_direction(gameState.getPlayer2_direction());
+                    player_shoot_direction = gameState.getPlayer2_control_player();
                 }
-
-
-                gameState.setWho_has_ball(0);
                 return;
             }
-        } else {
-            if (!player_possession) {
-                // 플레이어 근처에 공이 있으면 플레이어의 진행 방향의 1만큼 앞에 공을 가지고 있으면서 소유
-                if (Math.abs(player_x - ball_x) < 0.3 && Math.abs(player_y - ball_y) < 0.3) {
-                    if (player_direction == 1 && ball_y > player_y) {
-                        player_possession = true;
-                    } else if (player_direction == 2 && ball_y < player_y) {
-                        player_possession = true;
-                    } else if (player_direction == 3 && ball_x > player_x) {
-                        player_possession = true;
-                    } else if (player_direction == 4 && ball_x < player_x) {
-                        player_possession = true;
+
+            // 공 소유 + D Key = 슛
+            if (action.getAction().equals("KEY_D")) {
+                if (player_possession) {
+                    double direction_x = 0, direction_y = 0;
+                    switch (player_direction) {
+                        case 1:
+                            direction_x = 0;
+                            direction_y = -2;
+                            break;
+                        case 2:
+                            direction_x = 0;
+                            direction_y = 2;
+                            break;
+                        case 3:
+                            direction_x = -2;
+                            direction_y = 0;
+                            break;
+                        case 4:
+                            direction_x = 2;
+                            direction_y = 0;
+                            break;
                     }
-                } else {
-                    player_possession = false;
+                    gameState.setBall_direction_x(direction_x);
+                    gameState.setBall_direction_y(direction_y);
+                    gameState.setPlayer1_possession(false);
+                    gameState.setPlayer2_possession(false);
+
+
+                    // 플레이어1이 슛을 했을 때 플레이어 1의 다음 선수를 지정
+                    if (player == 1) {
+                        double move_ball_x = gameState.getBall_x();
+                        double move_ball_y = gameState.getBall_y();
+
+                        if (player_direction == 1) {
+                            move_ball_y -= 1.4;
+                        } else if (player_direction == 2) {
+                            move_ball_y += 1.4;
+                        } else if (player_direction == 3) {
+                            move_ball_x -= 1.4;
+                        } else if (player_direction == 4) {
+                            move_ball_x += 1.4;
+                        }
+
+                        double min_distance = Integer.MAX_VALUE;
+                        int index = 0, count = 0;
+
+                        gameState.setLast_kicker(gameState.getPlayer1_control_player());
+
+                        for (GamePlayer next_player : gameState.getPlayer1_players().getPlayers()) {
+                            double distance = Math.sqrt(Math.pow(next_player.getPlayer_x() - move_ball_x, 2) + Math.pow(next_player.getPlayer_y() - move_ball_y, 2));
+                            if (distance < min_distance && count != 4) {
+                                min_distance = distance;
+                                index = count;
+                            }
+                            count++;
+                        }
+
+                        // 지금까지 움직인 축구 선수의 위치를 저장
+                        gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_x(gameState.getPlayer1_x());
+                        gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_y(gameState.getPlayer1_y());
+                        gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_direction(gameState.getPlayer1_direction());
+
+
+                        // 다음 플레이어의 위치를 내가 조종하는 플레이어로 변경
+                        GamePlayer next_player = gameState.getPlayer1_players().getPlayers().get(index);
+                        gameState.setPlayer1_x(next_player.getPlayer_x());
+                        gameState.setPlayer1_y(next_player.getPlayer_y());
+                        gameState.setPlayer1_control_player(index);
+                        gameState.setPlayer1_direction(next_player.getPlayer_direction());
+                    }
+                    // 플레이어2가 슛을 했을 때 플레이어 2의 다음 선수를 지정
+                    else {
+                        double move_ball_x = gameState.getBall_x();
+                        double move_ball_y = gameState.getBall_y();
+
+                        if (player_direction == 1) {
+                            move_ball_y -= 1.4;
+                        } else if (player_direction == 2) {
+                            move_ball_y += 1.4;
+                        } else if (player_direction == 3) {
+                            move_ball_x -= 1.4;
+                        } else if (player_direction == 4) {
+                            move_ball_x += 1.4;
+                        }
+
+                        double min_distance = Integer.MAX_VALUE;
+                        int index = 0, count = 0;
+
+                        gameState.setLast_kicker(gameState.getPlayer2_control_player());
+                        for (GamePlayer next_player : gameState.getPlayer2_players().getPlayers()) {
+                            double distance = Math.sqrt(Math.pow(next_player.getPlayer_x() - move_ball_x, 2) + Math.pow(next_player.getPlayer_y() - move_ball_y, 2));
+                            if (distance < min_distance && count != 4) {
+                                min_distance = distance;
+                                index = count;
+                            }
+                            count++;
+                        }
+
+                        // 지금까지 움직인 축구 선수의 위치를 저장
+                        gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_x(gameState.getPlayer2_x());
+                        gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_y(gameState.getPlayer2_y());
+                        gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_direction(gameState.getPlayer2_direction());
+
+
+                        // 다음 플레이어의 위치를 내가 조종하는 플레이어로 변경
+                        GamePlayer next_player = gameState.getPlayer2_players().getPlayers().get(index);
+                        gameState.setPlayer2_x(next_player.getPlayer_x());
+                        gameState.setPlayer2_y(next_player.getPlayer_y());
+                        gameState.setPlayer2_control_player(index);
+                        gameState.setPlayer2_direction(next_player.getPlayer_direction());
+
+                    }
+
+                    gameState.setWho_has_ball(0);
                 }
-            }
-
-            // 1: up, 2: down 3: left, 4: right
-            switch (action.getAction()) {
-                case "UP":
-                    player_y -= 0.3;
-                    player_direction = 1;
-                    if (player_possession) {
-                        ball_x = player_x;
-                        ball_y = player_y - 0.2;
-                    }
-                    break;
-                case "DOWN":
-                    player_y += 0.3;
-                    player_direction = 2;
-                    if (player_possession) {
-                        ball_x = player_x;
-                        ball_y = player_y + 0.2;
-                    }
-                    break;
-                case "LEFT":
-                    player_x -= 0.3;
-                    player_direction = 3;
-                    if (player_possession) {
-                        ball_x = player_x - 0.2;
-                        ball_y = player_y;
-                    }
-                    break;
-                case "RIGHT":
-                    player_x += 0.3;
-                    player_direction = 4;
-                    if (player_possession) {
-                        ball_x = player_x + 0.2;
-                        ball_y = player_y;
-                    }
-                    break;
-            }
-
-
-            //
-            if (player == 1) {
-                gameState.setPlayer1_x(player_x);
-                gameState.setPlayer1_y(player_y);
-                gameState.setPlayer1_direction(player_direction);
-                gameState.setPlayer1_possession(player_possession);
-            } else {
-                gameState.setPlayer2_x(player_x);
-                gameState.setPlayer2_y(player_y);
-                gameState.setPlayer2_direction(player_direction);
-                gameState.setPlayer2_possession(player_possession);
-            }
-            if (player_possession) {
-                gameState.setBall_x(ball_x);
-                gameState.setBall_y(ball_y);
+                return;
             }
         }
-    }
+        else {
+            if (action.getAction().equals("KEY_D"))
+                return;
+        }
 
-    public GameState getGameState(String gameId) {
-        return games.get(gameId);
-    }
 
+        // 플레이어 근처에 공이 있으면 플레이어의 진행 방향의 1만큼 앞에 공을 가지고 있으면서 소유
+        if (Math.abs(player_x - ball_x) < 0.3 && Math.abs(player_y - ball_y) < 0.3) {
+            if (player_direction == 1 && ball_y > player_y) {
+                if (player == 1) {
+                    player_possession = true;
+                    gameState.setPlayer2_possession(false);
+                } else {
+                    player_possession = true;
+                    gameState.setPlayer1_possession(false);
+                }
+            } else if (player_direction == 2 && ball_y < player_y) {
+                if (player == 1) {
+                    player_possession = true;
+                    gameState.setPlayer2_possession(false);
+                } else {
+                    player_possession = true;
+                    gameState.setPlayer1_possession(false);
+                }
+            } else if (player_direction == 3 && ball_x < player_x) {
+                if (player == 1) {
+                    player_possession = true;
+                    gameState.setPlayer2_possession(false);
+                } else {
+                    player_possession = true;
+                    gameState.setPlayer1_possession(false);
+                }
+            } else if (player_direction == 4 && ball_x > player_x) {
+                if (player == 1) {
+                    player_possession = true;
+                    gameState.setPlayer2_possession(false);
+                } else {
+                    player_possession = true;
+                    gameState.setPlayer1_possession(false);
+                }
+            }
+        }
+        else {
+            player_possession = false;
+        }
+
+        if (player == 1) {
+            gameState.setPlayer1_x(player_x);
+            gameState.setPlayer1_y(player_y);
+            gameState.setPlayer1_direction(player_direction);
+            gameState.setPlayer1_possession(player_possession);
+            if (player_possession) {
+                gameState.setWho_has_ball(1);
+            }
+            gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_x(gameState.getPlayer1_x());
+            gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_y(gameState.getPlayer1_y());
+        }
+        else {
+            gameState.setPlayer2_x(player_x);
+            gameState.setPlayer2_y(player_y);
+            gameState.setPlayer2_direction(player_direction);
+            gameState.setPlayer2_possession(player_possession);
+            if (player_possession) {
+                gameState.setWho_has_ball(2);
+            }
+            gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_x(gameState.getPlayer2_x());
+            gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_y(gameState.getPlayer2_y());
+        }
+
+        if (player_possession) {
+            gameState.setBall_x(ball_x);
+            gameState.setBall_y(ball_y);
+        }
+
+    }
     public GameState UpdateGameBall(GameState gameState, double deltaTime) {
         double direction_x = gameState.getBall_direction_x();
         double direction_y = gameState.getBall_direction_y();
         double ball_x = gameState.getBall_x();
         double ball_y = gameState.getBall_y();
         double leftover_x = 0, leftover_y = 0;
+
+        GameSoccerTeam player1_players = gameState.getPlayer1_players();
+        GameSoccerTeam player2_players = gameState.getPlayer2_players();
 
         // 공의 저항을 추가함
         direction_x = direction_x * 0.9;
@@ -339,33 +509,116 @@ public class GameService {
         ball_x += direction_x * deltaTime * 5;
         ball_y += direction_y * deltaTime * 5;
 
+        if (gameState.getWho_has_ball() == 0) {
+            int count = -1;
+            for (GamePlayer instance_player : player1_players.getPlayers()) {
+                count++;
+                if (count == gameState.getLast_kicker()) {
+                    continue;
+                }
+                if (Math.abs(instance_player.getPlayer_x() - ball_x) < 0.3 && Math.abs(instance_player.getPlayer_y() - ball_y) < 0.3) {
+                    gameState.setPlayer1_possession(true);
+                    gameState.setPlayer2_possession(false);
+                    gameState.setWho_has_ball(1);
+
+                    gameState.setBall_direction_x(0);
+                    gameState.setBall_direction_y(0);
+                    gameState.setPlayer1_control_player(count);
+                    gameState.setPlayer1_x(instance_player.getPlayer_x());
+                    gameState.setPlayer1_y(instance_player.getPlayer_y());
+                    if (gameState.getPlayer1_direction() == 1) {
+                        gameState.setBall_y(instance_player.getPlayer_y() - 0.2);
+                    } else if (gameState.getPlayer1_direction() == 2) {
+                        gameState.setBall_y(instance_player.getPlayer_y() + 0.2);
+                    } else if (gameState.getPlayer1_direction() == 3) {
+                        gameState.setBall_x(instance_player.getPlayer_x() - 0.2);
+                    } else if (gameState.getPlayer1_direction() == 4) {
+                        gameState.setBall_x(instance_player.getPlayer_x() + 0.2);
+                    }
+                    System.out.println("check 2 -----------------");
+                    return gameState;
+                }
+            }
+            count = -1;
+            for (GamePlayer player : player2_players.getPlayers()) {
+                count++;
+                if (count == gameState.getLast_kicker())
+                    continue;
+                if (Math.abs(player.getPlayer_x() - ball_x) < 0.3 && Math.abs(player.getPlayer_y() - ball_y) < 0.3) {
+                    gameState.setPlayer2_possession(true);
+                    gameState.setPlayer1_possession(false);
+                    gameState.setWho_has_ball(2);
+
+                    gameState.setBall_direction_x(0);
+                    gameState.setBall_direction_y(0);
+                    gameState.setPlayer2_control_player(count);
+                    gameState.setPlayer2_x(player.getPlayer_x());
+                    gameState.setPlayer2_y(player.getPlayer_y());
+                    if (gameState.getPlayer2_direction() == 1) {
+                        gameState.setBall_y(player.getPlayer_y() - 0.2);
+                    } else if (gameState.getPlayer2_direction() == 2) {
+                        gameState.setBall_y(player.getPlayer_y() + 0.2);
+                    } else if (gameState.getPlayer2_direction() == 3) {
+                        gameState.setBall_x(player.getPlayer_x() - 0.2);
+                    } else if (gameState.getPlayer2_direction() == 4) {
+                        gameState.setBall_x(player.getPlayer_x() + 0.2);
+                    }
+                    return gameState;
+                }
+            }
+        }
+
+
+
+        // 3. 충돌 처리 (골 구현)
+        if (ball_x <= 0 || ball_x >= 11) {
+            if (ball_y >= 3 && ball_y <= 4) {
+                if (ball_x <= 0) {
+                    if (gameState.getIsFirstHalf() == 1) {
+                        gameState.setScore2(gameState.getScore2() + 1);
+                    } else {
+                        gameState.setScore1(gameState.getScore1() + 1);
+                    }
+                } else {
+                    if (gameState.getIsFirstHalf() == 1) {
+                        gameState.setScore1(gameState.getScore1() + 1);
+
+                    } else {
+                        gameState.setScore2(gameState.getScore2() + 1);
+                    }
+                }
+                setGameReset(gameState);
+                return gameState;
+            }
+        }
+
         // 3. 충돌 처리
         if (ball_x < 0 ) {
             leftover_x = 0 - ball_x;
             ball_x = 0;
         }
-        if (ball_x > 10) {
-            leftover_x = 10 - ball_x;
-            ball_x = 10;
+        if (ball_x > 11) {
+            leftover_x = 11 - ball_x;
+            ball_x = 11;
         }
         if (ball_y < 0 ) {
             leftover_y = 0 - ball_y;
             ball_y = 0;
         }
-        if (ball_y > 10) {
-            leftover_y = 10 - ball_y;
-            ball_y = 10;
+        if (ball_y > 7) {
+            leftover_y = 7 - ball_y;
+            ball_y = 7;
         }
 
         // 3. 충돌 처리
-        if (ball_x <= 0 || ball_x >= 10) {
+        if (ball_x <= 0 || ball_x >= 11) {
             direction_x = -direction_x;
             if (leftover_x != 0) {
                 ball_x += direction_x * deltaTime * 5;
             }
             gameState.setBall_direction_x(direction_x);
         }
-        else if (ball_y <= 0 || ball_y >= 10) {
+        else if (ball_y <= 0 || ball_y >= 7) {
             direction_y = -direction_y;
             if (leftover_y != 0) {
                 ball_y += direction_y * deltaTime * 5;
@@ -379,24 +632,27 @@ public class GameService {
         gameState.setBall_y(ball_y);
         return gameState;
     }
-
-    // AI 로직 추가 필요
     public GameState UpdateGamePlayer(GameState gameState, double deltaTime) {
-        double Player1_x = gameState.getPlayer1_x();
-        double Player1_y = gameState.getPlayer1_y();
-        double Player2_x = gameState.getPlayer2_x();
-        double Player2_y = gameState.getPlayer2_y();
-
+        gameState = goalkeeperAiService.update(gameState);
         return gameState;
     }
-
-
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime) {
+        gameState.setTime(gameState.getTime() + deltaTime);
+        if (gameState.getTime() > gameState.getMax_time()) {
+            gameState.setGameStatus("ENDED");
+            games.remove(gameId);
+            return gameState;
+        }
+        if (gameState.getIsFirstHalf() == 1 && gameState.getTime() > gameState.getMax_time() / 2) {
+            gameState.setIsFirstHalf(0);
+            setGameReset(gameState);
+        }
+
+
         gameState = UpdateGameBall(gameState, deltaTime);
         gameState = UpdateGamePlayer(gameState, deltaTime);
         return gameState;
     }
-
     @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();

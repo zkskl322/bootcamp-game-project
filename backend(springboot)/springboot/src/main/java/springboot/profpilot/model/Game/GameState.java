@@ -4,6 +4,9 @@ package springboot.profpilot.model.Game;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 // who_has_ball: 0: no one, 1: player1, 2: player2
 // player_control_player: 1. player_offender1, 2. player_offender2, 3. player_defender1, 4. player_defender2
@@ -19,8 +22,13 @@ public class GameState {
     private String  gameStatus;
     private int     score1;
     private int     score2;
-    private int     time;
     private int     who_has_ball; // 0: no one, 1: player1, 2: player2
+
+    private String  startTime;
+    private double  time;
+    private double  max_time;
+    private int     isFirstHalf; // 0: second half, 1: first half
+    private int     last_kicker; // 0: player1, 1: player2
 
 
     // 공 정보

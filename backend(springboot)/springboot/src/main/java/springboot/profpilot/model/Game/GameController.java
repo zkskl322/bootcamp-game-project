@@ -21,7 +21,6 @@ public class GameController {
             gameService.startGame(action.getGameId());
         else if (action.getAction().equals("END_GAME"))
             gameService.endGame(action.getGameId());
-//        else if (action.getAction().equals("PROCESS_ACTION")
         gameService.processAction(action);
     }
 }
