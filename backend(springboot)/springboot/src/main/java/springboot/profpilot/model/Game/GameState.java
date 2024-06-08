@@ -29,6 +29,7 @@ public class GameState {
     private double  max_time;
     private int     isFirstHalf; // 0: second half, 1: first half
     private int     last_kicker; // 0: player1, 1: player2
+    private int     last_passer;
 
 
     // 공 정보
@@ -41,7 +42,7 @@ public class GameState {
     private int     player1_control_player; // 1. player1_offender1, 2. player1_offender2, 3. player1_defender1, 4. player1_defender2
     private double  player1_x;
     private double  player1_y;
-    private int     player1_direction; // 0: stop, 1: up, 2: down 3: left, 4: right
+    private int     player1_direction; // 1: right, 2. up, 3. left, 4. down
     private boolean player1_possession;
     private GameSoccerTeam player1_players;
 

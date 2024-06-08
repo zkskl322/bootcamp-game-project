@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +20,7 @@ class _GamePageState extends State<GameRoomPage> {
   final TextEditingController _textController = TextEditingController();
   late final FocusNode _focusNode;
   final List<Game> gameList = [];
-  final socketUrl = 'http://192.168.3.3:8080/game';
+  final socketUrl = 'http://192.168.59.1:8080/game';
 
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
@@ -144,30 +143,31 @@ class _GamePageState extends State<GameRoomPage> {
                 _textController.clear();
                 break;
             }
-          }
-          switch (e.logicalKey) {
-            case LogicalKeyboardKey.arrowDown:
-              _textController.text = 'DOWN';
-              sendMessage();
-              _textController.clear();
-              break;
-            case LogicalKeyboardKey.arrowUp:
-              _textController.text = 'UP';
-              sendMessage();
-              _textController.clear();
-              break;
-            case LogicalKeyboardKey.arrowLeft:
-              _textController.text = 'LEFT';
-              sendMessage();
-              _textController.clear();
-              break;
-            case LogicalKeyboardKey.arrowRight:
-              _textController.text = 'RIGHT';
-              sendMessage();
-              _textController.clear();
-              break;
-            default:
-              break;
+          } else {
+            switch (e.logicalKey) {
+              case LogicalKeyboardKey.arrowDown:
+                _textController.text = 'DOWN';
+                sendMessage();
+                _textController.clear();
+                break;
+              case LogicalKeyboardKey.arrowUp:
+                _textController.text = 'UP';
+                sendMessage();
+                _textController.clear();
+                break;
+              case LogicalKeyboardKey.arrowLeft:
+                _textController.text = 'LEFT';
+                sendMessage();
+                _textController.clear();
+                break;
+              case LogicalKeyboardKey.arrowRight:
+                _textController.text = 'RIGHT';
+                sendMessage();
+                _textController.clear();
+                break;
+              default:
+                break;
+            }
           }
         },
         child: Center(
@@ -201,28 +201,25 @@ class _GamePageState extends State<GameRoomPage> {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 100,
-                      height: 700,
-                      child: CustomPaint(
-                        painter: MyPainter2(),
-                      )
-                    ),
+                        width: 100,
+                        height: 700,
+                        child: CustomPaint(
+                          painter: MyPainter2(),
+                        )),
                     Container(
                       width: 1100,
                       height: 700,
-                      decoration: const BoxDecoration(
-                      ),
+                      decoration: const BoxDecoration(),
                       child: CustomPaint(
                         painter: MyPainter(gameList),
                       ),
                     ),
                     SizedBox(
-                      width: 100,
-                      height: 700,
-                      child: CustomPaint(
-                        painter: MyPainter3(),
-                      )
-                    ),
+                        width: 100,
+                        height: 700,
+                        child: CustomPaint(
+                          painter: MyPainter3(),
+                        )),
                   ],
                 ),
               )
