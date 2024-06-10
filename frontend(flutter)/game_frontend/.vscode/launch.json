@@ -6,7 +6,6 @@
     "configurations": [
         {
             "name": "game_frontend",
-            "cwd": "frontend(flutter)\\game_frontend",
             "request": "launch",
             "type": "dart",
             "args": [
@@ -15,14 +14,12 @@
         },
         {
             "name": "game_frontend (profile mode)",
-            "cwd": "frontend(flutter)\\game_frontend",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
             "name": "game_frontend (release mode)",
-            "cwd": "frontend(flutter)\\game_frontend",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

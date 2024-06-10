@@ -51,6 +51,7 @@ public class GameState {
     private double  player2_x;
     private double  player2_y;
     private int     player2_direction;
+    private int     player2_possession_player;
     private boolean player2_possession;
     private GameSoccerTeam player2_players;
 
