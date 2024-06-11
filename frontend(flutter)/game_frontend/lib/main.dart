@@ -1,9 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:game_frontend/Game/game_instance.dart';
 import 'package:game_frontend/Game/lobby.dart';
-import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class Msg {
   final String GameId;
