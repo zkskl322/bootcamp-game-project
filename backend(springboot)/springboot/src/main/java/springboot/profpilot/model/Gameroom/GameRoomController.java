@@ -12,6 +12,7 @@ public class GameRoomController {
     private final GameRoomService gameRoomService;
 
     @PostMapping("/game/room/create")
+    @ResponseBody
     public String createRoom(@RequestBody GameRoomDTO gameRoomDTO, Principal principal) {
         GameRoom gameRoom = new GameRoom();
         gameRoom.setRoom_password(gameRoomDTO.getRoom_password());

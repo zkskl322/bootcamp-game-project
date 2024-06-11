@@ -13,7 +13,7 @@ class OffenderGameActions {
 
 //----------------------------
 //|    3  1            1 3   |
-//| 4         vs           5 |
+//| 4         vs           4 |
 //|    2  0            0 2   |
 //----------------------------
     public void SameTeamOffenderMoveBall(int playerId, int team) {
@@ -50,50 +50,39 @@ class OffenderGameActions {
                 op_defense_y = gameState.getPlayer1_players().getPlayers().get(3).getPlayer_y();
             }
         }
-        System.out.println("Ai Player: " + playerId + " Ai X: " + move_ai_x);
-        System.out.println("Opponent Offense X: " + op_offense_x);
-        System.out.println("Opponent Defense X: " + op_defense_x);
-        System.out.println("Opponent Mid X: " + (op_offense_x + op_defense_x) / 2);
+
+        System.out.println("move_ai : " + move_ai);
+        System.out.println("move_ai_x: " + move_ai_x + " move_ai_y: " + move_ai_y);
+        System.out.println("op_offense_x: " + op_offense_x + " op_offense_y: " + op_offense_y);
+        System.out.println("op_defense_x: " + op_defense_x + " op_defense_y: " + op_defense_y);
 
         if (team == 1) {
-            if (move_ai_x < (op_offense_x + op_defense_x) / 2 - 0.2) {
-                System.out.println("Small Move Right");
+            if (move_ai_x < (op_offense_x + op_defense_x) / 2 - 0.1) {
                 gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_x_speed(1);
                 return ;
-            } if (move_ai_x > (op_offense_x + op_defense_x) / 2 + 0.2) {
-                System.out.println("Large Move Right");
+            } if (move_ai_x > (op_offense_x + op_defense_x) / 2 + 0.1) {
                 gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_x_speed(-1);
 
-            }
-        } else {
-            if (move_ai_x < (op_offense_x + op_defense_x) / 2 - 0.2) {
-                System.out.println("Small Move Right");
-                gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_x_speed(1);
+            } if (move_ai_y < (op_offense_y + op_defense_y) / 2 - 0.1) {
+                gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_y_speed(1);
                 return ;
-            } if (move_ai_x > (op_offense_x + op_defense_x) / 2 + 0.2) {
-                System.out.println("Large Move Right");
-                gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_x_speed(-1);
+            } if (move_ai_y > (op_offense_y + op_defense_y) / 2 + 0.1) {
+                gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_y_speed(-1);
             }
         }
         if (team == 2) {
-            if (move_ai_y < (op_offense_y + op_defense_y) / 2 - 0.2) {
-                System.out.println("Small Move Down");
+            if (move_ai_x < (op_offense_x + op_defense_x) / 2 - 0.1) {
+                gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_x_speed(1);
+                return ;
+            } if (move_ai_x > (op_offense_x + op_defense_x) / 2 + 0.1) {
+                gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_x_speed(-1);
+            }
+            if (move_ai_y < (op_offense_y + op_defense_y) / 2 - 0.1) {
                 gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_y_speed(1);
                 return ;
-            } if (move_ai_y > (op_offense_y + op_defense_y) / 2 + 0.2) {
-                System.out.println("Large Move Down");
+            } if (move_ai_y > (op_offense_y + op_defense_y) / 2 + 0.1) {
                 gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_y_speed(-1);
             }
-        } else {
-            if (move_ai_y < (op_offense_y + op_defense_y) / 2 - 0.2) {
-                System.out.println("Small Move Down");
-                gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_y_speed(1);
-                return ;
-            } if (move_ai_y > (op_offense_y + op_defense_y) / 2 + 0.2) {
-                System.out.println("Large Move Down");
-                gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_y_speed(-1);
-            }
-
         }
     }
 
