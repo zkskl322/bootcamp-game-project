@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:dio/dio.dart';
 import 'package:game_frontend/dto/mainpage-dto.dart';
+=======
+>>>>>>> main
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -18,13 +21,18 @@ class FigmaToCodeApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ListView(children: [
+<<<<<<< HEAD
           CreateRoom(),
+=======
+          GamePageCreateRoom(),
+>>>>>>> main
         ]),
       ),
     );
   }
 }
 
+<<<<<<< HEAD
 class CreateRoom extends StatefulWidget {
   @override
   _CreateRoomState createState() => _CreateRoomState();
@@ -87,6 +95,9 @@ class _CreateRoomState extends State<CreateRoom>{
     }
   }
 
+=======
+class GamePageCreateRoom extends StatelessWidget {
+>>>>>>> main
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -95,6 +106,7 @@ class _CreateRoomState extends State<CreateRoom>{
           width: 1600,
           height: 960,
           clipBehavior: Clip.antiAlias,
+<<<<<<< HEAD
           decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
           child: Stack(
             children: [
@@ -102,6 +114,418 @@ class _CreateRoomState extends State<CreateRoom>{
                 left: 50,
                 top: 20,
                 child: SizedBox(
+=======
+          decoration: BoxDecoration(color: Color(0xFFF2F2F2)),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 50,
+                top: 862,
+                child: Container(
+                  width: 1500,
+                  height: 70,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 1175,
+                        top: 0,
+                        child: Container(
+                          width: 325,
+                          height: 70,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 0,
+                                top: 0,
+                                child: Container(
+                                  width: 325,
+                                  height: 70,
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFFC8C5C2),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 25,
+                                top: 17,
+                                child: SizedBox(
+                                  width: 274,
+                                  height: 36,
+                                  child: Text(
+                                    'CREATE ROOM',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontFamily: 'Press Start 2P',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0.07,
+                                      letterSpacing: 0.96,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        child: Container(
+                          width: 220,
+                          height: 70,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 0,
+                                top: 0,
+                                child: Container(
+                                  width: 220,
+                                  height: 70,
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFFC8C5C2),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 22,
+                                top: 17,
+                                child: SizedBox(
+                                  width: 176,
+                                  height: 36,
+                                  child: Text(
+                                    'SETTING',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontFamily: 'Press Start 2P',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0.07,
+                                      letterSpacing: 0.96,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 50,
+                top: 94,
+                child: Container(
+                  width: 1500,
+                  height: 748,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: Color(0xFF080808),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x7FFFFFFF),
+                        blurRadius: 2.83,
+                        offset: Offset(0, 2.83),
+                        spreadRadius: 0,
+                      )
+                    ],
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 34,
+                        top: 34,
+                        child: Container(
+                          width: 1431.80,
+                          height: 680.17,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: ShapeDecoration(
+                            color: Color(0xFF1B1B1B),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2.83),
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 735,
+                                top: 310,
+                                child: Container(
+                                  width: 612,
+                                  height: 123,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: 33,
+                                        top: 43,
+                                        child: Text(
+                                          'TARGET GOAL',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 538,
+                                        top: 43,
+                                        child: Text(
+                                          '10',
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 85,
+                                top: 310,
+                                child: Container(
+                                  width: 612,
+                                  height: 123,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: 33,
+                                        top: 43,
+                                        child: Text(
+                                          'LIMITED TIME',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 483,
+                                        top: 43,
+                                        child: Text(
+                                          '5 MIN',
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 85,
+                                top: 142,
+                                child: Container(
+                                  width: 612,
+                                  height: 123,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: 33,
+                                        top: 43,
+                                        child: Text(
+                                          'ROOM NAME',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 559,
+                                        top: 43,
+                                        child: Text(
+                                          '2',
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 735,
+                                top: 142,
+                                child: Container(
+                                  width: 612,
+                                  height: 123,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: 33,
+                                        top: 43,
+                                        child: Text(
+                                          'ROOM PASSWORD',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 496,
+                                        top: 43,
+                                        child: Text(
+                                          '1234',
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 85,
+                                top: 478,
+                                child: Container(
+                                  width: 612,
+                                  height: 123,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: 33,
+                                        top: 43,
+                                        child: Text(
+                                          'ROOM SIZE',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 559,
+                                        top: 43,
+                                        child: Text(
+                                          '2',
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.09,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 516,
+                                top: 20,
+                                child: Text(
+                                  'GAME SETTING',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontFamily: 'Press Start 2P',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.04,
+                                    letterSpacing: 1.28,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 50,
+                top: 20,
+                child: Container(
+>>>>>>> main
                   width: 1500,
                   height: 60,
                   child: Stack(
@@ -109,7 +533,11 @@ class _CreateRoomState extends State<CreateRoom>{
                       Positioned(
                         left: 1310,
                         top: 0,
+<<<<<<< HEAD
                         child: SizedBox(
+=======
+                        child: Container(
+>>>>>>> main
                           width: 190,
                           height: 60,
                           child: Stack(
@@ -128,7 +556,11 @@ class _CreateRoomState extends State<CreateRoom>{
                                   ),
                                 ),
                               ),
+<<<<<<< HEAD
                               const Positioned(
+=======
+                              Positioned(
+>>>>>>> main
                                 left: 18,
                                 top: 15,
                                 child: SizedBox(
@@ -174,7 +606,11 @@ class _CreateRoomState extends State<CreateRoom>{
                                   ),
                                 ),
                               ),
+<<<<<<< HEAD
                               const Positioned(
+=======
+                              Positioned(
+>>>>>>> main
                                 left: 22,
                                 top: 18,
                                 child: SizedBox(
@@ -202,6 +638,7 @@ class _CreateRoomState extends State<CreateRoom>{
                   ),
                 ),
               ),
+<<<<<<< HEAD
               Positioned( //middle setting section
                 left: 50,
                 top: 94,
@@ -535,11 +972,17 @@ class _CreateRoomState extends State<CreateRoom>{
                   ),
                 ),
               ),
+=======
+>>>>>>> main
             ],
           ),
         ),
       ],
     );
   }
+<<<<<<< HEAD
 
 }
+=======
+}
+>>>>>>> main

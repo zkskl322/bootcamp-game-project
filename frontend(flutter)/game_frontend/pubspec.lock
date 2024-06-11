@@ -58,13 +58,18 @@ packages:
     source: hosted
     version: "1.0.8"
   dio:
+<<<<<<< HEAD
     dependency: "direct main"
+=======
+    dependency: "direct dev"
+>>>>>>> main
     description:
       name: dio
       sha256: "11e40df547d418cc0c4900a9318b26304e665da6fa4755399a9ff9efd09034b5"
       url: "https://pub.dev"
     source: hosted
     version: "5.4.3+1"
+<<<<<<< HEAD
   extended_image:
     dependency: "direct main"
     description:
@@ -81,6 +86,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.4"
+=======
+>>>>>>> main
   fake_async:
     dependency: transitive
     description:
@@ -123,6 +130,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+<<<<<<< HEAD
   http:
     dependency: transitive
     description:
@@ -139,6 +147,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+=======
+>>>>>>> main
   http_parser:
     dependency: transitive
     description:
@@ -147,6 +157,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+<<<<<<< HEAD
   js:
     dependency: transitive
     description:
@@ -155,6 +166,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.1"
+=======
+>>>>>>> main
   leak_tracker:
     dependency: transitive
     description:
