@@ -54,9 +54,9 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
 
-                        .requestMatchers( "/game/room/create", "/chatting/**", "/game/**").permitAll()
+                        .requestMatchers( "/game/room/create", "/game/room/delete", "/chatting/**", "/game/**", "/page/main").permitAll()
 
-                        .requestMatchers( "").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( "/hello").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
