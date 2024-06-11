@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:game_frontend/dto/mainpage-dto.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -17,75 +15,16 @@ class FigmaToCodeApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
       home: Scaffold(
-        body: ListView(children: [
-          CreateRoom(),
+        body: ListView(children: const [
+          LoginPage(),
         ]),
       ),
     );
   }
 }
 
-class CreateRoom extends StatefulWidget {
-  @override
-  _CreateRoomState createState() => _CreateRoomState();
-}
-
-class _CreateRoomState extends State<CreateRoom>{
-  final Dio dio = Dio();
-  List<GameroomDTO> _gamerooms = [];
-
-  final TextEditingController roomNameController = TextEditingController();
-  final TextEditingController roomPasswordController = TextEditingController();
-  final TextEditingController roomSizeController = TextEditingController();
-  final TextEditingController targetGoalController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    fetchGameRooms(); 
-  }
-
-  Future<void> fetchGameRooms() async { //http://localhost:8080/game/room/create
-    try {
-      final Response response = await dio.get('http://localhost:8080/game/room/create');
-      if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
-        setState(() {
-          _gamerooms = data.map((json) => GameroomDTO.fromJson(json)).toList();
-        });
-      } else {
-        setState(() {
-          print('Error: ${response.statusCode}');
-        });
-      }
-    } catch (e) {
-      setState(() {
-        print('Error: $e');
-      });
-    }
-  }
-
-  Future<void> createRoom() async {
-    try {
-      final response = await dio.post(
-        'http://localhost:8080/game/room/create',
-        data: {
-          'roomName': roomNameController.text,
-          'roomPassword': roomPasswordController.text,
-          'roomSize': int.parse(roomSizeController.text),
-          'targetGoal': int.parse(targetGoalController.text),
-        },
-      );
-
-      if (response.statusCode == 200) {
-        print('Room created successfully');
-      } else {
-        print('Failed to create room: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -95,443 +34,376 @@ class _CreateRoomState extends State<CreateRoom>{
           width: 1600,
           height: 960,
           clipBehavior: Clip.antiAlias,
-          decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
+          decoration: const BoxDecoration(color: Colors.white),
           child: Stack(
             children: [
-              Positioned( //top btn section
-                left: 50,
-                top: 20,
+              Positioned(
+                left: 154,
+                top: 148,
                 child: SizedBox(
-                  width: 1500,
-                  height: 60,
-                  child: Stack(
+                  width: 556,
+                  height: 707,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Positioned(
-                        left: 1310,
-                        top: 0,
-                        child: SizedBox(
-                          width: 190,
-                          height: 60,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 190,
-                                  height: 60,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF758CFF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
+                      const Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'soccer ',
+                              style: TextStyle(
+                                color: Color(0xFF07021F),
+                                fontSize: 48,
+                                fontFamily: 'Literata',
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                                letterSpacing: -0.96,
                               ),
-                              const Positioned(
-                                left: 18,
-                                top: 15,
-                                child: SizedBox(
-                                  width: 153,
-                                  height: 29,
-                                  child: Text(
-                                    'LOGOUT',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 190,
-                          height: 60,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 190,
-                                  height: 60,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF758CFF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                left: 22,
-                                top: 18,
-                                child: SizedBox(
-                                  width: 146,
-                                  height: 23,
-                                  child: Text(
-                                    'HOME',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned( //middle setting section
-                left: 50,
-                top: 94,
-                child: Container(
-                  width: 1500,
-                  height: 748,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF080808),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x7FFFFFFF),
-                        blurRadius: 2.83,
-                        offset: Offset(0, 2.83),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 34,
-                        top: 34,
-                        child: Container(
-                          width: 1431.80,
-                          height: 680.17,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF1B1B1B),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2.83),
                             ),
-                          ),
-                          child: Stack(
-                            children: [
-                              const Positioned( //gamerooom text
-                                left: 516,
-                                top: 20,
-                                child: Text(
-                                  'ROOM SETTING',
+                            TextSpan(
+                              text: 'Game',
+                              style: TextStyle(
+                                color: Color(0xFF6153BD),
+                                fontSize: 48,
+                                fontFamily: 'Literata',
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                                letterSpacing: -0.96,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 80),
+                      SizedBox(
+                        width: 522,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 522,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  SizedBox(
+                                    width: 522,
+                                    height: 228,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 91,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Username',
+                                                style: TextStyle(
+                                                  color: Color(0xFF7D7D7D),
+                                                  fontSize: 24,
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 0,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Container(
+                                                width: 522,
+                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                                decoration: ShapeDecoration(
+                                                  color: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.black.withOpacity(0.10000000149011612),
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(4),
+                                                  ),
+                                                ),
+                                                child: const Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'johndoe123',
+                                                      style: TextStyle(
+                                                        color: Color(0xFFC1C1C1),
+                                                        fontSize: 20,
+                                                        fontFamily: 'Inter',
+                                                        fontWeight: FontWeight.w500,
+                                                        height: 0,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 24),
+                                        SizedBox(
+                                          height: 91,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Password',
+                                                style: TextStyle(
+                                                  color: Color(0xFF7D7D7D),
+                                                  fontSize: 24,
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 0,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Container(
+                                                width: 522,
+                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                                decoration: ShapeDecoration(
+                                                  color: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.black.withOpacity(0.10000000149011612),
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(4),
+                                                  ),
+                                                ),
+                                                child: const Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      '*****************',
+                                                      style: TextStyle(
+                                                        color: Color(0xFFC1C1C1),
+                                                        fontSize: 20,
+                                                        fontFamily: 'Inter',
+                                                        fontWeight: FontWeight.w500,
+                                                        height: 0,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Text(
+                                    'Forgot password? ',
+                                    style: TextStyle(
+                                      color: Color(0xFF6153BD),
+                                      fontSize: 20,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w500,
+                                      decoration: TextDecoration.underline,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 186,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    height: 60,
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFF120071),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Log in',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 24,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0.04,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 72,
+                                        decoration: const ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 2,
+                                              strokeAlign: BorderSide.strokeAlignCenter,
+                                              color: Color(0x7F7D7D7D),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 24),
+                                      Container(
+                                        padding: const EdgeInsets.only(bottom: 4),
+                                        child: const Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'or',
+                                              style: TextStyle(
+                                                color: Color(0xFF7D7D7D),
+                                                fontSize: 14,
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.w500,
+                                                height: 0.07,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 24),
+                                      Container(
+                                        width: 72,
+                                        decoration: const ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 2,
+                                              strokeAlign: BorderSide.strokeAlignCenter,
+                                              color: Color(0x7F7D7D7D),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 60,
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(width: 1, color: Color(0x7F07021F)),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          width: 23.45,
+                                          height: 24,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(),
+                                          child: const FlutterLogo(),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        const Text(
+                                          'Sign in with google',
+                                          style: TextStyle(
+                                            color: Color(0xFF7D7D7D),
+                                            fontSize: 24,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0.04,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Are you new?',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 32,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.04,
-                                    letterSpacing: 1.28,
+                                    color: Color(0xFF7D7D7D),
+                                    fontSize: 20,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                    height: 0.03,
                                   ),
                                 ),
-                              ),
-                              Positioned( //roomname setting
-                                left: 85,
-                                top: 142,
-                                child: Container(
-                                  width: 612,
-                                  height: 200,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Text(
-                                          'ROOM NAME',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Press Start 2P',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.80,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: TextField(
-                                          controller: roomNameController,
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Enter Room Name',
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(width: 4),
+                                Text(
+                                  'Create an account',
+                                  style: TextStyle(
+                                    color: Color(0xFF6153BD),
+                                    fontSize: 20,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                    height: 0,
                                   ),
                                 ),
-                              ),
-                              Positioned( //roompassword setting
-                                left: 735,
-                                top: 142,
-                                child: Container(
-                                  width: 612,
-                                  height: 200,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Text(
-                                          'ROOM PASSWORD',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Press Start 2P',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.80,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: TextField(
-                                          controller: roomPasswordController,
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Enter Room Password',
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned( //roomsize setting
-                                left: 85,
-                                top: 397,
-                                child: Container(
-                                  width: 612,
-                                  height: 200,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Text(
-                                          'ROOM SIZE',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Press Start 2P',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.80,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: TextField(
-                                          controller: roomSizeController,
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Enter Room Size',
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned( //targetgoal setting
-                                left: 735,
-                                top: 397,
-                                child: Container(
-                                  width: 612,
-                                  height: 200,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Text(
-                                          'TARGET GOAL',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Press Start 2P',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.80,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: TextField(
-                                          controller: targetGoalController,
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Enter Target Goal',
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              Positioned( //bottom btn section
-                left: 50,
-                top: 862,
-                child: SizedBox(
-                  width: 1500,
-                  height: 70,
-                  child: Stack(
-                    children: [
-                      Positioned( //back home btn
-                        left: 0,
-                        top: 0,
-                        child: SizedBox(
-                          width: 220,
-                          height: 70,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 220,
-                                  height: 70,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFC8C5C2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                left: 60,
-                                top: 17,
-                                child: SizedBox(
-                                  width: 100,
-                                  height: 36,
-                                  child: Text(
-                                    'BACK',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+              Positioned(
+                left: 1106.77,
+                top: -39,
+                child: Transform(
+                  transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(0.26),
+                  child: Container(
+                    width: 751.85,
+                    height: 1019.13,
+                    decoration: ShapeDecoration(
+                      image: const DecorationImage(
+                        image: NetworkImage("https://via.placeholder.com/752x1019"),
+                        fit: BoxFit.fill,
                       ),
-                      Positioned( //create room btn
-                        left: 1175,
-                        top: 0,
-                        child: SizedBox(
-                          width: 325,
-                          height: 70,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 325,
-                                  height: 70,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFC8C5C2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 25,
-                                top: 17,
-                                child: SizedBox(
-                                  width: 274,
-                                  height: 36,
-                                  child: TextButton(
-                                    onPressed: createRoom,
-                                    child: const Text(
-                                      'CREATE ROOM',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 24,
-                                        fontFamily: 'Press Start 2P',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0.07,
-                                        letterSpacing: 0.96,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -541,5 +413,4 @@ class _CreateRoomState extends State<CreateRoom>{
       ],
     );
   }
-
 }
