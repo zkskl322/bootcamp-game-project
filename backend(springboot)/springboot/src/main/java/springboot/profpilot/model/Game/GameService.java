@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.DTO.auth.SignUpDTO;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
+import springboot.profpilot.model.Game.AI.Offender.OffenderAlgorithm;
 import springboot.profpilot.model.Game.onPossession.PassAlgorithm;
 
 import java.io.FileOutputStream;
@@ -18,6 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+
+//----------------------------
+//|    3  1            1 3   |
+//| 4         vs           4 |
+//|    2  0            0 2   |
+//----------------------------
+
+
 @Service
 @RequiredArgsConstructor
 public class GameService {
@@ -27,6 +37,7 @@ public class GameService {
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
+    private final OffenderAlgorithm offenderAlgorithm;
 
 
 
@@ -71,11 +82,11 @@ public class GameService {
 
         List<GamePlayer> players1 = player1_players.getPlayers();
         // 0. player_offender1 1. player_offender2 2. player_defender1 3. player_defender2
-        players1.add(new GamePlayer(1.5, 5, 4));
-        players1.add(new GamePlayer(1.5, 2, 4));
-        players1.add(new GamePlayer(0.5, 5, 4));
-        players1.add(new GamePlayer(0.5, 2, 4));
-        players1.add(new GamePlayer(0.1, 3.5, 4)); // goalkeeper
+        players1.add(new GamePlayer(1.5, 5, 4, 0, 0));
+        players1.add(new GamePlayer(1.5, 2, 4, 0, 0));
+        players1.add(new GamePlayer(0.5, 5, 4, 0, 0));
+        players1.add(new GamePlayer(0.5, 2, 4, 0, 0));
+        players1.add(new GamePlayer(0.1, 3.5, 4, 0, 0)); // goalkeeper
 
         player1_players.setPlayers(players1);
         gameState.setPlayer1_players(player1_players);
@@ -88,16 +99,16 @@ public class GameService {
         gameState.setPlayer2_y(5);
         gameState.setPlayer2_direction(3);
         gameState.setPlayer2_possession(false);
-
+        gameState.setPlayer2_possession_player(-1);
         GameSoccerTeam player2_players = new GameSoccerTeam();
 
         List<GamePlayer> players2 = player2_players.getPlayers();
         // 0. player_offender1 1. player_offender2 2. player_defender1 3. player_defender2
-        players2.add(new GamePlayer(9.5, 5, 3)); // player_offender1
-        players2.add(new GamePlayer(9.5, 2, 3)); // player_offender2
-        players2.add(new GamePlayer(10.5, 5, 3)); // player_defender1
-        players2.add(new GamePlayer(10.5, 2, 3)); // player_defender2
-        players2.add(new GamePlayer(10.9, 3.5, 3)); // goalkeeper
+        players2.add(new GamePlayer(9.5, 5, 3, 0, 0)); // player_offender1
+        players2.add(new GamePlayer(9.5, 2, 3, 0, 0)); // player_offender2
+        players2.add(new GamePlayer(10.5, 5, 3, 0, 0)); // player_defender1
+        players2.add(new GamePlayer(10.5, 2, 3, 0, 0)); // player_defender2
+        players2.add(new GamePlayer(10.9, 3.5, 3, 0, 0)); // goalkeeper
 
         player2_players.setPlayers(players2);
         gameState.setPlayer2_players(player2_players);
@@ -119,6 +130,7 @@ public class GameService {
 
         gameState.setBall_x(5.5);
         gameState.setBall_y(3.5);
+        gameState.setWho_has_ball(0);
         gameState.setBall_direction_x(0);
         gameState.setBall_direction_y(0);
 
@@ -232,7 +244,7 @@ public class GameService {
         int player = Integer.parseInt(action.getPlayerId());
 
         double player_x, player_y;
-        int player_direction;
+        int player_direction, player_control_player;
         boolean player_possession = false;
 
         if (player == 1) {
@@ -241,6 +253,7 @@ public class GameService {
 
             player_direction = gameState.getPlayer1_direction();
             player_possession = gameState.isPlayer1_possession();
+            player_control_player = gameState.getPlayer1_control_player();
         }
         else {
             player_x = gameState.getPlayer2_x();
@@ -248,6 +261,7 @@ public class GameService {
 
             player_direction = gameState.getPlayer2_direction();
             player_possession = gameState.isPlayer2_possession();
+            player_control_player = gameState.getPlayer2_control_player();
         }
 
         // 2-2. 공 정보 가져오기
@@ -438,18 +452,19 @@ public class GameService {
         if (!player_possession) {
             // 플레이어 근처에 공이 있으면 플레이어의 진행 방향의 1만큼 앞에 공을 가지고 있으면서 소유
             if (Math.abs(player_x - ball_x) < 0.3 && Math.abs(player_y - ball_y) < 0.3) {
-                System.out.println("player : " + player + " has ball");
                 if (player_direction == 1 && ball_x < player_x) {
                     if (player == 1) {
                         player_possession = true;
                         gameState.setPlayer2_possession(false);
                     } else {
                         player_possession = true;
+                        gameState.setPlayer2_possession_player(player_control_player);
                         gameState.setPlayer1_possession(false);
                     }
                 } else if (player_direction == 2 && ball_y < player_y) {
                     if (player == 1) {
                         player_possession = true;
+                        gameState.setPlayer2_possession_player(player_control_player);
                         gameState.setPlayer2_possession(false);
                     } else {
                         player_possession = true;
@@ -504,6 +519,7 @@ public class GameService {
         }
 
     }
+
     public GameState UpdateGameBall(GameState gameState, double deltaTime) {
         double direction_x = gameState.getBall_direction_x();
         double direction_y = gameState.getBall_direction_y();
@@ -571,6 +587,7 @@ public class GameService {
                     gameState.setPlayer2_control_player(count);
                     gameState.setPlayer2_x(player.getPlayer_x());
                     gameState.setPlayer2_y(player.getPlayer_y());
+                    gameState.setPlayer2_possession_player(count);
                     if (gameState.getPlayer2_direction() == 1) {
                         gameState.setBall_y(player.getPlayer_y() - 0.2);
                     } else if (gameState.getPlayer2_direction() == 2) {
@@ -649,8 +666,31 @@ public class GameService {
         gameState.setBall_y(ball_y);
         return gameState;
     }
+
+    public GameState UpdateGamePlayer2(GameState gameState, double deltaTime) {
+        List<GamePlayer> players_1 = gameState.getPlayer1_players().getPlayers();
+        List<GamePlayer> players_2 = gameState.getPlayer2_players().getPlayers();
+
+
+        for (GamePlayer player : players_1) {
+            player.setPlayer_x(player.getPlayer_x() + player.getPlayer_x_speed() * deltaTime);
+            player.setPlayer_y(player.getPlayer_y() + player.getPlayer_y_speed() * deltaTime);
+            player.setPlayer_x_speed(player.getPlayer_x_speed() * 0.9);
+            player.setPlayer_y_speed(player.getPlayer_y_speed() * 0.9);
+        } // player1
+        for (GamePlayer player : players_2) {
+            player.setPlayer_x(player.getPlayer_x() + player.getPlayer_x_speed() * deltaTime);
+            player.setPlayer_y(player.getPlayer_y() + player.getPlayer_y_speed() * deltaTime);
+            player.setPlayer_x_speed(player.getPlayer_x_speed() * 0.9);
+            player.setPlayer_y_speed(player.getPlayer_y_speed() * 0.9);
+        } // player2
+        return gameState;
+    }
+
     public GameState UpdateGamePlayer(GameState gameState, double deltaTime) {
+        gameState = UpdateGamePlayer2(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
+        gameState = offenderAlgorithm.update(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime) {

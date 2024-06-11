@@ -13,11 +13,6 @@ class Msg {
   Msg({required this.GameId, required this.content, required this.uuid});
 }
 
-// who_has_ball:                    0: no one, 1: player1, 2: player2
-// player_control_player:           1. player_offender1, 2. player_offender2, 3. player_defender1, 4. player_defender2
-// player_direction:                0: stop, 1: up, 2: down 3: left, 4: right
-
-
 void main() {
   runApp(const MyApp());
 }
