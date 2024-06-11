@@ -54,12 +54,18 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
 
+<<<<<<< HEAD
                         .requestMatchers("/member/signup", "/member/login", "/member/logout",
                                 "/member/signup/email/verify", "/member/signup/email/verify/check",
                                 "/images/**", "/css/**", "/js/**", "/chatting/**", "/game/**").permitAll()
 
                         .requestMatchers("/member/my-page", "/member/my-info", "/my-info/update", "/member/check-password",
                                 "/member/change-password", "/member/check", "/member/email/verify").hasAnyRole("STUDENT", "PROFESSOR")
+=======
+                        .requestMatchers( "/game/room/create", "/chatting/**", "/game/**").permitAll()
+
+                        .requestMatchers( "").hasAnyRole("USER", "ADMIN")
+>>>>>>> main
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
