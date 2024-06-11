@@ -18,11 +18,7 @@ public class OffenderAlgorithm {
         // team1 공격수 행동트리
         // select와 squence를 이용하여 행동트리를 구성 -> false가 나오면 종료.
         // 트리에서 이어나가고 싶으면 true를 반환해야 함.
-<<<<<<< HEAD
-        AiNode Offender_behaviorTree = new Selector(Arrays.asList(
-=======
         AiNode Offender_behaviorTree1 = new Selector(Arrays.asList(
->>>>>>> main
                 new Condition(() -> conditions.isTeamWithBall(1)),
                 new Sequence(Arrays.asList(
                         new Condition(() -> conditions.isOtherOffenderControlBall(1)),
@@ -31,11 +27,6 @@ public class OffenderAlgorithm {
         ));
 
         // team2 공격수 행동트리
-<<<<<<< HEAD
-
-
-        Offender_behaviorTree.run();
-=======
         AiNode Offender_behaviorTree2 = new Selector(Arrays.asList(
                 new Condition(() -> conditions.isTeamWithBall(2)),
                 new Sequence(Arrays.asList(
@@ -47,7 +38,6 @@ public class OffenderAlgorithm {
 
         Offender_behaviorTree1.run();
         Offender_behaviorTree2.run();
->>>>>>> main
         return gameState;
 
     }

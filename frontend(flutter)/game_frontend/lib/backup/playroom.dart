@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:game_frontend/dto/mainpage-dto.dart';
+import 'package:game_frontend/dto/gameroom-dto.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());

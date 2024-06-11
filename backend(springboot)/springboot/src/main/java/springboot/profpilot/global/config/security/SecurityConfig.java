@@ -56,7 +56,7 @@ public class SecurityConfig {
 
                         .requestMatchers( "/game/room/create", "/chatting/**", "/game/**").permitAll()
 
-                        .requestMatchers( "").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( "/HELLO").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
