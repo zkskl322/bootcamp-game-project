@@ -42,38 +42,52 @@ class _CreateRoomState extends State<CreateRoom>{
   @override
   void initState() {
     super.initState();
-    fetchGameRooms(); 
+    // fetchGameRooms();
   }
 
-  Future<void> fetchGameRooms() async { //http://localhost:8080/game/room/create
-    try {
-      final Response response = await dio.get('http://localhost:8080/game/room/create');
-      if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
-        setState(() {
-          _gamerooms = data.map((json) => GameroomDTO.fromJson(json)).toList();
-        });
-      } else {
-        setState(() {
-          print('Error: ${response.statusCode}');
-        });
-      }
-    } catch (e) {
-      setState(() {
-        print('Error: $e');
-      });
-    }
-  }
+  // Future<void> fetchGameRooms() async { 
+  //   try {
+  //     final Response response = await dio.get('http://localhost:8080/page/main');
+  //     if (response.statusCode == 200) {
+  //       List<dynamic> data = response.data;
+  //       setState(() {
+  //         _gamerooms = data.map((json) => GameroomDTO.fromJson(json)).toList();
+  //       });
+  //     } else {
+  //       setState(() {
+  //         print('Error: ${response.statusCode}');
+  //       });
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       print('Error: $e');
+  //     });
+  //   }
+  // }
+//  private String room_password;
+//     private String room_name;
+//     private Long room_size;
+//     private Long room_goal;
 
-  Future<void> createRoom() async {
+//     public GameRoomDTO(String room_password, String room_name, Long room_size, Long room_goal) {
+//         this.room_password = room_password;
+//         this.room_name = room_name;
+//         this.room_size = room_size;
+//         this.room_goal = room_goal;
+//     }
+
+  Future<void> createRoombtn() async {
     try {
       final response = await dio.post(
         'http://localhost:8080/game/room/create',
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+        }),
         data: {
-          'roomName': roomNameController.text,
-          'roomPassword': roomPasswordController.text,
-          'roomSize': int.parse(roomSizeController.text),
-          'targetGoal': int.parse(targetGoalController.text),
+          'room_password': roomPasswordController.text,
+          'room_name': roomNameController.text,
+          'room_size': int.parse(roomSizeController.text),
+          'room_goal': int.parse(targetGoalController.text),
         },
       );
 
@@ -512,7 +526,7 @@ class _CreateRoomState extends State<CreateRoom>{
                                   width: 274,
                                   height: 36,
                                   child: TextButton(
-                                    onPressed: createRoom,
+                                    onPressed: createRoombtn,
                                     child: const Text(
                                       'CREATE ROOM',
                                       style: TextStyle(
