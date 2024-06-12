@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 
 void main() {
@@ -33,7 +34,7 @@ class GameRoom extends StatefulWidget {
 
 class _GameRoomState extends State<GameRoom> {
   final Dio dio = Dio();
-  List<GameroomDTO> _gamerooms = [];
+  List<GameRoomsDTO> _gamerooms = [];
 
   @override
   void initState() {
@@ -43,12 +44,30 @@ class _GameRoomState extends State<GameRoom> {
 
   Future<void> fetchGameRooms() async {
     try {
-      final Response response = await dio.get('http://localhost:8080/page/gameroom');
+      final Response response = await dio.get('http://localhost:8080/page/main');
       if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
+        Map<String, dynamic> data = response.data;
+        // print(data);
+        // {gameRooms: [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]}
+        List<dynamic> gameRooms = data['gameRooms'];
+        // print(gameRooms);
+        // [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]
+        // List<GameroomDTO> gamerooms = gameRooms.map((gameRoom) => GameroomDTO.fromJson(gameRoom)).toList();
+        List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
+          return GameRoomsDTO(
+            roomPassword: roomData['room_password'],
+            roomName: roomData['room_name'],
+            roomSize: roomData['room_size'],
+            roomGoal: roomData['room_goal'],
+          );
+        }).toList();
+
+        print("gameRooms_instance: $gameRooms_instance");
+
         setState(() {
-          _gamerooms = data.map((json) => GameroomDTO.fromJson(json)).toList();
+          _gamerooms = gameRooms_instance;
         });
+
       } else {
         setState(() {
           print('Error: ${response.statusCode}');
@@ -72,6 +91,27 @@ class _GameRoomState extends State<GameRoom> {
           decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
           child: Stack(
             children: [
+              
+              ElevatedButton(
+                onPressed: () {
+                  fetchGameRooms();
+                }, 
+                child: const Text('Fetch Game Rooms'), 
+              ),
+
+              Positioned(
+                child: ElevatedButton(
+                  onPressed: () {
+                      Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => CreateRoomStart()));
+                  }, 
+                  child: const Text('Join Game'), 
+                ), 
+                left: 10, top: 20
+              ),
+              
+              
+              
               Positioned( //top btn
                 left: 50,
                 top: 20,
@@ -705,7 +745,7 @@ class _GameRoomState extends State<GameRoom> {
                                                               width: 87.75,
                                                               height: 32,
                                                               child: Text(
-                                                                'No. ${_gamerooms[gameroom.id].id}',
+                                                                'No. ${_gamerooms.indexOf(gameroom) + 1}',
                                                                 style: const TextStyle(
                                                                   color: Colors.black,
                                                                   fontSize: 24,
@@ -724,7 +764,7 @@ class _GameRoomState extends State<GameRoom> {
                                                               width: 454.85,
                                                               height: 32,
                                                               child: Text(
-                                                                _gamerooms[gameroom.id].gameroomName,
+                                                                gameroom.roomName,
                                                                 style: const TextStyle(
                                                                   color: Colors.black,
                                                                   fontSize: 24,
@@ -743,7 +783,7 @@ class _GameRoomState extends State<GameRoom> {
                                                               width: 192.16,
                                                               height: 32,
                                                               child: Text(
-                                                                _gamerooms[gameroom.id].gameroomName,
+                                                                "room size: ${gameroom.roomSize}",
                                                                 style: const TextStyle(
                                                                   color: Colors.black,
                                                                   fontSize: 24,

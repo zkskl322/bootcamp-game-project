@@ -1,19 +1,18 @@
-class GameroomDTO {
-  final int id;
-  final String gameroomName;
-  final String ownerName;
+// [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, 
+//room_name: a, 
+//room_size: 1, 
+//room_goal: 1}, 
+        
+class GameRoomsDTO {
+  final String roomPassword;
+  final String roomName;
+  final int roomSize;
+  final int roomGoal;
 
-  GameroomDTO({
-    required this.id,
-    required this.gameroomName,
-    required this.ownerName,
-  });
+  GameRoomsDTO({
+    required this.roomPassword, 
+    required this.roomName, 
+    required this.roomSize, 
+    required this.roomGoal});
 
-  factory GameroomDTO.fromJson(Map<String, dynamic> json) {
-    return GameroomDTO(
-      id: json['id'],
-      gameroomName: json['gameroomName'],
-      ownerName: json['ownerName'],
-    );
-  }
 }
