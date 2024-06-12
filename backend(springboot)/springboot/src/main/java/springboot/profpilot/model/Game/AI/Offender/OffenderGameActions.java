@@ -11,11 +11,11 @@ class OffenderGameActions {
         this.gameState = gameState;
     }
 
-//----------------------------
-//|    3  1            1 3   |
-//| 4         vs           4 |
-//|    2  0            0 2   |
-//----------------------------
+    //----------------------------
+    //|    3  1            1 3   |
+    //| 4         vs           4 |
+    //|    2  0            0 2   |
+    //----------------------------
     public void SameTeamOffenderMoveBall(int playerId, int team) {
         double move_ai_x, move_ai_y, op_offense_x, op_offense_y, op_defense_x, op_defense_y;
         int move_ai = playerId == 0 ? 1 : 0;
@@ -51,11 +51,6 @@ class OffenderGameActions {
             }
         }
 
-        System.out.println("move_ai : " + move_ai);
-        System.out.println("move_ai_x: " + move_ai_x + " move_ai_y: " + move_ai_y);
-        System.out.println("op_offense_x: " + op_offense_x + " op_offense_y: " + op_offense_y);
-        System.out.println("op_defense_x: " + op_defense_x + " op_defense_y: " + op_defense_y);
-
         if (team == 1) {
             if (move_ai_x < (op_offense_x + op_defense_x) / 2 - 0.1) {
                 gameState.getPlayer1_players().getPlayers().get(move_ai).setPlayer_x_speed(1);
@@ -84,17 +79,5 @@ class OffenderGameActions {
                 gameState.getPlayer2_players().getPlayers().get(move_ai).setPlayer_y_speed(-1);
             }
         }
-    }
-
-    public void shoot() {
-        System.out.println("Shooting");
-    }
-
-    public void passToTeammate() {
-        System.out.println("Passing to teammate");
-    }
-
-    public void moveTowardsBall() {
-        System.out.println("Moving towards ball");
     }
 }

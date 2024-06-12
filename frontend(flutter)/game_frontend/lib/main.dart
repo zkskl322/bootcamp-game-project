@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 
@@ -111,6 +112,16 @@ class _GameRoomState extends State<GameRoom> {
               ),
               
               
+              Positioned(
+                child: ElevatedButton(
+                  onPressed: () {
+                      Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => LobbyPage()));
+                  }, 
+                  child: const Text('Lobby'), 
+                ), 
+                left: 10, top: 40
+              ),
               
               Positioned( //top btn
                 left: 50,
