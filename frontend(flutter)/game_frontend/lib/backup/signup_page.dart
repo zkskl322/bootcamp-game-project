@@ -36,12 +36,13 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _RealnameController = TextEditingController();
   final TextEditingController _NicknameController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
-  final TextEditingController _ReconfirmpasswordController = TextEditingController();
+  final TextEditingController _ReconfirmpasswordController =
+      TextEditingController();
   final TextEditingController _VerifycodeController = TextEditingController();
 
-  Future<void> _handleVerifyCodeButton() async{
+  Future<void> _handleVerifyCodeButton() async {
     final dio = Dio();
-    
+
     // get 예시
     // try {
     //   final response = await dio.get(
@@ -51,25 +52,21 @@ class _SignupPageState extends State<SignupPage> {
     // } catch (e) {
     //   print(e);
     // }
-    
-    
-    // post 예시
-    try{
-        final Response response = await dio.post(
-          'http://localhost:8080/member/signup/email/verify',
-          data: {
-            'email': _EmailController.text,
-          }
-        );
-        if (response.statusCode == 200) {
-          print(response);
-        } else {
-          print(response);
-        }
-      } catch (e) {
-        print(e);
-      }
 
+    // post 예시
+    try {
+      final Response response = await dio
+          .post('http://localhost:8080/user/signup/email/verify', data: {
+        'email': _EmailController.text,
+      });
+      if (response.statusCode == 200) {
+        print(response);
+      } else {
+        print(response);
+      }
+    } catch (e) {
+      print(e);
+    }
 
     // final email = _EmailController.text;
     // final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$'); //email format check
@@ -95,33 +92,29 @@ class _SignupPageState extends State<SignupPage> {
     //   }
     //   isVerifyCodeSent = !isVerifyCodeSent;
     // });
-
   }
 
-  Future<void> _handleSginupButton() async { //sign up null exception, data send logic
+  Future<void> _handleSginupButton() async {
+    //sign up null exception, data send logic
     final dio = Dio();
 
-    try{
-        final Response response = await dio.post(
-          'http://localhost:8080/member/signup',
-          data: {
-            'email': _EmailController.text,
-            'realname': _RealnameController.text,
-            'nickname': _NicknameController.text,
-            'password': _PasswordController.text,
-            'reconfirm_password': _ReconfirmpasswordController.text,
-          }
-        );
-        if (response.statusCode == 200) {
-          print(response);
-        } else {
-          print(response);
-        }
-      } catch (e) {
-        print(e);
+    try {
+      final Response response =
+          await dio.post('http://localhost:8080/user/signup', data: {
+        'email': _EmailController.text,
+        'realname': _RealnameController.text,
+        'nickname': _NicknameController.text,
+        'password': _PasswordController.text,
+        'reconfirm_password': _ReconfirmpasswordController.text,
+      });
+      if (response.statusCode == 200) {
+        print(response);
+      } else {
+        print(response);
       }
-            
-
+    } catch (e) {
+      print(e);
+    }
 
     // final email = _EmailController.text;
     // final realname = _RealnameController.text;
@@ -140,7 +133,6 @@ class _SignupPageState extends State<SignupPage> {
     //     print('password: $password');
     //     print('reconfirmpassword: $reconfirm_password');
     // }
-
   }
 
   @override
@@ -168,7 +160,8 @@ class _SignupPageState extends State<SignupPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox( //sign up text
+                      const SizedBox(
+                        //sign up text
                         width: 175,
                         height: 93,
                         child: Text(
@@ -189,7 +182,8 @@ class _SignupPageState extends State<SignupPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          SizedBox( //email
+                          SizedBox(
+                            //email
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -209,7 +203,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -242,7 +237,8 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
-                          SizedBox( //real name
+                          SizedBox(
+                            //real name
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -262,7 +258,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -295,7 +292,8 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
-                          SizedBox( //nickname
+                          SizedBox(
+                            //nickname
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -315,7 +313,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -348,7 +347,8 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
-                          SizedBox( //password
+                          SizedBox(
+                            //password
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -368,7 +368,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -396,14 +397,17 @@ class _SignupPageState extends State<SignupPage> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                     keyboardType: TextInputType.text,
-                                    obscureText: true, // 여기서 obscureText를 true로 설정합니다.
-                                    obscuringCharacter: '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
+                                    obscureText:
+                                        true, // 여기서 obscureText를 true로 설정합니다.
+                                    obscuringCharacter:
+                                        '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox( //reconfirm password
+                          SizedBox(
+                            //reconfirm password
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -423,7 +427,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -451,72 +456,78 @@ class _SignupPageState extends State<SignupPage> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                     keyboardType: TextInputType.text,
-                                    obscureText: true, 
+                                    obscureText: true,
                                     obscuringCharacter: '●',
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          if (isVerifyCodeSent) SizedBox( //verifty code
-                            height: 91,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'verify code',
-                                  style: TextStyle(
-                                    color: Color(0xFF7D7D7D),
-                                    fontSize: 24,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.black.withOpacity(0.1),
+                          if (isVerifyCodeSent)
+                            SizedBox(
+                              //verifty code
+                              height: 91,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'verify code',
+                                    style: TextStyle(
+                                      color: Color(0xFF7D7D7D),
+                                      fontSize: 24,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w500,
+                                      height: 0,
                                     ),
                                   ),
-                                  child: TextField(
-                                    controller: _VerifycodeController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'verify code',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFC1C1C1),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    width: 522,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 24),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.black.withOpacity(0.1),
+                                      ),
+                                    ),
+                                    child: TextField(
+                                      controller: _VerifycodeController,
+                                      decoration: const InputDecoration(
+                                        hintText: 'verify code',
+                                        hintStyle: TextStyle(
+                                          color: Color(0xFFC1C1C1),
+                                          fontSize: 20,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                      style: const TextStyle(
+                                        color: Colors.black,
                                         fontSize: 20,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),
-                                      border: InputBorder.none,
+                                      keyboardType: TextInputType.text,
+                                      obscureText:
+                                          true, // 여기서 obscureText를 true로 설정합니다.
+                                      obscuringCharacter:
+                                          '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
                                     ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                    obscureText: true, // 여기서 obscureText를 true로 설정합니다.
-                                    obscuringCharacter: '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      SizedBox( //back to login
+                      SizedBox(
+                        //back to login
                         height: 24,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -531,7 +542,8 @@ class _SignupPageState extends State<SignupPage> {
                                 InkWell(
                                   onTap: () {
                                     // 여기서 로그인 페이지로 돌아가는 로직을 추가합니다.
-                                    Navigator.pushReplacementNamed(context, '/login');
+                                    Navigator.pushReplacementNamed(
+                                        context, '/login');
                                   },
                                   child: const Text(
                                     'Back to Log in',
@@ -559,15 +571,18 @@ class _SignupPageState extends State<SignupPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            InkWell( // verify code btn
+                            InkWell(
+                              // verify code btn
                               onTap: _handleVerifyCodeButton,
                               child: Container(
                                 width: double.infinity,
                                 height: 60,
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
                                 decoration: ShapeDecoration(
                                   shape: RoundedRectangleBorder(
-                                    side: const BorderSide(width: 1, color: Color(0x7F07021F)),
+                                    side: const BorderSide(
+                                        width: 1, color: Color(0x7F07021F)),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                 ),
@@ -577,7 +592,9 @@ class _SignupPageState extends State<SignupPage> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      isVerifyCodeSent ? 'Check Verify code' : 'Get Verify code',
+                                      isVerifyCodeSent
+                                          ? 'Check Verify code'
+                                          : 'Get Verify code',
                                       style: const TextStyle(
                                         color: Color(0xFF7D7D7D),
                                         fontSize: 24,
@@ -591,16 +608,19 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            InkWell( // signup btn
+                            InkWell(
+                              // signup btn
                               onTap: _handleSginupButton,
                               child: Container(
                                 width: double.infinity,
                                 height: 60,
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
                                 decoration: ShapeDecoration(
                                   color: Color(0xFF120071),
                                   shape: RoundedRectangleBorder(
-                                    side: const BorderSide(width: 1, color: Color(0x7F07021F)),
+                                    side: const BorderSide(
+                                        width: 1, color: Color(0x7F07021F)),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                 ),
@@ -665,13 +685,16 @@ class _SignupPageState extends State<SignupPage> {
                 left: -201,
                 top: 144.59,
                 child: Transform(
-                  transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(-0.26),
+                  transform: Matrix4.identity()
+                    ..translate(0.0, 0.0)
+                    ..rotateZ(-0.26),
                   child: Container(
                     width: 751.85,
                     height: 1019.13,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: NetworkImage("https://via.placeholder.com/752x1019"),
+                        image: NetworkImage(
+                            "https://via.placeholder.com/752x1019"),
                         fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder(

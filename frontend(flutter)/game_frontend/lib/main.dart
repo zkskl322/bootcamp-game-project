@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
-import 'package:game_frontend/backup/game_room_create.dart';
-import 'package:game_frontend/dto/gameroom-dto.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -18,941 +16,428 @@ class FigmaToCodeApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      home: const Scaffold(
-        body: GameRoom(),
+      home: Scaffold(
+        body: ListView(children: [
+          LoginPage(),
+        ]),
       ),
     );
   }
 }
 
-class GameRoom extends StatefulWidget {
-  const GameRoom({super.key});
-
+class LoginPage extends StatefulWidget {
   @override
-  _GameRoomState createState() => _GameRoomState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _GameRoomState extends State<GameRoom> {
-  final Dio dio = Dio();
-  List<GameRoomsDTO> _gamerooms = [];
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _EmailController = TextEditingController();
+  final TextEditingController _PasswordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    fetchGameRooms();
-  }
+  Future<void> _handleLoginButton() async {
+    final dio = Dio();
 
-  Future<void> fetchGameRooms() async {
     try {
-      final Response response = await dio.get('http://localhost:8080/page/main');
+      final Response response =
+          await dio.post('http://localhost:8080/user/login', data: {
+        'email': _EmailController.text,
+        'password': _PasswordController.text,
+      });
       if (response.statusCode == 200) {
-        Map<String, dynamic> data = response.data;
-        // print(data);
-        // {gameRooms: [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]}
-        List<dynamic> gameRooms = data['gameRooms'];
-        // print(gameRooms);
-        // [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]
-        // List<GameroomDTO> gamerooms = gameRooms.map((gameRoom) => GameroomDTO.fromJson(gameRoom)).toList();
-        List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
-          return GameRoomsDTO(
-            roomPassword: roomData['room_password'],
-            roomName: roomData['room_name'],
-            roomSize: roomData['room_size'],
-            roomGoal: roomData['room_goal'],
-          );
-        }).toList();
-
-        print("gameRooms_instance: $gameRooms_instance");
-
-        setState(() {
-          _gamerooms = gameRooms_instance;
-        });
-
+        print(response);
       } else {
-        setState(() {
-          print('Error: ${response.statusCode}');
-        });
+        print(response);
       }
     } catch (e) {
-      setState(() {
-        print('Error: $e');
-      });
+      print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size; //사이즈 크기를 유동으로 받아옴
     return Column(
       children: [
         Container(
           width: 1600,
           height: 960,
+          padding: const EdgeInsets.only(
+            top: 127,
+            left: 522,
+            right: 522,
+            bottom: 126,
+          ),
           clipBehavior: Clip.antiAlias,
-          decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
-          child: Stack(
+          decoration: const BoxDecoration(color: Colors.white),
+          child: Column(
             children: [
-              
-              ElevatedButton(
-                onPressed: () {
-                  fetchGameRooms();
-                }, 
-                child: const Text('Fetch Game Rooms'), 
-              ),
-
-              Positioned(
-                child: ElevatedButton(
-                  onPressed: () {
-                      Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => CreateRoomStart()));
-                  }, 
-                  child: const Text('Join Game'), 
-                ), 
-                left: 10, top: 20
-              ),
-              
-              
-              
-              Positioned( //top btn
-                left: 50,
-                top: 20,
-                child: SizedBox(
-                  width: 1500,
-                  height: 60,
-                  child: Stack(
-                    children: [
-                      Positioned( //home btn
-                        left: 0,
-                        top: 0,
-                        child: SizedBox(
-                          width: 190,
-                          height: 60,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 190,
-                                  height: 60,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF758CFF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                left: 22,
-                                top: 18,
-                                child: SizedBox(
-                                  width: 146,
-                                  height: 23,
-                                  child: Text(
-                                    'HOME',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+              const Text.rich(
+                //Soccor game section
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'soccer ',
+                      style: TextStyle(
+                        color: Color(0xFF07021F),
+                        fontSize: 48,
+                        fontFamily: 'Literata',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                        letterSpacing: -0.96,
                       ),
-                      Positioned( //logout btn
-                        left: 1310,
-                        top: 0,
-                        child: SizedBox(
-                          width: 190,
-                          height: 60,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 190,
-                                  height: 60,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF758CFF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                left: 18,
-                                top: 15,
-                                child: SizedBox(
-                                  width: 153,
-                                  height: 29,
-                                  child: Text(
-                                    'LOGOUT',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    ),
+                    TextSpan(
+                      text: 'Game',
+                      style: TextStyle(
+                        color: Color(0xFF6153BD),
+                        fontSize: 48,
+                        fontFamily: 'Literata',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                        letterSpacing: -0.96,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Positioned( //middle layout
-                left: 52,
-                top: 94,
-                child: SizedBox(
-                  width: 1501,
-                  height: 748,
-                  child: Stack(
-                    children: [
-                      Positioned( //user profile
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 424,
-                          height: 748,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF080808),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.97),
-                            ),
-                            shadows: const [
-                              BoxShadow(
-                                color: Color(0x7FFFFFFF),
-                                blurRadius: 2.83,
-                                offset: Offset(0, 2.83),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 34,
-                                top: 34,
-                                child: Container(
-                                  width: 355.80,
-                                  height: 680.17,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF1B1B1B),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(2.83),
-                                    ),
-                                  ),
-                                  child: Stack(
+              const SizedBox(height: 80),
+              SizedBox(
+                //action section
+                width: 522,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 522,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            //text input box
+                            width: 522,
+                            height: 228,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  // input email
+                                  height: 91,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Positioned( //user image
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 356,
-                                          height: 356,
-                                          decoration: ShapeDecoration(
-                                            color: Color(0xFFD9D9D9),
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                          ),
+                                      const Text(
+                                        'Email',
+                                        style: TextStyle(
+                                          color: Color(0xFF7D7D7D),
+                                          fontSize: 24,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w500,
+                                          height: 0,
                                         ),
                                       ),
-                                      Positioned( //user data
-                                        left: -8,
-                                        top: 393,
-                                        child: Container(
-                                          width: 369,
-                                          height: 248,
-                                          child: Stack(
-                                            children: [
-                                              const Positioned( //user name
-                                                left: 8,
-                                                top: 0,
-                                                child: SizedBox(
-                                                  width: 230,
-                                                  height: 52,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 16,
-                                                        top: 32,
-                                                        child: SizedBox(
-                                                          width: 214,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'MARIO',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 230,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'USERNAME',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const Positioned( //user win
-                                                left: 0,
-                                                top: 102,
-                                                child: SizedBox(
-                                                  width: 120,
-                                                  height: 52,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 120,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'WIN',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 32,
-                                                        child: SizedBox(
-                                                          width: 120,
-                                                          height: 20,
-                                                          child: Text(
-                                                            '0',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const Positioned( //user lose
-                                                left: 120,
-                                                top: 102,
-                                                child: SizedBox(
-                                                  width: 120,
-                                                  height: 52,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 32,
-                                                        child: SizedBox(
-                                                          width: 120,
-                                                          height: 20,
-                                                          child: Text(
-                                                            '0',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 120,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'LOSE',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned( //user draw
-                                                left: 242,
-                                                top: 102,
-                                                child: Container(
-                                                  width: 120,
-                                                  height: 52,
-                                                  child: const Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 32,
-                                                        child: SizedBox(
-                                                          width: 120,
-                                                          height: 20,
-                                                          child: Text(
-                                                            '0',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 120,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'DRAW',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned( //user winrate
-                                                left: 8,
-                                                top: 196,
-                                                child: Container(
-                                                  width: 230,
-                                                  height: 52,
-                                                  child: const Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 32,
-                                                        child: SizedBox(
-                                                          width: 230,
-                                                          height: 20,
-                                                          child: Text(
-                                                            '0 %',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: -2.40,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 230,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'WIN RATE',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const Positioned( //user tier
-                                                left: 238,
-                                                top: 196,
-                                                child: SizedBox(
-                                                  width: 131,
-                                                  height: 52,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 32,
-                                                        child: SizedBox(
-                                                          width: 131,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'TIER',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 131,
-                                                          height: 20,
-                                                          child: Text(
-                                                            'RANK',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: 0.96,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                      const SizedBox(height: 6),
+                                      Container(
+                                        width: 522,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 16),
+                                        decoration: ShapeDecoration(
+                                          color: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: Colors.black.withOpacity(
+                                                  0.10000000149011612),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(4),
                                           ),
+                                        ),
+                                        child: const Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Exam@example.com',
+                                              style: TextStyle(
+                                                color: Color(0xFFC1C1C1),
+                                                fontSize: 20,
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.w500,
+                                                height: 0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned( //group room
-                        left: 452,
-                        top: 0,
-                        child: Container(
-                          width: 1049,
-                          height: 748,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF080808),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            shadows: const [
-                              BoxShadow(
-                                color: Color(0x7FFFFFFF),
-                                blurRadius: 2.83,
-                                offset: Offset(0, 2.83),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned( //room
-                                left: 34,
-                                top: 34,
-                                child: Container(
-                                  width: 980.80,
-                                  height: 680.17,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF1B1B1B),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(2.83),
-                                    ),
-                                  ),
-                                  child: Stack(
+                                const SizedBox(height: 24),
+                                Container(
+                                  //input password
+                                  height: 91,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Positioned( //room text
-                                        left: 40,
-                                        top: 7,
-                                        child: SizedBox(
-                                          width: 848.09,
-                                          height: 33,
-                                          child: Stack(
-                                            children: [
-                                              Positioned( // room id
-                                                left: 0,
-                                                top: 1,
-                                                child: SizedBox(
-                                                  width: 84.86,
-                                                  height: 32,
-                                                  child: Text(
-                                                    'No.',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 24,
-                                                      fontFamily: 'Press Start 2P',
-                                                      fontWeight: FontWeight.w400,
-                                                      height: 0,
-                                                      letterSpacing: -0.60,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned( //room name
-                                                left: 119.62,
-                                                top: 1,
-                                                child: SizedBox(
-                                                  width: 466.22,
-                                                  height: 32,
-                                                  child: Text(
-                                                    'Room name',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 24,
-                                                      fontFamily: 'Press Start 2P',
-                                                      fontWeight: FontWeight.w400,
-                                                      height: 0,
-                                                      letterSpacing: -0.60,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned( // room owner
-                                                left: 575.11,
-                                                top: 0,
-                                                child: SizedBox(
-                                                  width: 272.98,
-                                                  height: 32,
-                                                  child: Text(
-                                                    'name',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 24,
-                                                      fontFamily: 'Press Start 2P',
-                                                      fontWeight: FontWeight.w400,
-                                                      height: 0,
-                                                      letterSpacing: -0.60,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                      const Text(
+                                        'Password',
+                                        style: TextStyle(
+                                          color: Color(0xFF7D7D7D),
+                                          fontSize: 24,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w500,
+                                          height: 0,
                                         ),
                                       ),
-                                      SingleChildScrollView( //room box
-                                        child: Column(
-                                          children: _gamerooms.map((gameroom) {
-                                            return Container(
-                                              margin: const EdgeInsets.symmetric(vertical: 10), // 각 방 사이에 간격 추가
-                                              width: 959,
-                                              height: 73,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: ShapeDecoration(
-                                                color: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
+                                      const SizedBox(height: 6),
+                                      Container(
+                                        width: 522,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 16),
+                                        decoration: ShapeDecoration(
+                                          color: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: Colors.black.withOpacity(
+                                                  0.10000000149011612),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                        child: const Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '*****************',
+                                              style: TextStyle(
+                                                color: Color(0xFFC1C1C1),
+                                                fontSize: 20,
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.w500,
+                                                height: 0,
                                               ),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned( //room data
-                                                    left: 28,
-                                                    top: 24,
-                                                    child: SizedBox(
-                                                      width: 774.77,
-                                                      height: 32,
-                                                      child: Stack(
-                                                        children: [
-                                                          Positioned( //roomid
-                                                            left: 0,
-                                                            top: 0,
-                                                            child: SizedBox(
-                                                              width: 87.75,
-                                                              height: 32,
-                                                              child: Text(
-                                                                'No. ${_gamerooms.indexOf(gameroom) + 1}',
-                                                                style: const TextStyle(
-                                                                  color: Colors.black,
-                                                                  fontSize: 24,
-                                                                  fontFamily: 'Press Start 2P',
-                                                                  fontWeight: FontWeight.w400,
-                                                                  height: 0,
-                                                                  letterSpacing: -0.60,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Positioned( //roomname
-                                                            left: 116.52,
-                                                            top: 0,
-                                                            child: SizedBox(
-                                                              width: 454.85,
-                                                              height: 32,
-                                                              child: Text(
-                                                                gameroom.roomName,
-                                                                style: const TextStyle(
-                                                                  color: Colors.black,
-                                                                  fontSize: 24,
-                                                                  fontFamily: 'Press Start 2P',
-                                                                  fontWeight: FontWeight.w400,
-                                                                  height: 0,
-                                                                  letterSpacing: -0.60,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Positioned( //username
-                                                            left: 582.61,
-                                                            top: 0,
-                                                            child: SizedBox(
-                                                              width: 192.16,
-                                                              height: 32,
-                                                              child: Text(
-                                                                "room size: ${gameroom.roomSize}",
-                                                                style: const TextStyle(
-                                                                  color: Colors.black,
-                                                                  fontSize: 24,
-                                                                  fontFamily: 'Press Start 2P',
-                                                                  fontWeight: FontWeight.w400,
-                                                                  height: 0,
-                                                                  letterSpacing: -0.60,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned( //room join btn
-                                                    left: 829.10,
-                                                    top: 7,
-                                                    child: Container(
-                                                      width: 122.95,
-                                                      height: 59,
-                                                      padding: const EdgeInsets.symmetric(horizontal: 42.48, vertical: 28.32),
-                                                      decoration: ShapeDecoration(
-                                                        color: const Color(0xFF393434),
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(16),
-                                                        ),
-                                                      ),
-                                                      child: const Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                            'JOIN',
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0.07,
-                                                              letterSpacing: -0.60,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }).toList(),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          
-                        ),
+                          const Text(
+                            //forgot password text
+                            'Forgot password? ',
+                            style: TextStyle(
+                              color: Color(0xFF6153BD),
+                              fontSize: 20,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                              height: 0,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      // login or social login btn
+                      width: double.infinity,
+                      height: 186,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            // login btn
+                            width: double.infinity,
+                            height: 60,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            decoration: ShapeDecoration(
+                              color: Color(0xFF120071),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4)),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Log in',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                    height: 0.04,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Container(
+                            // ---- or ---- text
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 72,
+                                  decoration: const ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 2,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignCenter,
+                                        color: Color(0x7F7D7D7D),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 24),
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: const Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'or',
+                                        style: TextStyle(
+                                          color: Color(0xFF7D7D7D),
+                                          fontSize: 14,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w500,
+                                          height: 0.07,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 24),
+                                Container(
+                                  width: 72,
+                                  decoration: const ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 2,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignCenter,
+                                        color: Color(0x7F7D7D7D),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Container(
+                            // social login btn
+                            width: double.infinity,
+                            height: 60,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    width: 1, color: Color(0x7F07021F)),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 23.45,
+                                  height: 24,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: const BoxDecoration(),
+                                  child: const FlutterLogo(),
+                                ),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Sign in with google',
+                                  style: TextStyle(
+                                    color: Color(0xFF7D7D7D),
+                                    fontSize: 24,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                    height: 0.04,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Row(
+                      //sign up text
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Are you new?',
+                          style: TextStyle(
+                            color: Color(0xFF7D7D7D),
+                            fontSize: 20,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 0.03,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'Create an account',
+                          style: TextStyle(
+                            color: Color(0xFF6153BD),
+                            fontSize: 20,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                            height: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              Positioned( //bottom btn
-                left: 50,
-                top: 862,
-                child: SizedBox(
-                  width: 1500,
-                  height: 70,
-                  child: Stack(
-                    children: [
-                      Positioned( //setting btn
-                        left: 0,
-                        top: 0,
-                        child: SizedBox(
-                          width: 220,
-                          height: 70,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 220,
-                                  height: 70,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFC8C5C2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                left: 22,
-                                top: 17,
-                                child: SizedBox(
-                                  width: 176,
-                                  height: 36,
-                                  child: Text(
-                                    'SETTING',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned( //create room btn
-                        left: 1175,
-                        top: 0,
-                        child: SizedBox(
-                          width: 325,
-                          height: 70,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 325,
-                                  height: 70,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFC8C5C2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                left: 25,
-                                top: 17,
-                                child: SizedBox(
-                                  width: 274,
-                                  height: 36,
-                                  child: Text(
-                                    'CREATE ROOM',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),    
             ],
           ),
         ),
