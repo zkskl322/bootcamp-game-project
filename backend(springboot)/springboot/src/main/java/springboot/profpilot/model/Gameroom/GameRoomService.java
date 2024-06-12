@@ -10,8 +10,6 @@ public class GameRoomService {
     private final GameRoomRepository gameRoomRepository;
 
     public GameRoom save(GameRoom gameRoom) {
-        // 방장 기반으로 해서 -> 중복된 방 생성되지 않게 처리
-
         gameRoom.setRoom_name(gameRoom.getRoom_name());
         gameRoom.setRoom_password(gameRoom.getRoom_password());
         gameRoom.setRoom_size(gameRoom.getRoom_size());
