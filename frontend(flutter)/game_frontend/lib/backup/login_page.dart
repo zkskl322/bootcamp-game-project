@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 
-
 void main() {
   runApp(const FigmaToCodeApp());
 }
@@ -23,11 +22,9 @@ class FigmaToCodeApp extends StatelessWidget {
       ),
     );
   }
-  
 }
 
 class LoginPage extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -98,15 +95,19 @@ class LoginPage extends StatelessWidget {
                                     height: 228,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 91,
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Username',
@@ -121,29 +122,41 @@ class LoginPage extends StatelessWidget {
                                               const SizedBox(height: 6),
                                               Container(
                                                 width: 522,
-                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 24,
+                                                        vertical: 16),
                                                 decoration: ShapeDecoration(
                                                   color: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     side: BorderSide(
                                                       width: 1,
-                                                      color: Colors.black.withOpacity(0.10000000149011612),
+                                                      color: Colors.black
+                                                          .withOpacity(
+                                                              0.10000000149011612),
                                                     ),
-                                                    borderRadius: BorderRadius.circular(4),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
                                                   ),
                                                 ),
                                                 child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Text(
                                                       'johndoe123',
                                                       style: TextStyle(
-                                                        color: Color(0xFFC1C1C1),
+                                                        color:
+                                                            Color(0xFFC1C1C1),
                                                         fontSize: 20,
                                                         fontFamily: 'Inter',
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         height: 0,
                                                       ),
                                                     ),
@@ -158,8 +171,10 @@ class LoginPage extends StatelessWidget {
                                           height: 91,
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Password',
@@ -174,29 +189,41 @@ class LoginPage extends StatelessWidget {
                                               const SizedBox(height: 6),
                                               Container(
                                                 width: 522,
-                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 24,
+                                                        vertical: 16),
                                                 decoration: ShapeDecoration(
                                                   color: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     side: BorderSide(
                                                       width: 1,
-                                                      color: Colors.black.withOpacity(0.10000000149011612),
+                                                      color: Colors.black
+                                                          .withOpacity(
+                                                              0.10000000149011612),
                                                     ),
-                                                    borderRadius: BorderRadius.circular(4),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
                                                   ),
                                                 ),
                                                 child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Text(
                                                       '*****************',
                                                       style: TextStyle(
-                                                        color: Color(0xFFC1C1C1),
+                                                        color:
+                                                            Color(0xFFC1C1C1),
                                                         fontSize: 20,
                                                         fontFamily: 'Inter',
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         height: 0,
                                                       ),
                                                     ),
@@ -235,15 +262,20 @@ class LoginPage extends StatelessWidget {
                                   Container(
                                     width: double.infinity,
                                     height: 60,
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 24, vertical: 12),
                                     decoration: ShapeDecoration(
                                       color: Color(0xFF120071),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Log in',
@@ -262,8 +294,10 @@ class LoginPage extends StatelessWidget {
                                   Container(
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 72,
@@ -271,7 +305,8 @@ class LoginPage extends StatelessWidget {
                                             shape: RoundedRectangleBorder(
                                               side: BorderSide(
                                                 width: 2,
-                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                strokeAlign: BorderSide
+                                                    .strokeAlignCenter,
                                                 color: Color(0x7F7D7D7D),
                                               ),
                                             ),
@@ -279,11 +314,14 @@ class LoginPage extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 24),
                                         Container(
-                                          padding: const EdgeInsets.only(bottom: 4),
+                                          padding:
+                                              const EdgeInsets.only(bottom: 4),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
                                               Text(
                                                 'or',
@@ -305,7 +343,8 @@ class LoginPage extends StatelessWidget {
                                             shape: RoundedRectangleBorder(
                                               side: BorderSide(
                                                 width: 2,
-                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                strokeAlign: BorderSide
+                                                    .strokeAlignCenter,
                                                 color: Color(0x7F7D7D7D),
                                               ),
                                             ),
@@ -318,17 +357,21 @@ class LoginPage extends StatelessWidget {
                                   Container(
                                     width: double.infinity,
                                     height: 60,
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 24, vertical: 12),
                                     decoration: ShapeDecoration(
                                       shape: RoundedRectangleBorder(
-                                        side: BorderSide(width: 1, color: Color(0x7F07021F)),
+                                        side: BorderSide(
+                                            width: 1, color: Color(0x7F07021F)),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 23.45,
@@ -397,13 +440,16 @@ class LoginPage extends StatelessWidget {
                 left: 1106.77,
                 top: -39,
                 child: Transform(
-                  transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(0.26),
+                  transform: Matrix4.identity()
+                    ..translate(0.0, 0.0)
+                    ..rotateZ(0.26),
                   child: Container(
                     width: 751.85,
                     height: 1019.13,
                     decoration: ShapeDecoration(
                       image: const DecorationImage(
-                        image: NetworkImage("https://via.placeholder.com/752x1019"),
+                        image: NetworkImage(
+                            "https://via.placeholder.com/752x1019"),
                         fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder(

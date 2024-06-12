@@ -20,7 +20,7 @@ class _GamePageState extends State<GameRoomPage> {
   final TextEditingController _textController = TextEditingController();
   late final FocusNode _focusNode;
   final List<Game> gameList = [];
-  final socketUrl = 'http://192.168.3.4:8080/game';
+  final socketUrl = 'http://localhost:8080/game';
 
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
