@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -48,4 +50,18 @@ public class GamerController {
 //        gamerService.save(gamerForm.getNickname(), gamerForm.getNickname(), gamerForm.getPassword(), gamerForm.getEmail());
         return "redirect:/";
     }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginDTO loginDTO) {
+        boolean isAuthenticated = gamerService.login(loginDTO.getNickname(), loginDTO.getPassword());
+        if (isAuthenticated) {
+            return "redirect:/main";
+        } else {
+            return "login";
+        }
+    }
+//    @GetMapping("/gamers")
+//    public List<GamerDTO> getGamers() {
+//        return gamerService.getGamerData();
+//    }
 }
