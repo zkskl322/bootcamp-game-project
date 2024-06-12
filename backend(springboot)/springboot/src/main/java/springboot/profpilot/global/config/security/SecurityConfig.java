@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers( "/game/room/create", "/game/room/delete", "/chatting/**", "/game/**", "/page/main", "/page/gameroom",
                                 "/user/login", "/user/signup").permitAll()
 
-                        .requestMatchers( "/hello").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( "/hello").hasAnyRole("GAMER", "ADMIN")
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
@@ -67,9 +67,9 @@ public class SecurityConfig {
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/gamer/logout"))
                         .invalidateHttpSession(true)
-                        .logoutSuccessUrl("/member/login")
+                        .logoutSuccessUrl("/gamer/login")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;

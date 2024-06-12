@@ -9,15 +9,15 @@ public class GamerDTO {
 
     private String nickname;
     private String password;
-    private String name;
+    private String realname;
     private String email;
 
     public GamerDTO() {}
 
-    public GamerDTO(String nickname, String password, String name, String email) {
+    public GamerDTO(String nickname, String password, String realname, String email) {
         this.nickname = nickname;
         this.password = password;
-        this.name = name;
+        this.realname = realname;
         this.email = email;
     }
 }

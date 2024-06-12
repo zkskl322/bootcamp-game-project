@@ -14,13 +14,14 @@ public class GamerService {
     private final GamerRepository gamerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Gamer save(String email, String nickname, String name, String password) {
+    public Gamer save(String email, String nickname, String realname, String password) {
         Gamer user = new Gamer();
         user.setEmail(email);
         user.setNickname(nickname);
         user.setPassword(passwordEncoder.encode(password));
-        user.setName(name);
+        user.setRealname(realname);
         user.setCreateDate(LocalDateTime.now());
+        user.setRole("ROLE_USER");
         return gamerRepository.save(user);
     }
     public boolean login(String email, String password) {
@@ -29,6 +30,10 @@ public class GamerService {
             return true;
         }
         return false;
+    }
+
+    public Gamer findByNickname(String nickname) {
+        return gamerRepository.findByNickname(nickname);
     }
 //    public List<GamerDTO> getGamerData() {
 //        List<Gamer> gamers = gamerRepository.findAll();

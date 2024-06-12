@@ -25,7 +25,7 @@ public class GamerController {
         @NotEmpty(message = "닉네임을 입력하십시오")
         private String nickname;
         @NotEmpty(message = "이름을 입력하십시오")
-        private String name;
+        private String realname;
         @NotEmpty(message = "비밀번호를 입력하십시오")
         private String password;
     }
@@ -46,20 +46,20 @@ public class GamerController {
 //            return "signup";
 //        }
 
-        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getName(), signUpDTO.getPassword());
+        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getRealname(), signUpDTO.getPassword());
 //        gamerService.save(gamerForm.getNickname(), gamerForm.getNickname(), gamerForm.getPassword(), gamerForm.getEmail());
-        return "redirect:/";
+        return "Success";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestBody LoginDTO loginDTO) {
-        boolean isAuthenticated = gamerService.login(loginDTO.getNickname(), loginDTO.getPassword());
-        if (isAuthenticated) {
-            return "redirect:/main";
-        } else {
-            return "login";
-        }
-    }
+//    @PostMapping("/login")
+//    public String login(@RequestBody LoginDTO loginDTO) {
+//        boolean isAuthenticated = gamerService.login(loginDTO.getNickname(), loginDTO.getPassword());
+//        if (isAuthenticated) {
+//            return "redirect:/main";
+//        } else {
+//            return "login";
+//        }
+//    }
 //    @GetMapping("/gamers")
 //    public List<GamerDTO> getGamers() {
 //        return gamerService.getGamerData();

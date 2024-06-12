@@ -54,21 +54,21 @@ class _SignupPageState extends State<SignupPage> {
     
     
     // post 예시
-    try{
-        final Response response = await dio.post(
-          'http://localhost:8080/user/signup/email/verify',
-          data: {
-            'email': _EmailController.text,
-          }
-        );
-        if (response.statusCode == 200) {
-          print(response);
-        } else {
-          print(response);
-        }
-      } catch (e) {
-        print(e);
-      }
+    // try{
+    //     final Response response = await dio.post(
+    //       'http://localhost:8080/user/signup/email/verify',
+    //       data: {
+    //         'email': _EmailController.text,
+    //       }
+    //     );
+    //     if (response.statusCode == 200) {
+    //       print(response);
+    //     } else {
+    //       print(response);
+    //     }
+    //   } catch (e) {
+    //     print(e);
+    //   }
 
 
     // final email = _EmailController.text;

@@ -19,10 +19,17 @@ public class Gamer {
 
     private String password;
 
-    private String name;
+    private String realname;
+
+    private String role;
 
     @Column(unique = true)
     private String email;
 
     private LocalDateTime createDate;
+
+    private Boolean accountNonExpired = true;
+    private Boolean accountNonLocked = true;
+    private Boolean credentialsNonExpired = true;
+    private Boolean enabled = true;
 }
