@@ -20,10 +20,7 @@ dev_dependencies:
   web_socket_channel: ^2.1.0
   stomp_dart_client: ^2.0.0
   uuid: ^4.4.0
-<<<<<<< HEAD
-=======
   dio: ^5.4.3+1
->>>>>>> main
 
 
 flutter:
