@@ -1,4 +1,4 @@
-package springboot.profpilot.model.DTO.auth;
+package springboot.profpilot.model.Gamer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SignUpDTO {
-    private String email;
+    private String nickname;
     private String password;
     private String name;
-    private Long studentId;
+    private String email;
 }

@@ -1,4 +1,4 @@
-package springboot.profpilot.model.User;
+package springboot.profpilot.model.Gamer;
 
 
 import jakarta.validation.constraints.Email;
@@ -6,19 +6,17 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-public class UserController {
+public class GamerController {
+    private final GamerService gamerService;
 
     @Getter
     @Setter
-    class UserForm {
+    class GamerForm {
         @NotEmpty(message = "이메일을 입력하십시오.")
         @Email(message = "이메일 형식에 맞지 않습니다.")
         private String email;
@@ -38,5 +36,16 @@ public class UserController {
     @GetMapping("/signup")
     public String signup() {
         return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@RequestBody SignUpDTO signUpDTO) {
+//        if (bindingResult.hasErrors()) {
+//            return "signup";
+//        }
+
+        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getName(), signUpDTO.getPassword());
+//        gamerService.save(gamerForm.getNickname(), gamerForm.getNickname(), gamerForm.getPassword(), gamerForm.getEmail());
+        return "redirect:/";
     }
 }

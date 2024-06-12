@@ -1,4 +1,4 @@
-package springboot.profpilot.model.User;
+package springboot.profpilot.model.Gamer;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class User {
+public class Gamer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
