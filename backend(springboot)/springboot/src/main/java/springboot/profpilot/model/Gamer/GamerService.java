@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,21 @@ public class GamerService {
         }
         return false;
     }
+
+    public Gamer registerNewSocialUser(String username, String email) {
+        Gamer gamer = new Gamer();
+        gamer.setNickname(username);
+        gamer.setEmail(email);
+
+        String defalutPassword = "default_password";
+        gamer.setPassword(passwordEncoder.encode(defalutPassword));
+
+        return gamerRepository.save(gamer);
+    }
+
+//    public Optional<Gamer> findByEmail(String email) {
+//        return gamerRepository.findByEmail(email);
+//    }
 
     public Gamer findByNickname(String nickname) {
         return gamerRepository.findByNickname(nickname);

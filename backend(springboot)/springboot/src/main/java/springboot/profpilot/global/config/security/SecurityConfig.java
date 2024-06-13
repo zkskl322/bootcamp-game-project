@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
 
                         .requestMatchers( "/game/room/create", "/game/room/delete", "/chatting/**", "/game/**", "/page/main", "/page/gameroom",
-                                "/user/login", "/user/signup", "/sendToken/**").permitAll()
+                                "/user/login", "/user/signup", "/sendToken/**", "/gamer/social/signup").permitAll()
 
                         .requestMatchers( "/hello").hasAnyRole("GAMER", "ADMIN")
 
@@ -71,6 +71,9 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .logoutSuccessUrl("/gamer/login")
                 )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/gamer/social/signup")
+//                )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;
         return http.build();

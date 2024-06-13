@@ -16,3 +16,7 @@ spring.jpa.hibernate.ddl-auto=update
 # Thymeleaf
 spring.thymeleaf.cache=false
 spring.jwt.secret=dmgaboiqgnowgnaiogioaehfeoigvhbdmcmvalkngiedorfghoiergyhieersdfhiowmweqazpzodmfs
+
+spring.security.oauth2.client.registration.google.client-id=client-id
+spring.security.oauth2.client.registration.google.client-secret= client-secret
+spring.security.oauth2.client.registration.google.scope=profile,email
