@@ -12,8 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import springboot.profpilot.global.Utils.JwtUtil;
 import springboot.profpilot.model.DTO.auth.SignInDTO;
+import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.member.Member;
 
+import javax.swing.plaf.synth.SynthUI;
 import java.io.PrintWriter;
 
 import java.io.IOException;
@@ -67,10 +69,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
-        Member member = new Member();
-        member.setEmail(username);
-        member.setRole(role);
-        SignInDTO signInDTO = new SignInDTO(member);
+        Gamer gamer = new Gamer();
+        gamer.setNickname(username);
+        gamer.setRole(role);
+        SignInDTO signInDTO = new SignInDTO(gamer);
+        System.out.println("signup DTO: " + signInDTO.getUsername());
+        System.out.println("signup DTO: " + signInDTO.getPassword());
+        System.out.println("signup DTO: " + signInDTO.getAuthorities());
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(signInDTO, null, signInDTO.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
