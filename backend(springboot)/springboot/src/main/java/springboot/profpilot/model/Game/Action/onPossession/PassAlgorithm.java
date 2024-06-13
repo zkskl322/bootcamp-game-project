@@ -1,4 +1,4 @@
-package springboot.profpilot.model.Game.onPossession;
+package springboot.profpilot.model.Game.Action.onPossession;
 
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.GameSoccerTeam;

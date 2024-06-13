@@ -73,9 +73,6 @@ public class JwtFilter extends OncePerRequestFilter {
         gamer.setNickname(username);
         gamer.setRole(role);
         SignInDTO signInDTO = new SignInDTO(gamer);
-        System.out.println("signup DTO: " + signInDTO.getUsername());
-        System.out.println("signup DTO: " + signInDTO.getPassword());
-        System.out.println("signup DTO: " + signInDTO.getAuthorities());
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(signInDTO, null, signInDTO.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);

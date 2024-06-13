@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.AI.Offender.OffenderAlgorithm;
-import springboot.profpilot.model.Game.onPossession.PassAlgorithm;
+import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 import springboot.profpilot.model.logSystem.GameResultService;
 import springboot.profpilot.model.logSystem.SimulationRawDataService;
 
