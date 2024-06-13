@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.AI.Offender.OffenderAlgorithm;
 import springboot.profpilot.model.Game.onPossession.PassAlgorithm;
+import springboot.profpilot.model.logSystem.GameResultService;
+import springboot.profpilot.model.logSystem.SimulationRawDataService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -35,6 +37,9 @@ public class GameService {
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final OffenderAlgorithm offenderAlgorithm;
+    private final GameResultService gameResultService;
+    private final SimulationRawDataService simulationRawDataService;
+    private int time = 0;
 
 
 
@@ -45,11 +50,20 @@ public class GameService {
 
         // 게임 초기화 ------------------------ //
         gameState.setGameId(gameId);
+        gameState.setGameName("soccer");
         gameState.setGameStatus("STARTED");
+        gameState.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        gameState.setTick(0);
+
         gameState.setScore1(0);
         gameState.setScore2(0);
         gameState.setWho_has_ball(0);
-
+        gameState.setPlayer1_possession_time(0);
+        gameState.setPlayer2_possession_time(0);
+        gameState.setPlayer1_shoot_count(0);
+        gameState.setPlayer2_shoot_count(0);
+        gameState.setPlayer1_available_shoot_count(3);
+        gameState.setPlayer2_available_shoot_count(3);
 
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -314,6 +328,7 @@ public class GameService {
             // 공 소유 + S Key = 패스
             if (action.getAction().equals("KEY_S")) {
                 int next_player = passAlgorithm.FindPassPlayer(gameState, player);
+                System.out.println("next_player: " + next_player);
                 if (next_player != -1) {
                     passAlgorithm.PasstheBall(gameState, player, next_player);
                 }
@@ -439,6 +454,39 @@ public class GameService {
 
         // 5. 플레이어가 공을 가지고 있지 않을 때
         else {
+
+            if (action.getAction().equals("KEY_W")) {
+                System.out.println("KEY_W");
+                simulationRawDataService.saveByGameState(gameState);
+            }
+
+            // 공 미소유 + S key = 선수 변경
+            if (action.getAction().equals("KEY_S")) {
+                int next_control_player1 = (gameState.getPlayer1_control_player() + 1) % 4;
+                int next_control_player2 = (gameState.getPlayer2_control_player() + 1) % 4;
+                if (player == 1) {
+                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_x(gameState.getPlayer1_x());
+                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_y(gameState.getPlayer1_y());
+                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_direction(gameState.getPlayer1_direction());
+
+                    gameState.setPlayer1_control_player(next_control_player1);
+                    gameState.setPlayer1_x(gameState.getPlayer1_players().getPlayers().get(next_control_player1).getPlayer_x());
+                    gameState.setPlayer1_y(gameState.getPlayer1_players().getPlayers().get(next_control_player1).getPlayer_y());
+                    gameState.setPlayer1_direction(gameState.getPlayer1_players().getPlayers().get(next_control_player1).getPlayer_direction());
+
+                } else {
+                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_x(gameState.getPlayer2_x());
+                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_y(gameState.getPlayer2_y());
+                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_direction(gameState.getPlayer2_direction());
+
+                    gameState.setPlayer2_control_player(next_control_player2);
+                    gameState.setPlayer2_x(gameState.getPlayer2_players().getPlayers().get(next_control_player2).getPlayer_x());
+                    gameState.setPlayer2_y(gameState.getPlayer2_players().getPlayers().get(next_control_player2).getPlayer_y());
+                    gameState.setPlayer2_direction(gameState.getPlayer2_players().getPlayers().get(next_control_player2).getPlayer_direction());
+                }
+                return;
+            }
+
             // 공 소유 + A Key = 슬라이딩 태클
             if (action.getAction().equals("KEY_D"))
                 return;
@@ -574,6 +622,8 @@ public class GameService {
                 count++;
                 if (count == gameState.getLast_kicker())
                     continue;
+                if (gameState.getLast_passer() != -1 && gameState.getLast_passer() == count)
+                    continue;
                 if (Math.abs(player.getPlayer_x() - ball_x) < 0.3 && Math.abs(player.getPlayer_y() - ball_y) < 0.3) {
                     gameState.setPlayer2_possession(true);
                     gameState.setPlayer1_possession(false);
@@ -684,16 +734,29 @@ public class GameService {
         return gameState;
     }
 
+    public GameState UpdateGamePlayer3(GameState gameState, double detlaTime) {
+        if (gameState.getWho_has_ball() == 1) {
+            gameState.setPlayer1_possession_time(gameState.getPlayer1_possession_time() + detlaTime);
+        } else if (gameState.getWho_has_ball() == 2) {
+            gameState.setPlayer2_possession_time(gameState.getPlayer2_possession_time() + detlaTime);
+        }
+        return gameState;
+    }
+
     public GameState UpdateGamePlayer(GameState gameState, double deltaTime) {
+
         gameState = UpdateGamePlayer2(gameState, deltaTime);
+        gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
         gameState = offenderAlgorithm.update(gameState);
         return gameState;
     }
-    public GameState updateGameState(String gameId, GameState gameState, double deltaTime) {
+
+    public GameState updateGameState(String gameId, GameState gameState, double deltaTime, int time) {
         gameState.setTime(gameState.getTime() + deltaTime);
         if (gameState.getTime() > gameState.getMax_time()) {
             gameState.setGameStatus("ENDED");
+            gameResultService.saveByGameState(gameState);
             games.remove(gameId);
             return gameState;
         }
@@ -705,17 +768,22 @@ public class GameService {
         gameState = UpdateGameBall(gameState, deltaTime);
         gameState = UpdateGamePlayer(gameState, deltaTime);
 
+        if (gameState.getTick() == 1) {
+//            simulationRawDataService.test();
+        } else {
+            gameState.setTick(gameState.getTick() + 1);
+        }
+
         return gameState;
     }
-    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
+    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms) 1000ms
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();
         double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
         lastUpdateTime = currentTime;
-
         games.forEach((gameId, gameState) -> {
             // 게임 상태 업데이트 로직
-            gameState = updateGameState(gameId, gameState, deltaTime);
+            gameState = updateGameState(gameId, gameState, deltaTime, time);
             messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
         });
     }

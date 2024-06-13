@@ -109,28 +109,9 @@ public class PassAlgorithm {
         double dy = receiver_y - ball_y;
 
         // 공과 선수의 거리
-        double distance = Math.sqrt(dx * dx + dy * dy);
 
         // 원하는 패스 거리
         double passDistance = 1.5; // 패스의 길이를 정합니다 (원하는 대로 조정 가능)
-
-//        if (distance < 1.3) {
-//            double dist = 2 - Math.abs(dx) - Math.abs(dy);
-//
-//            if (dx < 0) dx = dx - dist/2;
-//            else dx = dx + dist/2;
-//
-//            if (dy < 0) dy = dy - dist/2;
-//            else dy = dy + dist/2;
-//
-//
-//            gameState.setBall_direction_x(dx * passDistance);
-//            gameState.setBall_direction_y(dy * passDistance);
-//        } else {
-//            // 방향 설정
-//            gameState.setBall_direction_x(dx * passDistance);
-//            gameState.setBall_direction_y(dy * passDistance);
-//        }
 
         // 방향 설정
         gameState.setBall_direction_x(dx * passDistance);
@@ -158,8 +139,6 @@ public class PassAlgorithm {
 
         }
         else if (player == 2) {
-            gameState.setPlayer2_control_player(receiver);
-
             gameState.getPlayer2_players().getPlayers().get(control_player).setPlayer_x(control_player_x);
             gameState.getPlayer2_players().getPlayers().get(control_player).setPlayer_y(control_player_y);
             gameState.getPlayer2_players().getPlayers().get(control_player).setPlayer_direction(control_player_direction);

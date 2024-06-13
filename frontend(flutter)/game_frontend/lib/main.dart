@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/backup/login_page.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -18,178 +19,96 @@ class FigmaToCodeApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ListView(children: [
-          SignupPage(),
+          LoginPage(),
         ]),
       ),
     );
   }
 }
 
-class SignupPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  bool isVerifyCodeSent = false;
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _EmailController = TextEditingController();
-  final TextEditingController _RealnameController = TextEditingController();
-  final TextEditingController _NicknameController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
-  final TextEditingController _ReconfirmpasswordController = TextEditingController();
-  final TextEditingController _VerifycodeController = TextEditingController();
 
-  Future<void> _handleVerifyCodeButton() async{
-    final dio = Dio();
-    
-    // get 예시
-    // try {
-    //   final response = await dio.get(
-    //     'http://localhost:8080/member/test',
-    //   );
-    //   print(response);
-    // } catch (e) {
-    //   print(e);
-    // }
-    
-    
-    // post 예시
-    // try{
-    //     final Response response = await dio.post(
-    //       'http://localhost:8080/user/signup/email/verify',
-    //       data: {
-    //         'email': _EmailController.text,
-    //       }
-    //     );
-    //     if (response.statusCode == 200) {
-    //       print(response);
-    //     } else {
-    //       print(response);
-    //     }
-    //   } catch (e) {
-    //     print(e);
-    //   }
-
-
-    // final email = _EmailController.text;
-    // final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$'); //email format check
-    // if (!isVerifyCodeSent && (!emailRegex.hasMatch(email) || email.isEmpty)) {
-    //   // 이메일 형식이 잘못되었거나 공란일 때
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('잘못된 이메일 형식입니다. 다시 시도해 주세요.')),
-    //   );
-    //   return;
-    // }
-
-    // final verifycode = _VerifycodeController.text;
-
-    // setState(() { //verifycode send logic
-    //   if (isVerifyCodeSent) {
-    //     // Verify code 확인 로직을 여기에 추가
-    //     print('Verify code 확인');
-    //     print('verifycode: $verifycode');
-    //   } else {
-    //     // Verify code 보내는 로직을 여기에 추가
-    //     print('Verify code 보냄');
-    //     print('email: $email');
-    //   }
-    //   isVerifyCodeSent = !isVerifyCodeSent;
-    // });
-
-  }
-
-  Future<void> _handleSginupButton() async { //sign up null exception, data send logic
+  Future<void> _handleLoginButton() async {
     final dio = Dio();
 
-    try{
-        final Response response = await dio.post(
-          'http://localhost:8080/user/signup',
+    try {
+      final Response response =
+        await dio.post(
+          'http://localhost:8080/login', 
           data: {
-            'email': _EmailController.text,
-            'realname': _RealnameController.text,
-            'nickname': _NicknameController.text,
+            'username': _EmailController.text,
             'password': _PasswordController.text,
-            // 'reconfirm_password': _ReconfirmpasswordController.text,
           }
-        );
-        if (response.statusCode == 200) {
-          print(response);
-        } else {
-          print(response);
-        }
-      } catch (e) {
-        print(e);
+      );
+      if (response.statusCode == 200) {
+        print(response);
+      } else {
+        print(response);
       }
-            
-
-
-    // final email = _EmailController.text;
-    // final realname = _RealnameController.text;
-    // final nickname = _NicknameController.text;
-    // final password = _PasswordController.text;
-    // final reconfirm_password = _ReconfirmpasswordController.text;
-    // final verifycode = _VerifycodeController.text;
-
-    // if (email.isEmpty || realname.isEmpty || nickname.isEmpty || password.isEmpty || reconfirm_password.isEmpty) {
-    //   print('모든 입력란을 채워주세요.');
-    //   return;
-    // } else {
-    //     print('email: $email');
-    //     print('realname: $realname');
-    //     print('nickname: $nickname');
-    //     print('password: $password');
-    //     print('reconfirmpassword: $reconfirm_password');
-    // }
-
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-
-    var realnameController = _RealnameController;
     return Column(
       children: [
         Container(
-          width: 1600,
+          width: screenSize.width,
           height: 960,
           clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(color: Colors.white),
-          child: Stack(
+          decoration: const BoxDecoration(color: Colors.white),
+          child: Column(
             children: [
-              Positioned(
-                left: 925,
-                top: 41,
-                child: SizedBox(
-                  width: 556,
-                  height: 870,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox( //sign up text
-                        width: 175,
-                        height: 93,
-                        child: Text(
-                          'sign up',
-                          style: TextStyle(
-                            color: Color(0xFF07021F),
-                            fontSize: 48,
-                            fontFamily: 'Literata',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                            letterSpacing: -0.96,
-                          ),
-                        ),
+              const SizedBox(
+                height: 60,
+              ),
+              const Text.rich(
+                // soccer game text
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Soccer Game',
+                      style: TextStyle(
+                        color: Color(0xFF07021F),
+                        fontSize: 48,
+                        fontFamily: 'Literata',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                        letterSpacing: -0.96,
                       ),
-                      const SizedBox(height: 16),
-                      Column(
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 80),
+              SizedBox(
+                //email, password input box
+                width: 522,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: 522,
+                      height: 228,
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox( //email
+                          SizedBox(
+                            //email
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -209,7 +128,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -242,113 +162,9 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
-                          SizedBox( //real name
-                            height: 91,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'real name',
-                                  style: TextStyle(
-                                    color: Color(0xFF7D7D7D),
-                                    fontSize: 24,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.black.withOpacity(0.1),
-                                    ),
-                                  ),
-                                  child: TextField(
-                                    controller: _RealnameController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'real name',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFC1C1C1),
-                                        fontSize: 20,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox( //nickname
-                            height: 91,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'nickname',
-                                  style: TextStyle(
-                                    color: Color(0xFF7D7D7D),
-                                    fontSize: 24,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.black.withOpacity(0.1),
-                                    ),
-                                  ),
-                                  child: TextField(
-                                    controller: _NicknameController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'nickname',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFC1C1C1),
-                                        fontSize: 20,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox( //password
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            //password
                             height: 91,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -368,7 +184,8 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(height: 6),
                                 Container(
                                   width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4),
@@ -396,118 +213,10 @@ class _SignupPageState extends State<SignupPage> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                     keyboardType: TextInputType.text,
-                                    obscureText: true, // 여기서 obscureText를 true로 설정합니다.
-                                    obscuringCharacter: '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox( //reconfirm password
-                            height: 91,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'reconfirm password',
-                                  style: TextStyle(
-                                    color: Color(0xFF7D7D7D),
-                                    fontSize: 24,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.black.withOpacity(0.1),
-                                    ),
-                                  ),
-                                  child: TextField(
-                                    controller: _ReconfirmpasswordController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'reconfirm password',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFC1C1C1),
-                                        fontSize: 20,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                    obscureText: true, 
-                                    obscuringCharacter: '●',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (isVerifyCodeSent) SizedBox( //verifty code
-                            height: 91,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'verify code',
-                                  style: TextStyle(
-                                    color: Color(0xFF7D7D7D),
-                                    fontSize: 24,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  width: 522,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.black.withOpacity(0.1),
-                                    ),
-                                  ),
-                                  child: TextField(
-                                    controller: _VerifycodeController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'verify code',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFC1C1C1),
-                                        fontSize: 20,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                    obscureText: true, // 여기서 obscureText를 true로 설정합니다.
-                                    obscuringCharacter: '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
+                                    obscureText:
+                                        true, // 여기서 obscureText를 true로 설정합니다.
+                                    obscuringCharacter:
+                                        '●', // 원하는 크기의 문자로 설정 (예: '●' 또는 '◼')
                                   ),
                                 ),
                               ],
@@ -515,171 +224,195 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      SizedBox( //back to login
-                        height: 24,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    // 여기서 로그인 페이지로 돌아가는 로직을 추가합니다.
-                                    Navigator.pushReplacementNamed(context, '/login');
-                                  },
-                                  child: const Text(
-                                    'Back to Log in',
-                                    style: TextStyle(
-                                      color: Color(0xFF6153BD),
-                                      fontSize: 20,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w500,
-                                      decoration: TextDecoration.underline,
-                                      height: 1.2, // 텍스트의 높이를 조정합니다.
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                    ),
+                    const Text(
+                      //find password text
+                      'Forgot password? ',
+                      style: TextStyle(
+                        color: Color(0xFF6153BD),
+                        fontSize: 20,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.underline,
+                        height: 0,
                       ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: 519,
-                        height: 144,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            InkWell( // verify code btn
-                              onTap: _handleVerifyCodeButton,
-                              child: Container(
-                                width: double.infinity,
-                                height: 60,
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(width: 1, color: Color(0x7F07021F)),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      isVerifyCodeSent ? 'Check Verify code' : 'Get Verify code',
-                                      style: const TextStyle(
-                                        color: Color(0xFF7D7D7D),
-                                        fontSize: 24,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0.04,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            InkWell( // signup btn
-                              onTap: _handleSginupButton,
-                              child: Container(
-                                width: double.infinity,
-                                height: 60,
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                decoration: ShapeDecoration(
-                                  color: Color(0xFF120071),
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(width: 1, color: Color(0x7F07021F)),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Sign up',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0.04,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // const SizedBox(height: 24),
-                            //   InkWell( // signup btn
-                            //     onTap: _handleSginupButton
-                            //     child: Container(
-                            //       width: double.infinity,
-                            //       height: 60,
-                            //       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                            //       decoration: ShapeDecoration(
-                            //         color: Color(0xFF120071),
-                            //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            //       ),
-                            //       child: const Row(
-                            //         mainAxisSize: MainAxisSize.min,
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         crossAxisAlignment: CrossAxisAlignment.center,
-                            //         children: [
-                            //           Text(
-                            //             'Sign up',
-                            //             style: TextStyle(
-                            //               color: Colors.white,
-                            //               fontSize: 24,
-                            //               fontFamily: 'Inter',
-                            //               fontWeight: FontWeight.w500,
-                            //               height: 0.04,
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                left: -201,
-                top: 144.59,
-                child: Transform(
-                  transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(-0.26),
-                  child: Container(
-                    width: 751.85,
-                    height: 1019.13,
-                    decoration: ShapeDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage("https://via.placeholder.com/752x1019"),
-                        fit: BoxFit.fill,
+              const SizedBox(height: 30),
+              Row(
+                //login btn
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: _handleLoginButton, // 로그인 동작을 처리하는 함수 호출
+                    child: Container(
+                      width: 522,
+                      height: 60,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF120071),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(60),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Log in',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                              height: 0.04,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                // ----------- or ----------- text
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 144,
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 2,
+                          strokeAlign: BorderSide.strokeAlignCenter,
+                          color: Color(0x7F7D7D7D),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'or',
+                          style: TextStyle(
+                            color: Color(0xFF7D7D7D),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 0.07,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  Container(
+                    width: 144,
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 2,
+                          strokeAlign: BorderSide.strokeAlignCenter,
+                          color: Color(0x7F7D7D7D),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                //social login btn
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 522,
+                    height: 60,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                            width: 1, color: Color(0x7F07021F)),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 23.45,
+                          height: 24,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(),
+                          child: const FlutterLogo(),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Sign in with google',
+                          style: TextStyle(
+                            color: Color(0xFF7D7D7D),
+                            fontSize: 24,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 0.04,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              const Row(
+                //sign up text
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Are you new?',
+                    style: TextStyle(
+                      color: Color(0xFF7D7D7D),
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                      height: 0.03,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    'Create an account',
+                    style: TextStyle(
+                      color: Color(0xFF6153BD),
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.underline,
+                      height: 0,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -688,3 +421,31 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+
+
+
+
+
+                  // Positioned(
+                  //   left: 1106.77,
+                  //   top: -39,
+                  //   child: Transform(
+                  //     transform: Matrix4.identity()
+                  //       ..translate(0.0, 0.0)
+                  //       ..rotateZ(0.26),
+                  //     child: Container(
+                  //       width: 751.85,
+                  //       height: 1019.13,
+                  //       decoration: ShapeDecoration(
+                  //         image: const DecorationImage(
+                  //           image: NetworkImage(
+                  //               "https://via.placeholder.com/752x1019"),
+                  //           fit: BoxFit.fill,
+                  //         ),
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(30),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
