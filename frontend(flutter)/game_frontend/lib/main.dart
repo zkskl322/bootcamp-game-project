@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/login_page.dart';
 
 void main() {
@@ -62,6 +63,15 @@ class _LoginPageState extends State<LoginPage> {
     final Size screenSize = MediaQuery.of(context).size;
     return Column(
       children: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LobbyPage()),
+            );
+          },
+          child: const Text('Go to Login Page'),
+        ),
         Container(
           width: screenSize.width,
           height: 960,
