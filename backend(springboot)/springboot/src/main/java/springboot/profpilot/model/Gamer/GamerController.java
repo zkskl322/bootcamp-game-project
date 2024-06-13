@@ -39,6 +39,8 @@ public class GamerController {
         GenerateRandomValue generateRandomValue = new GenerateRandomValue();
         String randomValue = generateRandomValue.getRandomPassword(10);
 
+
+        // (이메일, 데이터)
         EmailService.sendEmailVerifyCode(emailDTO.getEmail(), randomValue);
         return "Success";
     }
