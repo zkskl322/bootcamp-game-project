@@ -12,8 +12,10 @@ public class GameOverController {
 
     @PostMapping("/restart")
     public String restart() {
+        gameOverService.resetAndSaveGame();
         gameOverService.resetGame();
         return "GameRoom";
+
     }
 
     @GetMapping("/page/gameover")
