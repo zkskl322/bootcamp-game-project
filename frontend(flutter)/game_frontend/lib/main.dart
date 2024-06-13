@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _EmailController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
 
+
   Future<void> _handleLoginButton() async {
     final dio = Dio();
 
@@ -56,6 +57,40 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print(e);
     }
+  }
+  @override
+  void initState() {
+    super.initState();
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
+    print("hello");
   }
 
   @override

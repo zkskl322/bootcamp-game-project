@@ -9,7 +9,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "-d", "chrome", "--web-port", "19999", 
+                "-d", "chrome", "--web-port", "19992", 
                 // "--web-hostname", "192.168.3.4"
             ]
         },

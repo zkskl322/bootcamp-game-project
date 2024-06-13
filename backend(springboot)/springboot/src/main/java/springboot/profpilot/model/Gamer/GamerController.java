@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
+import springboot.profpilot.global.Utils.GenerateRandomValue;
+import springboot.profpilot.model.DTO.auth.VerifyEmail;
+import springboot.profpilot.model.emailverfiy.EmailService;
 
 import java.util.List;
 
@@ -28,6 +31,16 @@ public class GamerController {
         private String realname;
         @NotEmpty(message = "비밀번호를 입력하십시오")
         private String password;
+    }
+
+
+    @PostMapping("/email/test")
+    public String emailTest(@RequestBody VerifyEmail emailDTO) {
+        GenerateRandomValue generateRandomValue = new GenerateRandomValue();
+        String randomValue = generateRandomValue.getRandomPassword(10);
+
+        EmailService.sendEmailVerifyCode(emailDTO.getEmail(), randomValue);
+        return "Success";
     }
 
     @GetMapping("/login")
