@@ -3,6 +3,7 @@ package springboot.profpilot.model.DTO.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.member.Member;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class SignInDTO implements UserDetails {
-    private final Member member;
+    private final Gamer gamer;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -18,38 +19,38 @@ public class SignInDTO implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return member.getRole();
+                return gamer.getRole();
             }
         });
         return collection;
     }
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return gamer.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return gamer.getNickname();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return member.getAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return member.getAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return member.getCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return member.getEnabled();
+        return true;
     }
 }
