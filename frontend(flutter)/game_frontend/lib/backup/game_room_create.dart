@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/backup/game_lobby.dart';
+import 'package:game_frontend/backup/main_signed.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
+import 'package:game_frontend/main.dart';
 
 // void main() {
 //   runApp(const CreateRoomStart());
@@ -30,7 +33,7 @@ class CreateRoom extends StatefulWidget {
   _CreateRoomState createState() => _CreateRoomState();
 }
 
-class _CreateRoomState extends State<CreateRoom>{
+class _CreateRoomState extends State<CreateRoom> {
   final Dio dio = Dio();
   List<GameRoomsDTO> _gamerooms = [];
 
@@ -45,7 +48,7 @@ class _CreateRoomState extends State<CreateRoom>{
     // fetchGameRooms();
   }
 
-  // Future<void> fetchGameRooms() async { 
+  // Future<void> fetchGameRooms() async {
   //   try {
   //     final Response response = await dio.get('http://localhost:8080/page/main');
   //     if (response.statusCode == 200) {
@@ -112,7 +115,8 @@ class _CreateRoomState extends State<CreateRoom>{
           decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
           child: Stack(
             children: [
-              Positioned( //top btn section
+              Positioned(
+                //top btn section
                 left: 50,
                 top: 20,
                 child: SizedBox(
@@ -169,46 +173,56 @@ class _CreateRoomState extends State<CreateRoom>{
                       Positioned(
                         left: 0,
                         top: 0,
-                        child: Container(
-                          width: 190,
-                          height: 60,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 190,
-                                  height: 60,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF758CFF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MainSignedPage()));
+                            print('Home 버튼이 눌렸습니다.');
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            width: 190,
+                            height: 60,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  left: 0,
+                                  top: 0,
+                                  child: Container(
+                                    width: 190,
+                                    height: 60,
+                                    decoration: ShapeDecoration(
+                                      color: Color(0xFF758CFF),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const Positioned(
-                                left: 22,
-                                top: 18,
-                                child: SizedBox(
-                                  width: 146,
-                                  height: 23,
-                                  child: Text(
-                                    'HOME',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
+                                const Positioned(
+                                  left: 22,
+                                  top: 18,
+                                  child: SizedBox(
+                                    width: 146,
+                                    height: 23,
+                                    child: Text(
+                                      'HOME',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                        fontFamily: 'Press Start 2P',
+                                        fontWeight: FontWeight.w400,
+                                        height: 0.07,
+                                        letterSpacing: 0.96,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -216,7 +230,8 @@ class _CreateRoomState extends State<CreateRoom>{
                   ),
                 ),
               ),
-              Positioned( //middle setting section
+              Positioned(
+                //middle setting section
                 left: 50,
                 top: 94,
                 child: Container(
@@ -254,7 +269,8 @@ class _CreateRoomState extends State<CreateRoom>{
                           ),
                           child: Stack(
                             children: [
-                              const Positioned( //gamerooom text
+                              const Positioned(
+                                //gamerooom text
                                 left: 516,
                                 top: 20,
                                 child: Text(
@@ -269,7 +285,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   ),
                                 ),
                               ),
-                              Positioned( //roomname setting
+                              Positioned(
+                                //roomname setting
                                 left: 85,
                                 top: 142,
                                 child: Container(
@@ -278,7 +295,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   clipBehavior: Clip.antiAlias,
                                   decoration: ShapeDecoration(
                                     color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
                                   child: Column(
                                     children: [
@@ -296,10 +314,12 @@ class _CreateRoomState extends State<CreateRoom>{
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
                                         child: TextField(
                                           controller: roomNameController,
-                                          style: const TextStyle(color: Colors.black),
+                                          style: const TextStyle(
+                                              color: Colors.black),
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             labelText: 'Enter Room Name',
@@ -310,7 +330,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   ),
                                 ),
                               ),
-                              Positioned( //roompassword setting
+                              Positioned(
+                                //roompassword setting
                                 left: 735,
                                 top: 142,
                                 child: Container(
@@ -319,7 +340,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   clipBehavior: Clip.antiAlias,
                                   decoration: ShapeDecoration(
                                     color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
                                   child: Column(
                                     children: [
@@ -337,10 +359,12 @@ class _CreateRoomState extends State<CreateRoom>{
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
                                         child: TextField(
                                           controller: roomPasswordController,
-                                          style: const TextStyle(color: Colors.black),
+                                          style: const TextStyle(
+                                              color: Colors.black),
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             labelText: 'Enter Room Password',
@@ -351,7 +375,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   ),
                                 ),
                               ),
-                              Positioned( //roomsize setting
+                              Positioned(
+                                //roomsize setting
                                 left: 85,
                                 top: 397,
                                 child: Container(
@@ -360,7 +385,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   clipBehavior: Clip.antiAlias,
                                   decoration: ShapeDecoration(
                                     color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
                                   child: Column(
                                     children: [
@@ -378,10 +404,12 @@ class _CreateRoomState extends State<CreateRoom>{
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
                                         child: TextField(
                                           controller: roomSizeController,
-                                          style: const TextStyle(color: Colors.black),
+                                          style: const TextStyle(
+                                              color: Colors.black),
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             labelText: 'Enter Room Size',
@@ -393,7 +421,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   ),
                                 ),
                               ),
-                              Positioned( //targetgoal setting
+                              Positioned(
+                                //targetgoal setting
                                 left: 735,
                                 top: 397,
                                 child: Container(
@@ -402,7 +431,8 @@ class _CreateRoomState extends State<CreateRoom>{
                                   clipBehavior: Clip.antiAlias,
                                   decoration: ShapeDecoration(
                                     color: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
                                   child: Column(
                                     children: [
@@ -420,10 +450,12 @@ class _CreateRoomState extends State<CreateRoom>{
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
                                         child: TextField(
                                           controller: targetGoalController,
-                                          style: const TextStyle(color: Colors.black),
+                                          style: const TextStyle(
+                                              color: Colors.black),
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             labelText: 'Enter Target Goal',
@@ -443,7 +475,8 @@ class _CreateRoomState extends State<CreateRoom>{
                   ),
                 ),
               ),
-              Positioned( //bottom btn section
+              Positioned(
+                //bottom btn section
                 left: 50,
                 top: 862,
                 child: SizedBox(
@@ -451,53 +484,65 @@ class _CreateRoomState extends State<CreateRoom>{
                   height: 70,
                   child: Stack(
                     children: [
-                      Positioned( //back home btn
+                      Positioned(
+                        // back home btn
                         left: 0,
                         top: 0,
-                        child: SizedBox(
-                          width: 220,
-                          height: 70,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 220,
-                                  height: 70,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFC8C5C2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GameLobby()));
+                            print('Back 버튼이 눌렸습니다.');
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            width: 220,
+                            height: 70,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  left: 0,
+                                  top: 0,
+                                  child: Container(
+                                    width: 220,
+                                    height: 70,
+                                    decoration: ShapeDecoration(
+                                      color: Color(0xFFC8C5C2),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const Positioned(
-                                left: 60,
-                                top: 17,
-                                child: SizedBox(
-                                  width: 100,
-                                  height: 36,
-                                  child: Text(
-                                    'BACK',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 24,
-                                      fontFamily: 'Press Start 2P',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                      letterSpacing: 0.96,
+                                const Positioned(
+                                  left: 60,
+                                  top: 17,
+                                  child: SizedBox(
+                                    width: 100,
+                                    height: 36,
+                                    child: Text(
+                                      'BACK',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                        fontFamily: 'Press Start 2P',
+                                        fontWeight: FontWeight.w400,
+                                        height: 0.07,
+                                        letterSpacing: 0.96,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Positioned( //create room btn
+                      Positioned(
+                        //create room btn
                         left: 1175,
                         top: 0,
                         child: SizedBox(

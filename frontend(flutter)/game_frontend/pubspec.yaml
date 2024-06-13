@@ -13,7 +13,12 @@ dependencies:
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   extended_image: ^8.2.1
-
+  firebase_core: ^3.1.0
+  firebase_auth: ^5.1.0
+  google_sign_in: ^6.2.1
+  cloud_firestore: ^5.0.1
+  kakao_flutter_sdk: ^1.9.2
+ 
 
 dev_dependencies:
   flutter_test:
@@ -22,8 +27,7 @@ dev_dependencies:
   web_socket_channel: ^2.1.0
   stomp_dart_client: ^2.0.0
   uuid: ^4.4.0
-  dio: ^5.4.3+1
-
+  
 
 flutter:
   uses-material-design: true
