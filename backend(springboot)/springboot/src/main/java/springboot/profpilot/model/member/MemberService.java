@@ -49,19 +49,19 @@ public class MemberService {
     public void save(Member member) {
         memberRepository.save(member);
     }
-    public String verifyEmail(String email) {
-        GenerateRandomValue generateRandomValue = new GenerateRandomValue();
-        String code = generateRandomValue.getRandomPassword(10);
-
-        EmailVerify emailVerfiy = new EmailVerify();
-        emailVerfiy.setEmail(email);
-        emailVerfiy.setCode(code);
-        emailVerfiy.setTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        emailVerfiy.setVerified(false);
-        emailVerifyService.save(emailVerfiy);
-
-        return EmailService.sendEmailVerifyCode(email, code);
-     }
+//    public String verifyEmail(String email) {
+//        GenerateRandomValue generateRandomValue = new GenerateRandomValue();
+//        String code = generateRandomValue.getRandomPassword(10);
+//
+//        EmailVerify emailVerfiy = new EmailVerify();
+//        emailVerfiy.setEmail(email);
+//        emailVerfiy.setCode(code);
+//        emailVerfiy.setTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        emailVerfiy.setVerified(false);
+//        emailVerifyService.save(emailVerfiy);
+//
+//        return EmailService.sendEmailVerifyCode(email, code);
+//     }
     public String checkEmailVerifyCode(String email, String code) {
         EmailVerify emailVerfiy = emailVerifyService.findByEmail(email);
         if (emailVerfiy == null) {

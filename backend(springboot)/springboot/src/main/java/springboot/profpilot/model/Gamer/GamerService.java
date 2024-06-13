@@ -3,6 +3,9 @@ package springboot.profpilot.model.Gamer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import springboot.profpilot.model.emailverfiy.EmailService;
+import springboot.profpilot.model.emailverfiy.EmailVerify;
+import springboot.profpilot.model.emailverfiy.EmailVerifyRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GamerService {
     private final GamerRepository gamerRepository;
+    private final EmailVerifyRepository emailVerifyRepository;
     private final PasswordEncoder passwordEncoder;
 
     public Gamer save(String email, String nickname, String realname, String password) {
@@ -34,6 +38,18 @@ public class GamerService {
 
     public Gamer findByNickname(String nickname) {
         return gamerRepository.findByNickname(nickname);
+    }
+
+    public void sendVerificationCode(String email) {
+        String code = EmailService.sendEmailVerifyCode(email);
+        if (code != null) {
+            EmailVerify emailVerify = new EmailVerify();
+            emailVerify.setEmail(email);
+            emailVerify.setCode(code);
+            emailVerify.setVerified(false);
+            emailVerify.setCreateTime(LocalDateTime.now());
+            emailVerifyRepository.save(emailVerify);
+        }
     }
 //    public List<GamerDTO> getGamerData() {
 //        List<Gamer> gamers = gamerRepository.findAll();
