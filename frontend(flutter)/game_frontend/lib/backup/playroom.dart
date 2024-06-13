@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 
 void main() {
@@ -16,23 +18,23 @@ class FigmaToCodeApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      home: Scaffold(
-        body: ListView(children: [
-          GamePage(),
-        ]),
+      home: const Scaffold(
+        body: GameRoom(),
       ),
     );
   }
 }
 
-class GamePage extends StatefulWidget {
+class GameRoom extends StatefulWidget {
+  const GameRoom({super.key});
+
   @override
-  _GamePageState createState() => _GamePageState();
+  _GameRoomState createState() => _GameRoomState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GameRoomState extends State<GameRoom> {
   final Dio dio = Dio();
-  List<GameroomDTO> _gamerooms = [];
+  List<GameRoomsDTO> _gamerooms = [];
 
   @override
   void initState() {
@@ -42,11 +44,29 @@ class _GamePageState extends State<GamePage> {
 
   Future<void> fetchGameRooms() async {
     try {
-      final Response response = await dio.get('http://localhost:8080/page/main');
+      final Response response =
+          await dio.get('http://localhost:8080/page/main');
       if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
+        Map<String, dynamic> data = response.data;
+        // print(data);
+        // {gameRooms: [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]}
+        List<dynamic> gameRooms = data['gameRooms'];
+        // print(gameRooms);
+        // [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]
+        // List<GameroomDTO> gamerooms = gameRooms.map((gameRoom) => GameroomDTO.fromJson(gameRoom)).toList();
+        List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
+          return GameRoomsDTO(
+            roomPassword: roomData['room_password'],
+            roomName: roomData['room_name'],
+            roomSize: roomData['room_size'],
+            roomGoal: roomData['room_goal'],
+          );
+        }).toList();
+
+        print("gameRooms_instance: $gameRooms_instance");
+
         setState(() {
-          _gamerooms = data.map((json) => GameroomDTO.fromJson(json)).toList();
+          _gamerooms = gameRooms_instance;
         });
       } else {
         setState(() {
@@ -71,7 +91,26 @@ class _GamePageState extends State<GamePage> {
           decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
           child: Stack(
             children: [
-              Positioned( //top btn
+              ElevatedButton(
+                onPressed: () {
+                  fetchGameRooms();
+                },
+                child: const Text('Fetch Game Rooms'),
+              ),
+              Positioned(
+                  left: 10,
+                  top: 20,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateRoomStart()));
+                    },
+                    child: const Text('Join Game'),
+                  )),
+              Positioned(
+                //top btn
                 left: 50,
                 top: 20,
                 child: SizedBox(
@@ -79,7 +118,8 @@ class _GamePageState extends State<GamePage> {
                   height: 60,
                   child: Stack(
                     children: [
-                      Positioned( //home btn
+                      Positioned(
+                        //home btn
                         left: 0,
                         top: 0,
                         child: SizedBox(
@@ -125,7 +165,8 @@ class _GamePageState extends State<GamePage> {
                           ),
                         ),
                       ),
-                      Positioned( //logout btn
+                      Positioned(
+                        //logout btn
                         left: 1310,
                         top: 0,
                         child: SizedBox(
@@ -175,7 +216,8 @@ class _GamePageState extends State<GamePage> {
                   ),
                 ),
               ),
-              Positioned( //middle layout
+              Positioned(
+                //middle layout
                 left: 52,
                 top: 94,
                 child: SizedBox(
@@ -183,7 +225,8 @@ class _GamePageState extends State<GamePage> {
                   height: 748,
                   child: Stack(
                     children: [
-                      Positioned( //user profile
+                      Positioned(
+                        //user profile
                         left: 0,
                         top: 0,
                         child: Container(
@@ -221,7 +264,8 @@ class _GamePageState extends State<GamePage> {
                                   ),
                                   child: Stack(
                                     children: [
-                                      Positioned( //user image
+                                      Positioned(
+                                        //user image
                                         left: 0,
                                         top: 0,
                                         child: Container(
@@ -229,11 +273,14 @@ class _GamePageState extends State<GamePage> {
                                           height: 356,
                                           decoration: ShapeDecoration(
                                             color: Color(0xFFD9D9D9),
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
                                           ),
                                         ),
                                       ),
-                                      Positioned( //user data
+                                      Positioned(
+                                        //user data
                                         left: -8,
                                         top: 393,
                                         child: Container(
@@ -241,7 +288,8 @@ class _GamePageState extends State<GamePage> {
                                           height: 248,
                                           child: Stack(
                                             children: [
-                                              const Positioned( //user name
+                                              const Positioned(
+                                                //user name
                                                 left: 8,
                                                 top: 0,
                                                 child: SizedBox(
@@ -257,14 +305,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'MARIO',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -277,14 +331,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'USERNAME',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -293,7 +353,8 @@ class _GamePageState extends State<GamePage> {
                                                   ),
                                                 ),
                                               ),
-                                              const Positioned( //user win
+                                              const Positioned(
+                                                //user win
                                                 left: 0,
                                                 top: 102,
                                                 child: SizedBox(
@@ -309,14 +370,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'WIN',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -329,14 +396,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             '0',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -345,7 +418,8 @@ class _GamePageState extends State<GamePage> {
                                                   ),
                                                 ),
                                               ),
-                                              const Positioned( //user lose
+                                              const Positioned(
+                                                //user lose
                                                 left: 120,
                                                 top: 102,
                                                 child: SizedBox(
@@ -361,14 +435,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             '0',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -381,14 +461,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'LOSE',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -397,7 +483,8 @@ class _GamePageState extends State<GamePage> {
                                                   ),
                                                 ),
                                               ),
-                                              Positioned( //user draw
+                                              Positioned(
+                                                //user draw
                                                 left: 242,
                                                 top: 102,
                                                 child: Container(
@@ -413,14 +500,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             '0',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -433,14 +526,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'DRAW',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -449,7 +548,8 @@ class _GamePageState extends State<GamePage> {
                                                   ),
                                                 ),
                                               ),
-                                              Positioned( //user winrate
+                                              Positioned(
+                                                //user winrate
                                                 left: 8,
                                                 top: 196,
                                                 child: Container(
@@ -465,14 +565,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             '0 %',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: -2.40,
+                                                              letterSpacing:
+                                                                  -2.40,
                                                             ),
                                                           ),
                                                         ),
@@ -485,14 +591,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'WIN RATE',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -501,7 +613,8 @@ class _GamePageState extends State<GamePage> {
                                                   ),
                                                 ),
                                               ),
-                                              const Positioned( //user tier
+                                              const Positioned(
+                                                //user tier
                                                 left: 238,
                                                 top: 196,
                                                 child: SizedBox(
@@ -517,14 +630,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'TIER',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -537,14 +656,20 @@ class _GamePageState extends State<GamePage> {
                                                           height: 20,
                                                           child: Text(
                                                             'RANK',
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               height: 0.07,
-                                                              letterSpacing: 0.96,
+                                                              letterSpacing:
+                                                                  0.96,
                                                             ),
                                                           ),
                                                         ),
@@ -565,7 +690,8 @@ class _GamePageState extends State<GamePage> {
                           ),
                         ),
                       ),
-                      Positioned( //group room
+                      Positioned(
+                        //group room
                         left: 452,
                         top: 0,
                         child: Container(
@@ -588,7 +714,8 @@ class _GamePageState extends State<GamePage> {
                           ),
                           child: Stack(
                             children: [
-                              Positioned( //room
+                              Positioned(
+                                //room
                                 left: 34,
                                 top: 34,
                                 child: Container(
@@ -603,7 +730,8 @@ class _GamePageState extends State<GamePage> {
                                   ),
                                   child: Stack(
                                     children: [
-                                      const Positioned( //room text
+                                      const Positioned(
+                                        //room text
                                         left: 40,
                                         top: 7,
                                         child: SizedBox(
@@ -611,7 +739,8 @@ class _GamePageState extends State<GamePage> {
                                           height: 33,
                                           child: Stack(
                                             children: [
-                                              Positioned( // room id
+                                              Positioned(
+                                                // room id
                                                 left: 0,
                                                 top: 1,
                                                 child: SizedBox(
@@ -622,15 +751,18 @@ class _GamePageState extends State<GamePage> {
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 24,
-                                                      fontFamily: 'Press Start 2P',
-                                                      fontWeight: FontWeight.w400,
+                                                      fontFamily:
+                                                          'Press Start 2P',
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       height: 0,
                                                       letterSpacing: -0.60,
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                              Positioned( //room name
+                                              Positioned(
+                                                //room name
                                                 left: 119.62,
                                                 top: 1,
                                                 child: SizedBox(
@@ -642,15 +774,18 @@ class _GamePageState extends State<GamePage> {
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 24,
-                                                      fontFamily: 'Press Start 2P',
-                                                      fontWeight: FontWeight.w400,
+                                                      fontFamily:
+                                                          'Press Start 2P',
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       height: 0,
                                                       letterSpacing: -0.60,
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                              Positioned( // room owner
+                                              Positioned(
+                                                // room owner
                                                 left: 575.11,
                                                 top: 0,
                                                 child: SizedBox(
@@ -661,8 +796,10 @@ class _GamePageState extends State<GamePage> {
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 24,
-                                                      fontFamily: 'Press Start 2P',
-                                                      fontWeight: FontWeight.w400,
+                                                      fontFamily:
+                                                          'Press Start 2P',
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       height: 0,
                                                       letterSpacing: -0.60,
                                                     ),
@@ -673,125 +810,175 @@ class _GamePageState extends State<GamePage> {
                                           ),
                                         ),
                                       ),
-                                      Positioned( //room
-                                        left: 11,
-                                        top: 64,
-                                        child: Container(
-                                          width: 959,
-                                          height: 73,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: ShapeDecoration(
-                                            color: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(16),
-                                            ),
-                                          ),
-                                          child: Stack(
-                                            children: [
-                                              const Positioned( //room data
-                                                left: 28,
-                                                top: 24,
-                                                child: SizedBox(
-                                                  width: 774.77,
-                                                  height: 32,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 582.61,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 192.16,
-                                                          height: 32,
-                                                          child: Text(
-                                                            'name',
-                                                            style: TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0,
-                                                              letterSpacing: -0.60,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 116.52,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 454.85,
-                                                          height: 32,
-                                                          child: Text(
-                                                            'Room name',
-                                                            style: TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0,
-                                                              letterSpacing: -0.60,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: SizedBox(
-                                                          width: 87.75,
-                                                          height: 32,
-                                                          child: Text(
-                                                            'No.',
-                                                            style: TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 24,
-                                                              fontFamily: 'Press Start 2P',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 0,
-                                                              letterSpacing: -0.60,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                      SingleChildScrollView(
+                                        //room box
+                                        child: Column(
+                                          children: _gamerooms.map((gameroom) {
+                                            return Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical:
+                                                          10), // 각 방 사이에 간격 추가
+                                              width: 959,
+                                              height: 73,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: ShapeDecoration(
+                                                color: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
                                                 ),
                                               ),
-                                              Positioned( //room join btn
-                                                left: 829.10,
-                                                top: 7,
-                                                child: Container(
-                                                  width: 122.95,
-                                                  height: 59,
-                                                  padding: const EdgeInsets.symmetric(horizontal: 42.48, vertical: 28.32),
-                                                  decoration: ShapeDecoration(
-                                                    color: Color(0xFF393434),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(16),
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                    //room data
+                                                    left: 28,
+                                                    top: 24,
+                                                    child: SizedBox(
+                                                      width: 774.77,
+                                                      height: 32,
+                                                      child: Stack(
+                                                        children: [
+                                                          Positioned(
+                                                            //roomid
+                                                            left: 0,
+                                                            top: 0,
+                                                            child: SizedBox(
+                                                              width: 87.75,
+                                                              height: 32,
+                                                              child: Text(
+                                                                'No. ${_gamerooms.indexOf(gameroom) + 1}',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 24,
+                                                                  fontFamily:
+                                                                      'Press Start 2P',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  height: 0,
+                                                                  letterSpacing:
+                                                                      -0.60,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            //roomname
+                                                            left: 116.52,
+                                                            top: 0,
+                                                            child: SizedBox(
+                                                              width: 454.85,
+                                                              height: 32,
+                                                              child: Text(
+                                                                gameroom
+                                                                    .roomName,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 24,
+                                                                  fontFamily:
+                                                                      'Press Start 2P',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  height: 0,
+                                                                  letterSpacing:
+                                                                      -0.60,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            //username
+                                                            left: 582.61,
+                                                            top: 0,
+                                                            child: SizedBox(
+                                                              width: 192.16,
+                                                              height: 32,
+                                                              child: Text(
+                                                                "room size: ${gameroom.roomSize}",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 24,
+                                                                  fontFamily:
+                                                                      'Press Start 2P',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  height: 0,
+                                                                  letterSpacing:
+                                                                      -0.60,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                  child: const Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Text(
-                                                        'JOIN',
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 24,
-                                                          fontFamily: 'Press Start 2P',
-                                                          fontWeight: FontWeight.w400,
-                                                          height: 0.07,
-                                                          letterSpacing: -0.60,
+                                                  Positioned(
+                                                    //room join btn
+                                                    left: 829.10,
+                                                    top: 7,
+                                                    child: Container(
+                                                      width: 122.95,
+                                                      height: 59,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 42.48,
+                                                          vertical: 28.32),
+                                                      decoration:
+                                                          ShapeDecoration(
+                                                        color: const Color(
+                                                            0xFF393434),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(16),
                                                         ),
                                                       ),
-                                                    ],
+                                                      child: const Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            'JOIN',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 24,
+                                                              fontFamily:
+                                                                  'Press Start 2P',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              height: 0.07,
+                                                              letterSpacing:
+                                                                  -0.60,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            );
+                                          }).toList(),
                                         ),
                                       ),
                                     ],
@@ -806,7 +993,8 @@ class _GamePageState extends State<GamePage> {
                   ),
                 ),
               ),
-              Positioned( //bottom btn
+              Positioned(
+                //bottom btn
                 left: 50,
                 top: 862,
                 child: SizedBox(
@@ -814,7 +1002,8 @@ class _GamePageState extends State<GamePage> {
                   height: 70,
                   child: Stack(
                     children: [
-                      Positioned( //setting btn
+                      Positioned(
+                        //setting btn
                         left: 0,
                         top: 0,
                         child: SizedBox(
@@ -859,7 +1048,8 @@ class _GamePageState extends State<GamePage> {
                           ),
                         ),
                       ),
-                      Positioned( //create room btn
+                      Positioned(
+                        //create room btn
                         left: 1175,
                         top: 0,
                         child: SizedBox(
@@ -907,7 +1097,7 @@ class _GamePageState extends State<GamePage> {
                     ],
                   ),
                 ),
-              ),    
+              ),
             ],
           ),
         ),
