@@ -1,4 +1,4 @@
-package springboot.profpilot.model.Game.AI.Offender;
+package springboot.profpilot.model.Game.Team1.Offender;
 
 import springboot.profpilot.model.Game.GameState;
 
@@ -9,7 +9,6 @@ class OffenderGameConditions {
     public OffenderGameConditions(GameState gameState) {
         this.gameState = gameState;
     }
-
     public boolean isTeamWithBall(int team) {
         return gameState.getWho_has_ball() == team;
     }
@@ -34,7 +33,7 @@ class OffenderGameConditions {
         double player0_x = gameState.getPlayer1_players().getPlayers().get(0).getPlayer_x();
         double player0_y = gameState.getPlayer1_players().getPlayers().get(0).getPlayer_y();
 
-        if ((player0_x > middle_x - 0.3 && player0_x < middle_x + 0.3) && (player0_y > middle_y - 0.3 && player0_y < middle_y + 0.3)) {
+        if ((player0_x > middle_x - 1 && player0_x < middle_x + 1) && (player0_y > middle_y - 1 && player0_y < middle_y + 1)) {
             return true;
         }
         return false;
@@ -65,14 +64,12 @@ class OffenderGameConditions {
 
             // 점과 직선 사이의 거리 구하기
             double distance = Math.abs(a * player_x - player_y + b) / Math.sqrt(a * a + 1);
-            if (distance < 0.2) {
+            if (distance < 0.3) {
                 return flag == 0;
             }
         }
         return flag == 1;
     }
-
-
     public boolean isOffeder0InBetweenDefenderButCenterNotOkay() {
         double op_player2_x, op_player2_y, op_player3_x, op_player3_y;
         op_player2_x = gameState.getPlayer2_players().getPlayers().get(2).getPlayer_x();
@@ -108,7 +105,14 @@ class OffenderGameConditions {
         }
         return true;
     }
+    // Offender0 --------------------------------------------------- //
 
+
+    // Offender1 --------------------------------------------------- //
+
+
+
+    // Offender1 --------------------------------------------------- //
 
 
 

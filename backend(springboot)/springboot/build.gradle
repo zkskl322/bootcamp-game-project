@@ -11,6 +11,10 @@ java {
 	sourceCompatibility = '21'
 }
 
+//bootJar {
+//	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
