@@ -56,7 +56,9 @@ public class SecurityConfig {
 
                         .requestMatchers( "/game/room/create", "/game/room/delete", "/chatting/**", "/game/**", "/page/main", "/page/gameroom",
                                 "/user/login", "/user/email/test", "/user/signup", "/user/signup/email/verify", "/user/signup/email/verify/check",
-                                "/user/email/verify", "/user/email/verify/check", "/member/**", "/sendToken/**").permitAll()
+                                "/user/email/verify", "/user/email/verify/check", "/user/find-id/email/verify", "/user/find-id/email/verify/check",
+                                "/user/find-id/email/verify/check/Id", "/user/reset-password/email/verify/check/reset", "/user/reset-password/email/verify",
+                                "/user/reset-password/email/verify/check", "/sendToken/**").permitAll()
 
                         .requestMatchers( "/hello").hasAnyRole("GAMER", "ADMIN")
 

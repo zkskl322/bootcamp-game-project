@@ -67,9 +67,28 @@ public class GamerService {
         }
     }
 
+    public String findNicknameByEmail(String email) {
+        Gamer gamer = gamerRepository.findByEmail(email);
+        if (gamer != null) {
+            return gamer.getNickname();
+        }
+        return null;
+    }
+
+    public boolean resetPassword(String email, String newPassword) {
+        Gamer gamer = gamerRepository.findByEmail(email);
+        if (gamer != null) {
+            gamer.setPassword(passwordEncoder.encode(newPassword));
+            gamerRepository.save(gamer);
+            return true;
+        }
+        return false;
+    }
+
     public Gamer findByNickname(String nickname) {
         return gamerRepository.findByNickname(nickname);
     }
+
 //    public List<GamerDTO> getGamerData() {
 //        List<Gamer> gamers = gamerRepository.findAll();
 //        return gamers.stream()
@@ -80,4 +99,5 @@ public class GamerService {
 //                        gamer.getEmail()
 //                )).collect(Collectors.toList());
 //    }
+
 }
