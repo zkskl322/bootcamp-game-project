@@ -11,6 +11,7 @@ import springboot.profpilot.model.DTO.auth.VerifyEmail;
 import springboot.profpilot.model.DTO.member.MemberProfileDTO;
 import springboot.profpilot.model.DTO.member.MemberProfileEditDTO;
 import springboot.profpilot.model.DTO.member.MemberProfileUpdateDTO;
+import springboot.profpilot.model.Gamer.SignUpDTO;
 import springboot.profpilot.model.emailverfiy.EmailVerify;
 import springboot.profpilot.model.emailverfiy.EmailVerifyService;
 

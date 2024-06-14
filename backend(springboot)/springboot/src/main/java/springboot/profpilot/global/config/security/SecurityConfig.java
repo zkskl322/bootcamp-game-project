@@ -55,7 +55,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
 
                         .requestMatchers( "/game/room/create", "/game/room/delete", "/chatting/**", "/game/**", "/page/main", "/page/gameroom",
-                                "/user/login", "/user/email/test", "/user/signup", "/sendToken/**").permitAll()
+                                "/user/login", "/user/email/test", "/user/signup", "/user/signup/email/verify", "/user/signup/email/verify/check",
+                                "/user/email/verify", "/user/email/verify/check", "/member/**", "/sendToken/**").permitAll()
 
                         .requestMatchers( "/hello").hasAnyRole("GAMER", "ADMIN")
 

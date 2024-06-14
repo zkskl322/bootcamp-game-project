@@ -32,4 +32,5 @@ public class Gamer {
     private Boolean accountNonLocked = true;
     private Boolean credentialsNonExpired = true;
     private Boolean enabled = true;
+
 }
