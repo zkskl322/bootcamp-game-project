@@ -30,6 +30,10 @@ public class Gamer {
 
     private LocalDateTime createDate;
 
+    private Long winScore;
+    private Long loseScore;
+    private Long drawScore;
+
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
     private Boolean credentialsNonExpired = true;

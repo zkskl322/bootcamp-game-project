@@ -743,6 +743,7 @@ public class GameService {
         return gameState;
     }
 
+
     public GameState UpdateGamePlayer(GameState gameState, double deltaTime) {
 
         gameState = UpdateGamePlayer2(gameState, deltaTime);
@@ -776,6 +777,7 @@ public class GameService {
 
         return gameState;
     }
+
     @Scheduled(fixedRate = 16) // 약 60 FPS (16ms) 1000ms
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();

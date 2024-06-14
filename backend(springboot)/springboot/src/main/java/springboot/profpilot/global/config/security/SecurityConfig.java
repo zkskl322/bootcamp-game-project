@@ -74,7 +74,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
 //                        .loginPage("/gamer/social/signup")
                         .defaultSuccessUrl("/loginSuccess")
-//                        .failureUrl()
+//                        .failureUrl("/loginFailure)
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;

@@ -2,6 +2,9 @@ package springboot.profpilot.model.MainPage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import springboot.profpilot.model.Gamer.Gamer;
+import springboot.profpilot.model.Gamer.GamerDTO;
+import springboot.profpilot.model.Gamer.GamerRepository;
 import springboot.profpilot.model.Gameroom.GameRoom;
 import springboot.profpilot.model.Gameroom.GameRoomDTO;
 import springboot.profpilot.model.Gameroom.GameRoomRepository;
@@ -13,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MainPageService {
     private final GameRoomRepository gameRoomRepository;
-
+    private final GamerRepository gamerRepository;
     public MainPageDTO getMainPageData() {
         List<GameRoom> gameRooms = gameRoomRepository.findAll();
         List<GameRoomDTO> gameRoomDTOS = gameRooms.stream()

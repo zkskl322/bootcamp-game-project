@@ -26,7 +26,6 @@ public class OffenderAlgorithm {
                 ))
         ));
 
-        // team2 공격수 행동트리
 
 
         Offender_behaviorTree.run();
