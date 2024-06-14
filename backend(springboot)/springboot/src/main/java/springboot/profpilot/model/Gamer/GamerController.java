@@ -6,15 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -34,20 +26,6 @@ public class GamerController {
         @NotEmpty(message = "비밀번호를 입력하십시오")
         private String password;
     }
-//    @GetMapping("/gamer/social/signup")
-//    public ResponseEntity<String> signupGoogleUser(@AuthenticationPrincipal OAuth2User principal) {
-//        String email = principal.getAttribute("email");
-//        String username = principal.getAttribute("name");
-//
-//        Optional<Gamer> existingUser = gamerService.findByEmail(email);
-//        if(existingUser.isPresent()) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
-//        }
-//
-//        Gamer gamer = gamerService.registerNewSocialUser(username, email);
-//
-//        return ResponseEntity.ok("User registered successfully: " + gamer.getNickname());
-//    }
 
     @GetMapping("/login")
     public String login() {

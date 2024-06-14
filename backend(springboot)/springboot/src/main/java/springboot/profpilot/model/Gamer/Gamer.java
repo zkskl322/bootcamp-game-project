@@ -26,7 +26,6 @@ public class Gamer {
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true)
     private String loginId;
 
     private LocalDateTime createDate;

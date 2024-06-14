@@ -8,8 +8,6 @@ public interface GamerRepository extends JpaRepository<Gamer, Long> {
     Gamer findByRealname(String realname);
     Gamer findByEmail(String email);
     Gamer findByNickname(String nickname);
-    Optional<Gamer> findByLoginId(String loginId);
 
-    Optional<Gamer> findByUsername(String username);
-//    Optional<Gamer> findByEmail(String email);
+    Optional<Gamer> findByLoginId(String loginId);
 }

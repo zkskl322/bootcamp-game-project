@@ -19,8 +19,7 @@ spring:
             client:
                 registration:
                     google:
-                        client-id: client-id
-                        client-secret:  client-secret
+
     thymeleaf:
         cache: false
         check-template-location: false

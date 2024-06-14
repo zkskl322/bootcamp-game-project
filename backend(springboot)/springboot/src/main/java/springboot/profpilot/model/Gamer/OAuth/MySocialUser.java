@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MySocialUser {
     private String sub;
+    private String email;
     private String pass;
     private String name;
-    private String email;
 }
