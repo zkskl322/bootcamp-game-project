@@ -19,6 +19,9 @@ public class EmailService {
 
 
     public static String sendEmailVerifyCode(String email, String code) {
+        try {
+            System.out.println("Sending email to: " + email);
+
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", 587);
@@ -34,7 +37,6 @@ public class EmailService {
         };
 
         Session session = Session.getInstance(properties, auth);
-        try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(emailAdd, "발신자이름"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));

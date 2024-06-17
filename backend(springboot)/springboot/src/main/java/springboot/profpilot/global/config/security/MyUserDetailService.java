@@ -26,14 +26,7 @@ public class MyUserDetailService implements UserDetailsService {
         }
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        Member member = memberService.findByEmail(email);
-//        if (member == null) throw new UsernameNotFoundException("User not found");
-//        else {
-//            return new SignInDTO(member);
-//        }
-//    }
+
 
 
 
