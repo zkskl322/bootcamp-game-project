@@ -9,10 +9,12 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   // options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  // KakaoSdk.init(nativeAppKey: '8afe56d45b7b2c0a4d1be6f2bcba8514');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  KakaoSdk.init(
+      javaScriptAppKey: '038930029f4c94d4bf024f6553f1ba23',
+      nativeAppKey: '8afe56d45b7b2c0a4d1be6f2bcba8514');
   runApp(const MyApp());
 }
 
