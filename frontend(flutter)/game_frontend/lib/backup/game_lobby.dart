@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
@@ -51,12 +52,7 @@ class _GameRoomState extends State<GameRoom> {
           await dio.get('http://localhost:8080/page/main');
       if (response.statusCode == 200) {
         Map<String, dynamic> data = response.data;
-        // print(data);
-        // {gameRooms: [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]}
         List<dynamic> gameRooms = data['gameRooms'];
-        // print(gameRooms);
-        // [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, room_name: a, room_size: 1, room_goal: 1}, {room_password: $2a$10$GFF6qjha1YZdZMPVddaDUeegLCQaO3KqL2Yh46mWkcdnGEQ94upLa, room_name: b, room_size: 1, room_goal: 12}]
-        // List<GameroomDTO> gamerooms = gameRooms.map((gameRoom) => GameroomDTO.fromJson(gameRoom)).toList();
         List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
           return GameRoomsDTO(
             roomPassword: roomData['room_password'],
@@ -65,9 +61,6 @@ class _GameRoomState extends State<GameRoom> {
             roomGoal: roomData['room_goal'],
           );
         }).toList();
-
-        print("gameRooms_instance: $gameRooms_instance");
-
         setState(() {
           _gamerooms = gameRooms_instance;
         });
@@ -99,6 +92,15 @@ class _GameRoomState extends State<GameRoom> {
                   fetchGameRooms();
                 },
                 child: const Text('Fetch Game Rooms'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LobbyPage()));
+                },
+                child: const Text('Create Room'),
               ),
               Positioned(
                 //top btn
