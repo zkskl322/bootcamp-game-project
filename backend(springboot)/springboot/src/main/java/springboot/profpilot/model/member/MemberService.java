@@ -49,6 +49,7 @@ public class MemberService {
     public void save(Member member) {
         memberRepository.save(member);
     }
+
     public String verifyEmail(String email) {
         GenerateRandomValue generateRandomValue = new GenerateRandomValue();
         String code = generateRandomValue.getRandomPassword(10);
@@ -62,6 +63,8 @@ public class MemberService {
 
         return EmailService.sendEmailVerifyCode(email, code);
      }
+
+
     public String checkEmailVerifyCode(String email, String code) {
         EmailVerify emailVerfiy = emailVerifyService.findByEmail(email);
         if (emailVerfiy == null) {

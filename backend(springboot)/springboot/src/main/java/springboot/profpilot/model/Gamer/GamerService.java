@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import springboot.profpilot.model.Gamer.OAuth.MySocialUser;
+import springboot.profpilot.global.Utils.GenerateRandomValue;
+import springboot.profpilot.model.emailverfiy.EmailService;
+import springboot.profpilot.model.emailverfiy.EmailVerify;
+import springboot.profpilot.model.emailverfiy.EmailVerifyService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GamerService {
     private final GamerRepository gamerRepository;
+    private final EmailVerifyService emailVerifyService;
     private final PasswordEncoder passwordEncoder;
 
     public Gamer save(String email, String nickname, String realname, String password) {
@@ -37,13 +42,56 @@ public class GamerService {
         return false;
     }
 
-//    public Optional<Gamer> findByEmail(String email) {
-//        return gamerRepository.findByEmail(email);
-//    }
+    public String verifyEmail(String email) {
+        GenerateRandomValue generateRandomValue = new GenerateRandomValue();
+        String code = generateRandomValue.getRandomPassword(10);
+
+        EmailVerify emailVerfiy = new EmailVerify();
+        emailVerfiy.setEmail(email);
+        emailVerfiy.setCode(code);
+        emailVerfiy.setTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        emailVerfiy.setVerified(false);
+        emailVerifyService.save(emailVerfiy);
+
+        return EmailService.sendEmailVerifyCode(email, code);
+    }
+
+    public String checkEmailVerifyCode(String email, String code) {
+        EmailVerify emailVerfiy = emailVerifyService.findByEmail(email);
+        if (emailVerfiy == null) {
+            return "notfound";
+        }
+        if (emailVerfiy.getCode().equals(code)) {
+            emailVerfiy.setVerified(true);
+            emailVerifyService.save(emailVerfiy);
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    public String findNicknameByEmail(String email) {
+        Gamer gamer = gamerRepository.findByEmail(email);
+        if (gamer != null) {
+            return gamer.getNickname();
+        }
+        return null;
+    }
+
+    public boolean resetPassword(String email, String newPassword) {
+        Gamer gamer = gamerRepository.findByEmail(email);
+        if (gamer != null) {
+            gamer.setPassword(passwordEncoder.encode(newPassword));
+            gamerRepository.save(gamer);
+            return true;
+        }
+        return false;
+    }
 
     public Gamer findByNickname(String nickname) {
         return gamerRepository.findByNickname(nickname);
     }
+
 //    public List<GamerDTO> getGamerData() {
 //        List<Gamer> gamers = gamerRepository.findAll();
 //        return gamers.stream()
@@ -54,4 +102,5 @@ public class GamerService {
 //                        gamer.getEmail()
 //                )).collect(Collectors.toList());
 //    }
+
 }
