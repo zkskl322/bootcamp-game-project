@@ -127,6 +127,12 @@ class _GamePageState extends State<GameRoomPage> {
         onKeyEvent: (e) async {
           if (e is KeyUpEvent) {
             switch (e.logicalKey) {
+              case LogicalKeyboardKey.keyW:
+                _textController.text = 'KEY_W';
+                sendMessage();
+                _textController.clear();
+                break;
+
               case LogicalKeyboardKey.keyD:
                 _textController.text = 'KEY_D';
                 sendMessage();

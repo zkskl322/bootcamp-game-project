@@ -13,22 +13,22 @@ public class GoalkeeperAiService {
         GamePlayer goalkeeper_2 = gameState.getPlayer2_players().getPlayers().get(4);
         if (ball_y > goalkeeper_1.getPlayer_y() + 0.1) {
             if (goalkeeper_1.getPlayer_y() < 4) {
-                goalkeeper_1.setPlayer_y(goalkeeper_1.getPlayer_y() + 0.01);
+                goalkeeper_1.setPlayer_y(goalkeeper_1.getPlayer_y() + 0.005);
             }
         }
         else if (ball_y < goalkeeper_1.getPlayer_y() - 0.1) {
             if (goalkeeper_1.getPlayer_y() > 3) {
-                goalkeeper_1.setPlayer_y(goalkeeper_1.getPlayer_y() - 0.01);
+                goalkeeper_1.setPlayer_y(goalkeeper_1.getPlayer_y() - 0.005);
             }
         }
         if (ball_y > goalkeeper_2.getPlayer_y() + 0.1) {
             if (goalkeeper_2.getPlayer_y() < 4) {
-                goalkeeper_2.setPlayer_y(goalkeeper_2.getPlayer_y() + 0.01);
+                goalkeeper_2.setPlayer_y(goalkeeper_2.getPlayer_y() + 0.005);
             }
         }
         else if (ball_y < goalkeeper_2.getPlayer_y() - 0.1) {
             if (goalkeeper_2.getPlayer_y() > 3) {
-                goalkeeper_2.setPlayer_y(goalkeeper_2.getPlayer_y() - 0.01);
+                goalkeeper_2.setPlayer_y(goalkeeper_2.getPlayer_y() - 0.005);
             }
         }
 

@@ -5,20 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import springboot.profpilot.model.DTO.auth.SignUpDTO;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
-import springboot.profpilot.model.Game.AI.Offender.OffenderAlgorithm;
-import springboot.profpilot.model.Game.onPossession.PassAlgorithm;
+import springboot.profpilot.model.Game.Team1.Offender.OffenderAlgorithm;
+import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.*;
 
 
 //----------------------------
@@ -34,11 +30,11 @@ public class GameService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     private long lastUpdateTime = System.currentTimeMillis();
+    private int time = 0;
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final OffenderAlgorithm offenderAlgorithm;
-
 
 
     public GameState startGame(String gameId) {
@@ -48,16 +44,25 @@ public class GameService {
 
         // 게임 초기화 ------------------------ //
         gameState.setGameId(gameId);
+        gameState.setGameName("soccer");
         gameState.setGameStatus("STARTED");
+        gameState.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        gameState.setTick(0);
+
         gameState.setScore1(0);
         gameState.setScore2(0);
         gameState.setWho_has_ball(0);
-
+        gameState.setPlayer1_possession_time(0);
+        gameState.setPlayer2_possession_time(0);
+        gameState.setPlayer1_shoot_count(0);
+        gameState.setPlayer2_shoot_count(0);
+        gameState.setPlayer1_available_shoot_count(3);
+        gameState.setPlayer2_available_shoot_count(3);
 
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(120);
+        gameState.setMax_time(120); // 100분
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);
@@ -442,6 +447,38 @@ public class GameService {
 
         // 5. 플레이어가 공을 가지고 있지 않을 때
         else {
+
+            if (action.getAction().equals("KEY_W")) {
+                System.out.println("KEY_W");
+            }
+
+            // 공 미소유 + S key = 선수 변경
+            if (action.getAction().equals("KEY_S")) {
+                int next_control_player1 = (gameState.getPlayer1_control_player() + 1) % 4;
+                int next_control_player2 = (gameState.getPlayer2_control_player() + 1) % 4;
+                if (player == 1) {
+                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_x(gameState.getPlayer1_x());
+                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_y(gameState.getPlayer1_y());
+                    gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_direction(gameState.getPlayer1_direction());
+
+                    gameState.setPlayer1_control_player(next_control_player1);
+                    gameState.setPlayer1_x(gameState.getPlayer1_players().getPlayers().get(next_control_player1).getPlayer_x());
+                    gameState.setPlayer1_y(gameState.getPlayer1_players().getPlayers().get(next_control_player1).getPlayer_y());
+                    gameState.setPlayer1_direction(gameState.getPlayer1_players().getPlayers().get(next_control_player1).getPlayer_direction());
+
+                } else {
+                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_x(gameState.getPlayer2_x());
+                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_y(gameState.getPlayer2_y());
+                    gameState.getPlayer2_players().getPlayers().get(gameState.getPlayer2_control_player()).setPlayer_direction(gameState.getPlayer2_direction());
+
+                    gameState.setPlayer2_control_player(next_control_player2);
+                    gameState.setPlayer2_x(gameState.getPlayer2_players().getPlayers().get(next_control_player2).getPlayer_x());
+                    gameState.setPlayer2_y(gameState.getPlayer2_players().getPlayers().get(next_control_player2).getPlayer_y());
+                    gameState.setPlayer2_direction(gameState.getPlayer2_players().getPlayers().get(next_control_player2).getPlayer_direction());
+                }
+                return;
+            }
+
             // 공 소유 + A Key = 슬라이딩 태클
             if (action.getAction().equals("KEY_D"))
                 return;
@@ -519,7 +556,6 @@ public class GameService {
         }
 
     }
-
     public GameState UpdateGameBall(GameState gameState, double deltaTime) {
         double direction_x = gameState.getBall_direction_x();
         double direction_y = gameState.getBall_direction_y();
@@ -576,6 +612,8 @@ public class GameService {
             for (GamePlayer player : player2_players.getPlayers()) {
                 count++;
                 if (count == gameState.getLast_kicker())
+                    continue;
+                if (gameState.getLast_passer() != -1 && gameState.getLast_passer() == count)
                     continue;
                 if (Math.abs(player.getPlayer_x() - ball_x) < 0.3 && Math.abs(player.getPlayer_y() - ball_y) < 0.3) {
                     gameState.setPlayer2_possession(true);
@@ -666,7 +704,6 @@ public class GameService {
         gameState.setBall_y(ball_y);
         return gameState;
     }
-
     public GameState UpdateGamePlayer2(GameState gameState, double deltaTime) {
         List<GamePlayer> players_1 = gameState.getPlayer1_players().getPlayers();
         List<GamePlayer> players_2 = gameState.getPlayer2_players().getPlayers();
@@ -686,14 +723,24 @@ public class GameService {
         } // player2
         return gameState;
     }
-
+    public GameState UpdateGamePlayer3(GameState gameState, double detlaTime) {
+        if (gameState.getWho_has_ball() == 1) {
+            gameState.setPlayer1_possession_time(gameState.getPlayer1_possession_time() + detlaTime);
+        } else if (gameState.getWho_has_ball() == 2) {
+            gameState.setPlayer2_possession_time(gameState.getPlayer2_possession_time() + detlaTime);
+        }
+        return gameState;
+    }
     public GameState UpdateGamePlayer(GameState gameState, double deltaTime) {
+
         gameState = UpdateGamePlayer2(gameState, deltaTime);
+        gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
         gameState = offenderAlgorithm.update(gameState);
         return gameState;
     }
-    public GameState updateGameState(String gameId, GameState gameState, double deltaTime) {
+    public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {
+
         gameState.setTime(gameState.getTime() + deltaTime);
         if (gameState.getTime() > gameState.getMax_time()) {
             gameState.setGameStatus("ENDED");
@@ -710,6 +757,9 @@ public class GameService {
 
         return gameState;
     }
+
+
+
     @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();
@@ -717,9 +767,74 @@ public class GameService {
         lastUpdateTime = currentTime;
 
         games.forEach((gameId, gameState) -> {
-            // 게임 상태 업데이트 로직
-            gameState = updateGameState(gameId, gameState, deltaTime);
-            messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
+            GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+            messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
         });
+
     }
+
+
+
+
+
+
+
+
+
+
+//    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms) 1초에 60번 -> 100초에 6000번
+//    public void updateGameStates() {
+//        long currentTime = System.currentTimeMillis();
+//        double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
+//        lastUpdateTime = currentTime;
+//
+//        // 게임 상태 업데이트
+//
+//        games.forEach((gameId, gameState) -> {
+//
+//            // 게임 아이디를 numThreads로 나눈 나머지 값으로 스레드를 선택
+//            int threadIndex = gameToThreadMap.computeIfAbsent(gameId, id -> gameExecutors.size() % numThreads);
+//            // 게임 아이디를 키로 하는 ExecutorService를 가져오거나 생성
+//            ExecutorService gameExecutor = gameExecutors.computeIfAbsent(gameId, id -> createExecutorForThread(threadIndex));
+//
+//            // 게임 상태 업데이트를 별도의 스레드로 처리 (게임 아이디를 numThreads로 나눈 나머지 값으로 스레드를 선택 후 해당 스레드에서 처리)
+//            gameExecutor.submit(() -> {
+//                System.out.println("Thread: " + Thread.currentThread().getName() + " is updating gameId: " + gameId);
+//                // 게임 상태 업데이트 로직
+//                GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+//                messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
+//                time++;
+//            });
+//        });
+//
+//        if (time == 3000) { // 3000번 업데이트 후
+//            System.out.println("time: " + time);
+//            time = 0;
+//        }
+//    }
+
+//    private ExecutorService createExecutorForThread(int threadIndex) {
+//        return Executors.newSingleThreadExecutor(new ThreadFactory() {
+//            @Override
+//            public Thread newThread(Runnable r) {
+//                // 게임 스레드 이름 설정
+//                return new Thread(r, "GameThread-" + threadIndex);
+//            }
+//        });
+//    }
+
+//    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
+//    public void updateGameStates() {
+//        long currentTime = System.currentTimeMillis();
+//        double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
+//        lastUpdateTime = currentTime;
+//
+//        games.forEach((gameId, gameState) -> {
+//            executorService.submit(() -> {
+//                // 게임 상태 업데이트 로직
+//                GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+//                messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
+//            });
+//        });
+//    }
 }

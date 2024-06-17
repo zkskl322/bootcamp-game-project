@@ -686,11 +686,11 @@ class _SignupPageState extends State<SignupPage> {
                     width: 751.85,
                     height: 1019.13,
                     decoration: ShapeDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                            "https://via.placeholder.com/752x1019"),
-                        fit: BoxFit.fill,
-                      ),
+                      // image: DecorationImage(
+                      //   image: NetworkImage(
+                      //       "https://via.placeholder.com/752x1019"),
+                      //   fit: BoxFit.fill,
+                      // ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(60),
                       ),

@@ -13,12 +13,15 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class EmailService {
     private static String type = "text/html; charset=utf-8";
-    private static String emailAdd = "프로젝트 이메일 입력";
-    private static String companyEmail = "회사 이메일 입력";
-    private static  String password = "비밀번호 입력";
+    private static String emailAdd = "jsilvercastle@gmail.com";
+    private static String companyEmail = "profpilotofficial@gmail.com";
+    private static  String password = "rpgf ezyq gnkg zvlb";
 
 
     public static String sendEmailVerifyCode(String email, String code) {
+        try {
+            System.out.println("Sending email to: " + email);
+
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", 587);
@@ -34,7 +37,6 @@ public class EmailService {
         };
 
         Session session = Session.getInstance(properties, auth);
-        try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(emailAdd, "발신자이름"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));

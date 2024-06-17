@@ -1,5 +1,6 @@
 package springboot.profpilot.global.config.token;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import springboot.profpilot.global.Utils.JwtUtil;
+import springboot.profpilot.model.Gamer.LoginDTO;
 import springboot.profpilot.model.refresh.RefreshEntity;
 import springboot.profpilot.model.refresh.RefreshRepository;
 
@@ -35,9 +37,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
+        ObjectMapper mapper = new ObjectMapper();
+        LoginDTO loginDTO = null;
+
+        try {
+            loginDTO = mapper.readValue(request.getInputStream(), LoginDTO.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to parse login request body");
+        }
+
         //클라이언트 요청에서 username, password 추출
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
+        String username = loginDTO.getUsername();
+        String password = loginDTO.getPassword();
 
         //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);

@@ -22,7 +22,8 @@ public class GameRoomController {
         gameRoomService.save(gameRoom);
         return "create GameRoom";
     }
-    @GetMapping("/game/room/delete")
+    @GetMapping("/game/room/delete/{id}")
+    @ResponseBody
     public String deleteRoom(@PathVariable("id") Long id) {
         gameRoomService.delete(id);
         return "delete GameRoom";

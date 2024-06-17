@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import springboot.profpilot.global.Utils.MakeJsonResponse;
 import springboot.profpilot.model.DTO.auth.CheckEmail;
 import springboot.profpilot.model.DTO.auth.PasswordDTO;
-import springboot.profpilot.model.DTO.auth.SignUpDTO;
 import springboot.profpilot.model.DTO.auth.VerifyEmail;
 import springboot.profpilot.model.DTO.member.MemberProfileDTO;
 import springboot.profpilot.model.DTO.member.MemberProfileEditDTO;
 import springboot.profpilot.model.DTO.member.MemberProfileUpdateDTO;
+import springboot.profpilot.model.Gamer.SignUpDTO;
 import springboot.profpilot.model.emailverfiy.EmailVerify;
 import springboot.profpilot.model.emailverfiy.EmailVerifyService;
 
@@ -34,21 +34,21 @@ public class MemberController {
         return "test";
     }
 
-    @PostMapping("/signup")
-    public @ResponseBody String signup(@RequestBody SignUpDTO member) {
-        if (member.getEmail() == null || member.getPassword() == null || member.getName() == null || member.getStudentId() == null) {
-            return "lack";
-        }
-        if (memberService.findByEmail(member.getEmail()) != null) {
-            return "already";
-        }
-        EmailVerify emailVerfiy = emailVerifyService.findByEmail(member.getEmail());
-        if (emailVerfiy == null || !emailVerfiy.isVerified()) {
-            return "not-Verified";
-        }
-        memberService.save(member.getEmail(), member.getPassword(), member.getName(), member.getStudentId());
-        return "success";
-    }
+//    @PostMapping("/signup")
+//    public @ResponseBody String signup(@RequestBody SignUpDTO member) {
+//        if (member.getEmail() == null || member.getPassword() == null || member.getName() == null || member.getStudentId() == null) {
+//            return "lack";
+//        }
+//        if (memberService.findByEmail(member.getEmail()) != null) {
+//            return "already";
+//        }
+//        EmailVerify emailVerfiy = emailVerifyService.findByEmail(member.getEmail());
+//        if (emailVerfiy == null || !emailVerfiy.isVerified()) {
+//            return "not-Verified";
+//        }
+//        memberService.save(member.getEmail(), member.getPassword(), member.getName(), member.getStudentId());
+//        return "success";
+//    }
 
     @PostMapping("/signup/email/verify")
     public @ResponseBody String verifyEmail(@RequestBody String json_email) {

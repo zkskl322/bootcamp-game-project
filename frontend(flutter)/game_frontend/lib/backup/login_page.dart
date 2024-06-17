@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import "package:firebase_auth/firebase_auth.dart";
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
 import 'package:game_frontend/backup/signup_page.dart';
-import 'package:game_frontend/firebase_options.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+// import "package:firebase_auth/firebase_auth.dart";
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:game_frontend/firebase_options.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
 
 // void main() async {
@@ -48,16 +48,16 @@ class Login extends StatefulWidget {
 class _LoginPageState extends State<Login> {
   final TextEditingController _EmailController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> _handleLoginButton() async {
     final dio = Dio();
 
     try {
       final Response response =
-          await dio.post('http://localhost:8080/gamer/login', data: {
-        'email': _EmailController.text,
+          await dio.post('http://localhost:8080/login', data: {
+        'username': _EmailController.text,
         'password': _PasswordController.text,
       });
       if (response.statusCode == 200) {
@@ -70,67 +70,67 @@ class _LoginPageState extends State<Login> {
     }
   }
 
-  Future<void> _handleSocialLoginButton_G() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  // Future<void> _handleSocialLoginButton_G() async {
+  //   try {
+  //     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      if (googleUser == null) {
-        // 사용자가 로그인을 취소한 경우 처리
-        print('cancle google login');
-        return;
-      }
+  //     if (googleUser == null) {
+  //       // 사용자가 로그인을 취소한 경우 처리
+  //       print('cancle google login');
+  //       return;
+  //     }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser.authentication;
 
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+  //     final OAuthCredential credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
 
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+  //     final UserCredential userCredential =
+  //         await _auth.signInWithCredential(credential);
 
-      // 로그인 성공 시 처리
-      print('user google login success: ${userCredential.user!.displayName}');
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Game_Lobby()));
+  //     // 로그인 성공 시 처리
+  //     print('user google login success: ${userCredential.user!.displayName}');
+  //     Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => Game_Lobby()));
 
-      // 여기서 다음 화면으로 이동하는 코드를 추가할 수 있습니다.
-      // Navigator.push(context, MaterialPageRoute(builder: (context) => NextScreen()));
-    } catch (error) {
-      // 구글 로그인 오류 처리
-      print('google login error: $error');
-      // 예를 들어 사용자에게 오류 메시지를 표시할 수 있습니다.
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('구글 로그인 오류: $error')));
-    }
-  }
+  //     // 여기서 다음 화면으로 이동하는 코드를 추가할 수 있습니다.
+  //     // Navigator.push(context, MaterialPageRoute(builder: (context) => NextScreen()));
+  //   } catch (error) {
+  //     // 구글 로그인 오류 처리
+  //     print('google login error: $error');
+  //     // 예를 들어 사용자에게 오류 메시지를 표시할 수 있습니다.
+  //     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('구글 로그인 오류: $error')));
+  //   }
+  // }
 
-  Future<void> _handleSocialLoginButton_K() async {
-    try {
-      bool isInstalled = await isKakaoTalkInstalled();
+  // Future<void> _handleSocialLoginButton_K() async {
+  //   try {
+  //     bool isInstalled = await isKakaoTalkInstalled();
 
-      OAuthToken token = isInstalled
-          ? await UserApi.instance.loginWithKakaoTalk()
-          : await UserApi.instance.loginWithKakaoAccount();
+  //     OAuthToken token = isInstalled
+  //         ? await UserApi.instance.loginWithKakaoTalk()
+  //         : await UserApi.instance.loginWithKakaoAccount();
 
-      print(token);
+  //     print(token);
 
-      final url = Uri.https('kapi.kakao.com', '/v2/user/me');
+  //     final url = Uri.https('kapi.kakao.com', '/v2/user/me');
 
-      final response = await http.get(
-        url,
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ${token.accessToken}'
-        },
-      );
+  //     final response = await http.get(
+  //       url,
+  //       headers: {
+  //         HttpHeaders.authorizationHeader: 'Bearer ${token.accessToken}'
+  //       },
+  //     );
 
-      final profileInfo = json.decode(response.body);
-      print(profileInfo.toString());
-    } catch (error) {
-      print('카카오톡으로 로그인 실패 $error');
-    }
-  }
+  //     final profileInfo = json.decode(response.body);
+  //     print(profileInfo.toString());
+  //   } catch (error) {
+  //     print('카카오톡으로 로그인 실패 $error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +202,7 @@ class _LoginPageState extends State<Login> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Email',
+                                  'Nickname',
                                   style: TextStyle(
                                     color: Color(0xFF7D7D7D),
                                     fontSize: 24,
@@ -227,7 +227,7 @@ class _LoginPageState extends State<Login> {
                                   child: TextField(
                                     controller: _EmailController,
                                     decoration: const InputDecoration(
-                                      hintText: 'example@exam.com',
+                                      hintText: 'Nickname',
                                       hintStyle: TextStyle(
                                         color: Color(0xFFC1C1C1),
                                         fontSize: 20,
@@ -428,7 +428,7 @@ class _LoginPageState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: _handleSocialLoginButton_G,
+                    // onTap: _handleSocialLoginButton_G,
                     child: Container(
                       width: 522, // 버튼 너비 조정
                       height: 60, // 버튼 높이 조정
@@ -477,7 +477,7 @@ class _LoginPageState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: _handleSocialLoginButton_K,
+                    // onTap: _handleSocialLoginButton_K,
                     child: Container(
                       width: 522, // 버튼 너비 조정
                       height: 60, // 버튼 높이 조정

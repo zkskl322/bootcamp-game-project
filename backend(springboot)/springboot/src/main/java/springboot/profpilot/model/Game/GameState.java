@@ -19,10 +19,23 @@ import java.time.format.DateTimeFormatter;
 public class GameState {
     // 게임 정보
     private String  gameId;
+    private String  gameName;
     private String  gameStatus;
+    private String  gameDatetime;
+    private String  player1Name;
+    private String  player2Name;
+    private int     tick;
+
+
     private int     score1;
     private int     score2;
     private int     who_has_ball; // 0: no one, 1: player1, 2: player2
+    private double  player1_possession_time;
+    private double  player2_possession_time;
+    private int     player1_shoot_count;
+    private int     player2_shoot_count;
+    private int     player1_available_shoot_count;
+    private int     player2_available_shoot_count;
 
     private String  startTime;
     private double  time;
