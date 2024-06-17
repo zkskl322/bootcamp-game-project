@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Team1.Offender.OffenderAlgorithm;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
-import springboot.profpilot.model.logSystem.GameResultService;
-import springboot.profpilot.model.logSystem.SimulationRawDataService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -37,8 +35,6 @@ public class GameService {
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final OffenderAlgorithm offenderAlgorithm;
-    private final GameResultService gameResultService;
-    private final SimulationRawDataService simulationRawDataService;
 
 
     public GameState startGame(String gameId) {
@@ -454,7 +450,6 @@ public class GameService {
 
             if (action.getAction().equals("KEY_W")) {
                 System.out.println("KEY_W");
-                simulationRawDataService.saveByGameState(gameState);
             }
 
             // 공 미소유 + S key = 선수 변경
@@ -749,7 +744,6 @@ public class GameService {
         gameState.setTime(gameState.getTime() + deltaTime);
         if (gameState.getTime() > gameState.getMax_time()) {
             gameState.setGameStatus("ENDED");
-            gameResultService.saveByGameState(gameState);
             games.remove(gameId);
             return gameState;
         }
