@@ -24,26 +24,10 @@ public class GamerController {
     private final GamerService gamerService;
     private final EmailVerifyService emailVerifyService;
 
-    @Getter
-    @Setter
-    class GamerForm {
-        @NotEmpty(message = "이메일을 입력하십시오.")
-        @Email(message = "이메일 형식에 맞지 않습니다.")
-        private String email;
-        @NotEmpty(message = "닉네임을 입력하십시오")
-        private String nickname;
-        @NotEmpty(message = "이름을 입력하십시오")
-        private String realname;
-        @NotEmpty(message = "비밀번호를 입력하십시오")
-        private String password;
-    }
-
-
     @PostMapping("/email/test")
     public String emailTest(@RequestBody VerifyEmail emailDTO) {
         GenerateRandomValue generateRandomValue = new GenerateRandomValue();
         String randomValue = generateRandomValue.getRandomPassword(10);
-
 
         // (이메일, 데이터)
         EmailService.sendEmailVerifyCode(emailDTO.getEmail(), randomValue);
