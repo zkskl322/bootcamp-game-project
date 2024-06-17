@@ -158,11 +158,11 @@ class MainPageUnsign extends StatelessWidget {
                     width: 751.85,
                     height: 1019.13,
                     decoration: ShapeDecoration(
-                      image: const DecorationImage(
-                        image: NetworkImage(
-                            "https://via.placeholder.com/752x1019"),
-                        fit: BoxFit.fill,
-                      ),
+                      // image: const DecorationImage(
+                      //   image: NetworkImage(
+                      //       "https://via.placeholder.com/752x1019"),
+                      //   fit: BoxFit.fill,
+                      // ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
