@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:dio/dio.dart';
-// import 'package:game_frontend/dto/mainpage-dto.dart';
+// import 'package:game_frontend/dto/gameroom-dto.dart';
 
 // void main() {
 //   runApp(const FigmaToCodeApp());
@@ -30,9 +30,9 @@
 //   _CreateRoomState createState() => _CreateRoomState();
 // }
 
-// class _CreateRoomState extends State<CreateRoom>{
+// class _CreateRoomState extends State<CreateRoom> {
 //   final Dio dio = Dio();
-//   List<GameroomDTO> _gamerooms = [];
+//   List<GameroomsDTO> _gamerooms = [];
 
 //   final TextEditingController roomNameController = TextEditingController();
 //   final TextEditingController roomPasswordController = TextEditingController();
@@ -45,7 +45,7 @@
 //     // fetchGameRooms();
 //   }
 
-//   // Future<void> fetchGameRooms() async { 
+//   // Future<void> fetchGameRooms() async {
 //   //   try {
 //   //     final Response response = await dio.get('http://localhost:8080/page/main');
 //   //     if (response.statusCode == 200) {
@@ -112,7 +112,8 @@
 //           decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
 //           child: Stack(
 //             children: [
-//               Positioned( //top btn section
+//               Positioned(
+//                 //top btn section
 //                 left: 50,
 //                 top: 20,
 //                 child: SizedBox(
@@ -216,7 +217,8 @@
 //                   ),
 //                 ),
 //               ),
-//               Positioned( //middle setting section
+//               Positioned(
+//                 //middle setting section
 //                 left: 50,
 //                 top: 94,
 //                 child: Container(
@@ -254,7 +256,8 @@
 //                           ),
 //                           child: Stack(
 //                             children: [
-//                               const Positioned( //gamerooom text
+//                               const Positioned(
+//                                 //gamerooom text
 //                                 left: 516,
 //                                 top: 20,
 //                                 child: Text(
@@ -269,7 +272,8 @@
 //                                   ),
 //                                 ),
 //                               ),
-//                               Positioned( //roomname setting
+//                               Positioned(
+//                                 //roomname setting
 //                                 left: 85,
 //                                 top: 142,
 //                                 child: Container(
@@ -278,7 +282,8 @@
 //                                   clipBehavior: Clip.antiAlias,
 //                                   decoration: ShapeDecoration(
 //                                     color: Colors.white,
-//                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//                                     shape: RoundedRectangleBorder(
+//                                         borderRadius: BorderRadius.circular(8)),
 //                                   ),
 //                                   child: Column(
 //                                     children: [
@@ -296,10 +301,12 @@
 //                                         ),
 //                                       ),
 //                                       Padding(
-//                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//                                         padding: const EdgeInsets.symmetric(
+//                                             horizontal: 16.0),
 //                                         child: TextField(
 //                                           controller: roomNameController,
-//                                           style: const TextStyle(color: Colors.black),
+//                                           style: const TextStyle(
+//                                               color: Colors.black),
 //                                           decoration: const InputDecoration(
 //                                             border: OutlineInputBorder(),
 //                                             labelText: 'Enter Room Name',
@@ -310,7 +317,8 @@
 //                                   ),
 //                                 ),
 //                               ),
-//                               Positioned( //roompassword setting
+//                               Positioned(
+//                                 //roompassword setting
 //                                 left: 735,
 //                                 top: 142,
 //                                 child: Container(
@@ -319,7 +327,8 @@
 //                                   clipBehavior: Clip.antiAlias,
 //                                   decoration: ShapeDecoration(
 //                                     color: Colors.white,
-//                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//                                     shape: RoundedRectangleBorder(
+//                                         borderRadius: BorderRadius.circular(8)),
 //                                   ),
 //                                   child: Column(
 //                                     children: [
@@ -337,10 +346,12 @@
 //                                         ),
 //                                       ),
 //                                       Padding(
-//                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//                                         padding: const EdgeInsets.symmetric(
+//                                             horizontal: 16.0),
 //                                         child: TextField(
 //                                           controller: roomPasswordController,
-//                                           style: const TextStyle(color: Colors.black),
+//                                           style: const TextStyle(
+//                                               color: Colors.black),
 //                                           decoration: const InputDecoration(
 //                                             border: OutlineInputBorder(),
 //                                             labelText: 'Enter Room Password',
@@ -351,7 +362,8 @@
 //                                   ),
 //                                 ),
 //                               ),
-//                               Positioned( //roomsize setting
+//                               Positioned(
+//                                 //roomsize setting
 //                                 left: 85,
 //                                 top: 397,
 //                                 child: Container(
@@ -360,7 +372,8 @@
 //                                   clipBehavior: Clip.antiAlias,
 //                                   decoration: ShapeDecoration(
 //                                     color: Colors.white,
-//                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//                                     shape: RoundedRectangleBorder(
+//                                         borderRadius: BorderRadius.circular(8)),
 //                                   ),
 //                                   child: Column(
 //                                     children: [
@@ -378,10 +391,12 @@
 //                                         ),
 //                                       ),
 //                                       Padding(
-//                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//                                         padding: const EdgeInsets.symmetric(
+//                                             horizontal: 16.0),
 //                                         child: TextField(
 //                                           controller: roomSizeController,
-//                                           style: const TextStyle(color: Colors.black),
+//                                           style: const TextStyle(
+//                                               color: Colors.black),
 //                                           decoration: const InputDecoration(
 //                                             border: OutlineInputBorder(),
 //                                             labelText: 'Enter Room Size',
@@ -393,7 +408,8 @@
 //                                   ),
 //                                 ),
 //                               ),
-//                               Positioned( //targetgoal setting
+//                               Positioned(
+//                                 //targetgoal setting
 //                                 left: 735,
 //                                 top: 397,
 //                                 child: Container(
@@ -402,7 +418,8 @@
 //                                   clipBehavior: Clip.antiAlias,
 //                                   decoration: ShapeDecoration(
 //                                     color: Colors.white,
-//                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//                                     shape: RoundedRectangleBorder(
+//                                         borderRadius: BorderRadius.circular(8)),
 //                                   ),
 //                                   child: Column(
 //                                     children: [
@@ -420,10 +437,12 @@
 //                                         ),
 //                                       ),
 //                                       Padding(
-//                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//                                         padding: const EdgeInsets.symmetric(
+//                                             horizontal: 16.0),
 //                                         child: TextField(
 //                                           controller: targetGoalController,
-//                                           style: const TextStyle(color: Colors.black),
+//                                           style: const TextStyle(
+//                                               color: Colors.black),
 //                                           decoration: const InputDecoration(
 //                                             border: OutlineInputBorder(),
 //                                             labelText: 'Enter Target Goal',
@@ -443,7 +462,8 @@
 //                   ),
 //                 ),
 //               ),
-//               Positioned( //bottom btn section
+//               Positioned(
+//                 //bottom btn section
 //                 left: 50,
 //                 top: 862,
 //                 child: SizedBox(
@@ -451,7 +471,8 @@
 //                   height: 70,
 //                   child: Stack(
 //                     children: [
-//                       Positioned( //back home btn
+//                       Positioned(
+//                         //back home btn
 //                         left: 0,
 //                         top: 0,
 //                         child: SizedBox(
@@ -497,7 +518,8 @@
 //                           ),
 //                         ),
 //                       ),
-//                       Positioned( //create room btn
+//                       Positioned(
+//                         //create room btn
 //                         left: 1175,
 //                         top: 0,
 //                         child: SizedBox(
@@ -555,5 +577,4 @@
 //       ],
 //     );
 //   }
-
 // }
