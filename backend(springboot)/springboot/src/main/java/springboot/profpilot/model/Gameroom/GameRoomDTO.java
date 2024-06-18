@@ -3,9 +3,6 @@ package springboot.profpilot.model.Gameroom;
 
 import lombok.Getter;
 import lombok.Setter;
-import springboot.profpilot.model.member.Member;
-import springboot.profpilot.model.member.MemberRepository;
-
 @Getter
 @Setter
 public class GameRoomDTO {

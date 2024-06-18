@@ -58,7 +58,7 @@ public class SecurityConfig {
                                 "/user/login", "/user/email/test", "/user/signup", "/user/signup/email/verify", "/user/signup/email/verify/check",
                                 "/user/email/verify", "/user/email/verify/check", "/user/find-id/email/verify", "/user/find-id/email/verify/check",
                                 "/user/find-id/email/verify/check/Id", "/user/reset-password/email/verify/check/reset", "/user/reset-password/email/verify",
-                                "/user/reset-password/email/verify/check", "/sendToken/**").permitAll()
+                                "/user/reset-password/email/verify/check", "/sendToken/**", "/user/details").permitAll()
 
                         .requestMatchers( "/hello").hasAnyRole("GAMER", "ADMIN")
 
@@ -73,11 +73,6 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/gamer/logout"))
                         .invalidateHttpSession(true)
                         .logoutSuccessUrl("/gamer/login")
-                )
-                .oauth2Login(oauth2 -> oauth2
-//                        .loginPage("/gamer/social/signup")
-                        .defaultSuccessUrl("/loginSuccess")
-//                        .failureUrl("/loginFailure)
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;

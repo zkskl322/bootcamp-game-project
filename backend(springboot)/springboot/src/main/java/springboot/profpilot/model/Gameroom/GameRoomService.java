@@ -1,7 +1,6 @@
 package springboot.profpilot.model.Gameroom;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service

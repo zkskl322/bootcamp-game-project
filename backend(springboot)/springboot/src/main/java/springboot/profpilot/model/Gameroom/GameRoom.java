@@ -6,15 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
-import springboot.profpilot.model.member.Member;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@Component
 public class GameRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
