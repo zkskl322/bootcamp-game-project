@@ -1,11 +1,6 @@
 package springboot.profpilot.model.Gamer;
 
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 import springboot.profpilot.global.Utils.GenerateRandomValue;
 import springboot.profpilot.model.DTO.auth.CheckEmail;
@@ -150,23 +145,6 @@ public class GamerController {
         }
     }
 
-//    @PostMapping("/reset-password/email/verify/check/reset")
-//    public String resetPassword(@RequestBody Map<String, String> jsonParam) {
-//        String newPassword = jsonParam.get("newPassword");
-//
-//        if (verifiedEmail == null) {
-//            return "fail";
-//        }
-//
-//        boolean resetResult = gamerService.resetPassword(verifiedEmail, newPassword);
-//        if (resetResult) {
-//            verifiedEmail = null; // 초기화 후 상태 변경
-//            return "Success";
-//        } else {
-//            return "Fail";
-//        }
-//    }
-
 }
 
 //    @PostMapping("/login")
@@ -221,4 +199,20 @@ public class GamerController {
 //        String email = checkEmail.getEmail();
 //        String code = checkEmail.getVerifyCode();
 //        return gamerService.checkEmailVerifyCode(email, code);
+//    }
+//    @PostMapping("/reset-password/email/verify/check/reset")
+//    public String resetPassword(@RequestBody Map<String, String> jsonParam) {
+//        String newPassword = jsonParam.get("newPassword");
+//
+//        if (verifiedEmail == null) {
+//            return "fail";
+//        }
+//
+//        boolean resetResult = gamerService.resetPassword(verifiedEmail, newPassword);
+//        if (resetResult) {
+//            verifiedEmail = null; // 초기화 후 상태 변경
+//            return "Success";
+//        } else {
+//            return "Fail";
+//        }
 //    }

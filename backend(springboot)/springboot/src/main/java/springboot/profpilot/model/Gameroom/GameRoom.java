@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import springboot.profpilot.model.Gamer.Gamer;
-import springboot.profpilot.model.member.Member;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -16,6 +13,8 @@ public class GameRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+//    private String GamerNickname;
 
     private String room_password;
     private String room_name;
