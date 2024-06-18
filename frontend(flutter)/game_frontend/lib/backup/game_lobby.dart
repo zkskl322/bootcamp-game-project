@@ -11,6 +11,16 @@ import 'package:game_frontend/dto/gameroom-dto.dart';
 import 'package:localstorage/localstorage.dart';
 
 class Game_Lobby extends StatelessWidget {
+  // final LocalStorage storage = LocalStorage('auth_token');
+
+  // Future<bool> _checkToken() async {
+  //   if (await storage.ready) { // Wait for the storage to be ready
+  //     String? token = storage.getItem('token');
+  //     return token != null;
+  //   }
+  //   return false;
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,7 +51,7 @@ class _GameRoomState extends State<GameRoom> {
   String myLoseScore = '';
   String myDrawScore = '';
   List<GameRoomsDTO> _gamerooms = [];
-  
+
   final Dio dio = Dio();
   final Storage _storage = window.localStorage;
   final TextEditingController _roomPasswordController = TextEditingController();
@@ -61,45 +71,43 @@ class _GameRoomState extends State<GameRoom> {
     }
     print('accessToken: $accessToken');
     try {
-      final Response response = await dio.get(
-        'http://localhost:8080/user/whoAmI',
-        options: Options(
-            headers: {
-              'access': accessToken,
-            },
-            extra: {
-              'withCredentials': true,
-            },
-        )
-      );
+      final Response response =
+          await dio.get('http://localhost:8080/user/whoAmI',
+              options: Options(
+                headers: {
+                  'access': accessToken,
+                },
+                extra: {
+                  'withCredentials': true,
+                },
+              ));
 
-    // Dio로 데이터를 받은 후의 처리
-    if (response.statusCode == 200) {
-      // JSON 데이터를 Map<String, dynamic>으로 변환
-      Map<String, dynamic> jsonData = response.data;
+      // Dio로 데이터를 받은 후의 처리
+      if (response.statusCode == 200) {
+        // JSON 데이터를 Map<String, dynamic>으로 변환
+        Map<String, dynamic> jsonData = response.data;
 
-      // Map<String, dynamic>을 Map<String, String>으로 변환
-      Map<String, String> data = {
-        'nickname': jsonData['nickname'],
-        'winScore': jsonData['winScore'].toString(),
-        'loseScore': jsonData['loseScore'].toString(),
-        'drawScore': jsonData['drawScore'].toString(),
-        'tier': jsonData['tier'],
-        'uuid': jsonData['uuid']
-      };
+        // Map<String, dynamic>을 Map<String, String>으로 변환
+        Map<String, String> data = {
+          'nickname': jsonData['nickname'],
+          'winScore': jsonData['winScore'].toString(),
+          'loseScore': jsonData['loseScore'].toString(),
+          'drawScore': jsonData['drawScore'].toString(),
+          'tier': jsonData['tier'],
+          'uuid': jsonData['uuid']
+        };
 
-      myNickname = data['nickname']!;
-      myWinScore = data['winScore']!;
-      myLoseScore = data['loseScore']!;
-      myDrawScore = data['drawScore']!;
-      myTier = data['tier']!;
-      myUuid = data['uuid']!; 
+        myNickname = data['nickname']!;
+        myWinScore = data['winScore']!;
+        myLoseScore = data['loseScore']!;
+        myDrawScore = data['drawScore']!;
+        myTier = data['tier']!;
+        myUuid = data['uuid']!;
 
-      print("data: $data");
-    } else {
-      print('Error: ${response.statusCode}');
-    }
-
+        print("data: $data");
+      } else {
+        print('Error: ${response.statusCode}');
+      }
     } catch (e) {
       print('Error: $e');
     }
@@ -144,93 +152,93 @@ class _GameRoomState extends State<GameRoom> {
       return;
     }
     try {
-      final Response response = await dio.post(
-        'http://localhost:8080/game/room/checkPassword',
-        options: Options(
-            headers: {
-              'access': accessToken,
-            },
-            extra: {
-              'withCredentials': true,
-            },
-        ),
-        data: {
-          'roomId': roomId,
-          'password': password,
-        }
-      );
+      final Response response =
+          await dio.post('http://localhost:8080/game/room/checkPassword',
+              options: Options(
+                headers: {
+                  'access': accessToken,
+                },
+                extra: {
+                  'withCredentials': true,
+                },
+              ),
+              data: {
+            'roomId': roomId,
+            'password': password,
+          });
 
       if (response.statusCode == 200) {
         Map<String, dynamic> data = response.data;
         print("data: $data");
         if (data['result'] == 'success') {
-
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => IngameLobby2(GameId: roomId, myUuid: myUuid, method: "join"),
+              builder: (context) =>
+                  IngameLobby2(GameId: roomId, myUuid: myUuid, method: "join"),
             ),
           );
         } else {
-          showAboutDialog(context: context, applicationName: "Join Room", children: [
-            Column(
+          showAboutDialog(
+              context: context,
+              applicationName: "Join Room",
               children: [
-                Text("Password is incorrect"),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
+                Column(
+                  children: [
+                    Text("Password is incorrect"),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ]);
+              ]);
         }
       } else {
-        showAboutDialog(context: context, applicationName: "Join Room", children: [
-          Column(
+        showAboutDialog(
+            context: context,
+            applicationName: "Join Room",
             children: [
-              Text("Error: ${response.statusCode}"),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
+              Column(
+                children: [
+                  Text("Error: ${response.statusCode}"),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ]);
+            ]);
       }
     } catch (e) {
       print('Error: $e');
     }
-
   }
-  
+
   Future<void> joinGameRoombtn(int roomId) async {
-    showAboutDialog(
-      context: context, 
-      applicationName: "Join Room", 
-      children: [
-        Column(
-          children: [
-            Text("Room ID: $roomId"),
-            TextField(
-              controller: _roomPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
+    showAboutDialog(context: context, applicationName: "Join Room", children: [
+      Column(
+        children: [
+          Text("Room ID: $roomId"),
+          TextField(
+            controller: _roomPasswordController,
+            decoration: const InputDecoration(
+              labelText: 'Password',
             ),
-            ElevatedButton(
-              onPressed: () {
-                checkPassword(roomId, _roomPasswordController.text);
-              },
-              child: Text('Join'),
-            ),
-          ],
-        ),
-      ]
-    );
+          ),
+          ElevatedButton(
+            onPressed: () {
+              checkPassword(roomId, _roomPasswordController.text);
+            },
+            child: Text('Join'),
+          ),
+        ],
+      ),
+    ]);
   }
 
   @override
@@ -262,37 +270,35 @@ class _GameRoomState extends State<GameRoom> {
                           print('Home 버튼이 눌렸습니다.');
                         },
                         borderRadius: BorderRadius.circular(16),
-                        child: 
-                          Container(
-                            width: 190,
-                            height: 60,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFF758CFF),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
+                        child: Container(
+                          width: 190,
+                          height: 60,
+                          decoration: ShapeDecoration(
+                            color: Color(0xFF758CFF),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'HOME',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 24,
-                                  fontFamily: 'Press Start 2P',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.07,
-                                  letterSpacing: 0.96,
-                                ),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'HOME',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 24,
+                                fontFamily: 'Press Start 2P',
+                                fontWeight: FontWeight.w400,
+                                height: 0.07,
+                                letterSpacing: 0.96,
                               ),
                             ),
                           ),
                         ),
+                      ),
                       Positioned(
                         //logout btn
                         left: 1310,
                         top: 0,
-                        child: 
-                        Container(
+                        child: Container(
                           width: 190,
                           height: 60,
                           decoration: ShapeDecoration(
@@ -320,25 +326,23 @@ class _GameRoomState extends State<GameRoom> {
                   ),
                 ),
               ),
-              
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Positioned(
                 //middle layout
                 left: 52,
                 top: 94,
-                child: 
-                SizedBox(
+                child: SizedBox(
                   width: 1501,
                   height: 748,
-                  child: 
-                  Stack(
+                  child: Stack(
                     children: [
                       Positioned(
                         //user profile
                         left: 0,
                         top: 0,
-                        child: 
-                        Container(
+                        child: Container(
                           width: 424,
                           height: 748,
                           clipBehavior: Clip.antiAlias,
@@ -416,7 +420,8 @@ class _GameRoomState extends State<GameRoom> {
                                                             'USERNAME : $myNickname',
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -481,7 +486,8 @@ class _GameRoomState extends State<GameRoom> {
                                                             myWinScore,
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -520,7 +526,8 @@ class _GameRoomState extends State<GameRoom> {
                                                             myLoseScore,
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -585,7 +592,8 @@ class _GameRoomState extends State<GameRoom> {
                                                             myDrawScore,
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -652,7 +660,8 @@ class _GameRoomState extends State<GameRoom> {
                                                                 : '${(int.parse(myWinScore) / (int.parse(myWinScore) + int.parse(myLoseScore) + int.parse(myDrawScore)) * 100).toStringAsFixed(2)}%',
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -743,7 +752,8 @@ class _GameRoomState extends State<GameRoom> {
                                                             myTier,
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -911,7 +921,7 @@ class _GameRoomState extends State<GameRoom> {
                                                                 width: 192.16,
                                                                 height: 32,
                                                                 child: Text(
-                                                                  room.roomOwner,
+                                                                  room.roomName,
                                                                   style:
                                                                       const TextStyle(
                                                                     color: Colors
@@ -931,7 +941,7 @@ class _GameRoomState extends State<GameRoom> {
                                                               ),
                                                             ),
                                                             Positioned(
-                                                              left: 300,
+                                                              left: 116.52,
                                                               top: 0,
                                                               child: SizedBox(
                                                                 width: 454.85,
@@ -989,28 +999,51 @@ class _GameRoomState extends State<GameRoom> {
                                                     Positioned(
                                                       left: 829.10,
                                                       top: 7,
-                                                      child: GestureDetector(
-                                                        child: Container(
-                                                          width: 122.95,
-                                                          height: 59,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Color(
-                                                                0xFF393434),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        16),
-                                                          ),
-                                                          child: Center(
-                                                            child: 
-                                                            ElevatedButton(
-                                                              onPressed: () => {
-                                                                joinGameRoombtn(room.roomId),
-                                                              },
-                                                              child: Text('JOIN'),
-                                                            )
-                                                          ),
+                                                      child: Container(
+                                                        width: 122.95,
+                                                        height: 59,
+                                                        // padding:
+                                                        //     const EdgeInsets
+                                                        //         .symmetric(
+                                                        //         horizontal:
+                                                        //             42.48,
+                                                        //         vertical:
+                                                        //             28.32),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Color(0xFF393434),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(16),
+                                                        ),
+                                                        child: const Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              'JOIN',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 24,
+                                                                fontFamily:
+                                                                    'Press Start 2P',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                height: 0.07,
+                                                                letterSpacing:
+                                                                    -0.60,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ),
@@ -1033,7 +1066,9 @@ class _GameRoomState extends State<GameRoom> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Positioned(
                 //bottom btn
                 left: 50,
@@ -1140,7 +1175,6 @@ class _GameRoomState extends State<GameRoom> {
                   ),
                 ),
               ),
-            
             ],
           ),
         ),
