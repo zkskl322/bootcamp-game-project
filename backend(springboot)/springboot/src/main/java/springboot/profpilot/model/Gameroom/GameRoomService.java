@@ -8,6 +8,7 @@ import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.Gamer.GamerLobbyDTO;
 import springboot.profpilot.model.Gamer.GamerRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +19,7 @@ public class GameRoomService {
     private final GamerRepository gamerRepository;
 
     public GameRoom save(GameRoom gameRoom) {
-        gameRoom.setRoom_name(gameRoom.getRoom_name());
+        gameRoom.setRoomName(gameRoom.getRoomName());
         gameRoom.setRoom_password(gameRoom.getRoom_password());
         gameRoom.setRoom_size(gameRoom.getRoom_size());
         gameRoom.setRoom_goal(gameRoom.getRoom_goal());
@@ -29,9 +30,13 @@ public class GameRoomService {
         gameRoomRepository.deleteById(id);
     }
 
-    public GameRoomDTO getGameRoom(Long id) {
-        GameRoom gameRoom = gameRoomRepository.findById(id).orElseThrow(() -> new RuntimeException("GameRoom not found"));
-        return new GameRoomDTO(gameRoom.getRoom_password(), gameRoom.getRoom_name(), gameRoom.getRoom_goal(), gameRoom.getRoom_size());
+    public GameRoom getGameRoom(Long id) {
+        Optional<GameRoom> gameRoom = gameRoomRepository.findById(id);
+        return gameRoom.orElse(null);
+
+    }
+//        GameRoom gameRoom = gameRoomRepository.findById(id).orElseThrow(() -> new RuntimeException("GameRoom not found"));
+//        return new GameRoomDTO(gameRoom.getRoom_password(), gameRoom.getRoom_name(), gameRoom.getRoom_goal(), gameRoom.getRoom_size());
     }
 
 //    public List<ReadyStateDTO> getPlayersStatus(Long roomId) {
@@ -49,4 +54,4 @@ public class GameRoomService {
 //        players.add(new ReadyStateDTO(new GamerLobbyDTO("Jane Doe"), false));
 //        return players;
 //    }
-}
+//}

@@ -33,8 +33,7 @@ public class Gamer {
     private Boolean credentialsNonExpired = true;
     private Boolean enabled = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @ManyToOne
     private GameRoom gameRoom;
 
 }

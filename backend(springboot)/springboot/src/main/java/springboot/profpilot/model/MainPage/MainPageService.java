@@ -17,8 +17,9 @@ public class MainPageService {
         List<GameRoom> gameRooms = gameRoomRepository.findAll();
         List<GameRoomDTO> gameRoomDTOS = gameRooms.stream()
                 .map(gameRoom -> new GameRoomDTO(
+                        gameRoom.getId(),
                         gameRoom.getRoom_password(),
-                        gameRoom.getRoom_name(),
+                        gameRoom.getRoomName(),
                         gameRoom.getRoom_size(),
                         gameRoom.getRoom_goal()
                 )).collect(Collectors.toList());

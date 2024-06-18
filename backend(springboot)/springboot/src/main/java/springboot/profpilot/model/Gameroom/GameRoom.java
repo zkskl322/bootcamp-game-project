@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import springboot.profpilot.model.Gamer.Gamer;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,13 +19,13 @@ public class GameRoom {
 
     private String GamerNickname;
     private String room_password;
-    private String room_name;
+    private String roomName;
     private Long room_size;
     private Long room_goal;
 
 
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Gamer> gamers;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Gamer> gamers = new ArrayList<>();
 //    private Boolean room_isPassword;
 //    private Long room_time;
 }

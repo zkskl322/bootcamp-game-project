@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
       ),
       // home: GameResultPage(playerId: "2", score1: 1, score2: 1),
       // home: IngameLobby2(myUuid: '1', GameId: '1'),
-      home: Game_Lobby(),
-      // home: UnsignedMainPage(),
+      // home: Game_Lobby(),
+      home: UnsignedMainPage(),
     );
   }
 }

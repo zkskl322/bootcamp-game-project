@@ -1,8 +1,10 @@
 import 'dart:convert';
-
+import "dart:html";
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:game_frontend/Game/lobby.dart';
+import 'package:game_frontend/backup/login_page.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class Msg {
@@ -16,8 +18,9 @@ class Msg {
 class IngameLobby2 extends StatefulWidget {
   final int GameId;
   final String myUuid;
+  final String method; 
 
-  const IngameLobby2({Key? key, required this.GameId, required this.myUuid}) : super(key: key);
+  const IngameLobby2({Key? key, required this.GameId, required this.myUuid, required this.method} ) : super(key: key);
 
   @override
   State<IngameLobby2> createState() => _IngameLobby2State();
@@ -27,13 +30,76 @@ class _IngameLobby2State extends State<IngameLobby2> {
   StompClient? stompClient;
   bool player1IsReady = false;
   bool player2IsReady = false;
+  String myUuid = '1';
   final TextEditingController _textController = TextEditingController();
   final List<Msg> list = [];
   final socketUrl = 'http://localhost:8080/chatting';
+  Future<void> joinRoom() async{
+    final Dio dio = Dio();
+
+    final String? accessToken = window.localStorage['token'];
+
+    if (accessToken == null) {
+      window.alert('로그인이 필요합니다.');
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Login_Page()));
+    }
+
+    final response = await dio.post(
+      'http://localhost:8080/game/room/join',
+      options: Options(
+        headers: {
+          'access': accessToken,
+        },
+        extra: {
+          'withCredentials': true,
+        },
+      ),
+      data: {
+        'id': widget.GameId,
+      },
+      
+    );
+
+
+    //     @GetMapping("/game/room/join/{id}")
+    // public String JoinRoom(@PathVariable("id") Long id, Principal principal) {
+    //     GameRoom gameRoom = gameRoomRepository.findById(id).orElseThrow(() -> new RuntimeException("GameRoom not found"));
+    //     if (gameRoom.getGamers().size() == 1) {
+    //         List<Gamer> gamers = gameRoom.getGamers();
+    //         Gamer gamer = gamerService.findByNickname(principal.getName());
+    //         gamers.add(gamer);
+    //         gameRoom.setGamers(gamers);
+    //         gameRoomService.save(gameRoom);
+    //         return "Join GameRoom";
+    //     }
+    //     return "You can't join room";
+    // }
+    if (response.statusCode == 200) {
+      if (response.data == 'Join GameRoom') {
+        print('Join room success');
+        myUuid = '2';
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LobbyPage()));
+      }
+    } else {
+      print('Join room failed');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    if (widget.method == 'join') {
+      joinRoom();
+    }
+
+
+
+
+
+
     if (stompClient == null) {
       stompClient = StompClient(
         config: StompConfig.sockJS(

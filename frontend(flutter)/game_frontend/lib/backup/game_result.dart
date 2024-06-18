@@ -100,6 +100,7 @@ class _GameResultPage extends State<GameResultPage> {
                               builder: (context) => IngameLobby2(
                                 GameId: widget.gameId,
                                 myUuid: widget.playerId,
+                                method: "replay",
                               ),
                             ),
                           );

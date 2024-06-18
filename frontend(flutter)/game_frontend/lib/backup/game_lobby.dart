@@ -122,9 +122,11 @@ class _GameRoomState extends State<GameRoom> {
           await dio.get('http://localhost:8080/page/main');
       if (response.statusCode == 200) {
         Map<String, dynamic> data = response.data;
+        print("data: $data");
         List<dynamic> gameRooms = data['gameRooms'];
         List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
           return GameRoomsDTO(
+            roomId: roomData['id'],
             roomPassword: roomData['room_password'],
             roomName: roomData['room_name'],
             roomSize: roomData['room_size'],
@@ -990,7 +992,7 @@ class _GameRoomState extends State<GameRoom> {
                                                                 Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                    builder: (context) => IngameLobby2(GameId: index, myUuid: myUuid)
+                                                                    builder: (context) => IngameLobby2(GameId: room.roomId, myUuid: myUuid, method: "join"),
                                                                   ),
                                                                 ),
                                                               },
