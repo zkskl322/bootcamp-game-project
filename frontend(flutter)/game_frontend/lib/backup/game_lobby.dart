@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
+import 'package:game_frontend/dto/gamer-dto.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -54,28 +55,29 @@ class _GameRoomState extends State<GameRoom> {
     fetchGameRooms();
   }
 
-  Future<void> joinRoombtn(BuildContext context, int roomId) async {
-    try {
-      final response = await dio.post(
-        'http://localhost:8080/page/join_room',
-        data: {
-          'gamer':
-        },
-      );
-
-      if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Game_Lobby()),
-        );
-        print('Room created successfully');
-      } else {
-        print('Failed to create room: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // Future<void> joinRoombtn(BuildContext context, int roomId) async {
+  //   try {
+  //     final response = await dio.post(
+  //       'http://localhost:8080/page/join_room',
+  //       data: {
+  //         'joingamer': GamerDTO,
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //       builder: (context) => ,
+  //     ),
+  //       );
+  //       print('Room join successfully');
+  //     } else {
+  //       print('Failed to join room: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
   Future<void> fetchGameRooms() async {
     try {
@@ -91,7 +93,6 @@ class _GameRoomState extends State<GameRoom> {
         // List<GameroomDTO> gamerooms = gameRooms.map((gameRoom) => GameroomDTO.fromJson(gameRoom)).toList();
         List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
           return GameRoomsDTO(
-            roomId: roomData['id'],
             roomPassword: roomData['room_password'],
             roomName: roomData['room_name'],
             roomSize: roomData['room_size'],
@@ -849,30 +850,30 @@ class _GameRoomState extends State<GameRoom> {
                                                         height: 32,
                                                         child: Stack(
                                                           children: [
-                                                            Positioned(
+                                                            const Positioned(
                                                               left: 582.61,
                                                               top: 0,
                                                               child: SizedBox(
                                                                 width: 192.16,
                                                                 height: 32,
-                                                                child: Text(
-                                                                  room.roomOwner,
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        24,
-                                                                    fontFamily:
-                                                                        'Press Start 2P',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                    height: 0,
-                                                                    letterSpacing:
-                                                                        -0.60,
-                                                                  ),
-                                                                ),
+                                                                // child: Text(
+                                                                //   room.roomOwner,
+                                                                //   style:
+                                                                //       TextStyle(
+                                                                //     color: Colors
+                                                                //         .black,
+                                                                //     fontSize:
+                                                                //         24,
+                                                                //     fontFamily:
+                                                                //         'Press Start 2P',
+                                                                //     fontWeight:
+                                                                //         FontWeight
+                                                                //             .w400,
+                                                                //     height: 0,
+                                                                //     letterSpacing:
+                                                                //         -0.60,
+                                                                //   ),
+                                                                // ),
                                                               ),
                                                             ),
                                                             Positioned(
@@ -935,9 +936,9 @@ class _GameRoomState extends State<GameRoom> {
                                                       left: 829.10,
                                                       top: 7,
                                                       child: GestureDetector(
-                                                        onTap: () =>
-                                                            joinRoombtn(context,
-                                                                room.roomId),
+                                                        // onTap: () =>
+                                                        //     joinRoombtn(context,
+                                                        //         room.roomId),
                                                         child: Container(
                                                           width: 122.95,
                                                           height: 59,
