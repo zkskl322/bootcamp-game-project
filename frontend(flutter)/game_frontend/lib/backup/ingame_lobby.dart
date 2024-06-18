@@ -8,11 +8,14 @@ import 'package:game_frontend/backup/login_page.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class Msg {
-
+  final String chattingId;
   final String content;
   final String uuid;
 
-  Msg({required this.content, required this.uuid});
+  Msg({
+    required this.chattingId,
+    required this.content, 
+    required this.uuid});
 }
 
 class IngameLobby2 extends StatefulWidget {
@@ -34,7 +37,8 @@ class _IngameLobby2State extends State<IngameLobby2> {
   final TextEditingController _textController = TextEditingController();
   final List<Msg> list = [];
   final socketUrl = 'http://localhost:8080/chatting';
-  Future<void> joinRoom() async{
+  
+  Future<void> joinRoom() async {
     final Dio dio = Dio();
 
     final String? accessToken = window.localStorage['token'];
@@ -61,25 +65,14 @@ class _IngameLobby2State extends State<IngameLobby2> {
       
     );
 
-
-    //     @GetMapping("/game/room/join/{id}")
-    // public String JoinRoom(@PathVariable("id") Long id, Principal principal) {
-    //     GameRoom gameRoom = gameRoomRepository.findById(id).orElseThrow(() -> new RuntimeException("GameRoom not found"));
-    //     if (gameRoom.getGamers().size() == 1) {
-    //         List<Gamer> gamers = gameRoom.getGamers();
-    //         Gamer gamer = gamerService.findByNickname(principal.getName());
-    //         gamers.add(gamer);
-    //         gameRoom.setGamers(gamers);
-    //         gameRoomService.save(gameRoom);
-    //         return "Join GameRoom";
-    //     }
-    //     return "You can't join room";
-    // }
     if (response.statusCode == 200) {
       if (response.data == 'Join GameRoom') {
         print('Join room success');
         myUuid = '2';
-      } else {
+      } else if (response.data == 'You already in room') {
+        print('You already in room');
+      } 
+      else {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LobbyPage()));
       }
@@ -88,18 +81,59 @@ class _IngameLobby2State extends State<IngameLobby2> {
     }
   }
 
+  // void onConnect(StompFrame frame) {
+  //   stompClient!.subscribe(
+  //     destination: '/topic/message/${widget.GameId}',
+  //     callback: (frame) {
+  //       if (frame.body != null) {
+  //         Map<String, dynamic> obj = json.decode(frame.body!);
+  //         print(obj['content']);
+  //         Msg message = Msg(
+  //           chattingId: obj['chattingId'],
+  //           content: obj['content'], 
+  //           uuid: obj['uuid']);
+  //         setState(() {
+  //           list.add(message);
+  //         });
+  //       }
+  //     },
+  //   );
+  // }
+
+    void onConnect(StompFrame frame) {
+    stompClient!.subscribe(
+      destination: '/topic/message/${widget.GameId}',
+      callback: (frame) {
+        if (frame.body != null) {
+          Map<String, dynamic> obj = json.decode(frame.body!);
+          Msg message = Msg(
+            chattingId: obj['chattingId'],
+            content: obj['content'], 
+            uuid: obj['uuid']);
+          setState(() {
+            list.add(message);
+          });
+        }
+      },
+    );
+    }
+  void sendMessage() {
+    if (_textController.text.isNotEmpty) {
+      stompClient!.send(
+        destination: '/app/message',
+        body: json.encode({
+          "chattingId": widget.GameId,
+          "content": _textController.text, 
+          "uuid": widget.myUuid}),
+      );
+      _textController.clear();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    if (widget.method == 'join') {
-      joinRoom();
-    }
-
-
-
-
-
-
+    print(widget.GameId);
     if (stompClient == null) {
       stompClient = StompClient(
         config: StompConfig.sockJS(
@@ -112,39 +146,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
     }
   }
 
-  void onConnect(StompFrame frame) {
-    stompClient!.subscribe(
-        destination: '/topic/message',
-        callback: (frame) {
-            if (frame.body != null) {
-                Map<String, dynamic> obj = json.decode(frame.body!);
-                Msg message = Msg(content: obj['content'], uuid: obj['uuid']);
-                if (message.content == 'START_GAME') {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LobbyPage()),
-                    );
-                }
-                setState(() {
-                    list.add(message);
-                });
-            }
-        },
-    );
-  }
-
-  void sendMessage() {
-      if (_textController.text.isNotEmpty) {
-          stompClient!.send(
-              destination: '/app/message',
-              body: json.encode({"content": _textController.text, "uuid": widget.myUuid}),
-          );
-          setState(() {
-              list.add(Msg(content: _textController.text, uuid: widget.myUuid));
-          });
-          _textController.clear();
-      }
-  }
   void startGame() {
     if (player1IsReady && player2IsReady && widget.myUuid == '1') {
       _textController.text = 'START_GAME';
@@ -164,7 +165,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
       ]);
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;

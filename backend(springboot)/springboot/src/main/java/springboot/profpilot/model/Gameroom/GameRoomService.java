@@ -16,15 +16,6 @@ import java.util.stream.Collectors;
 public class GameRoomService {
     private static final Logger logger = LoggerFactory.getLogger(GameRoomService.class);
     private final GameRoomRepository gameRoomRepository;
-    private final GamerRepository gamerRepository;
-
-    public GameRoom save(GameRoom gameRoom) {
-        gameRoom.setRoomName(gameRoom.getRoomName());
-        gameRoom.setRoom_password(gameRoom.getRoom_password());
-        gameRoom.setRoom_size(gameRoom.getRoom_size());
-        gameRoom.setRoom_goal(gameRoom.getRoom_goal());
-        return gameRoomRepository.save(gameRoom);
-    }
 
     public void delete(Long id) {
         gameRoomRepository.deleteById(id);

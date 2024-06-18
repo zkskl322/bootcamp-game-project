@@ -22,12 +22,14 @@ public class GameRoomController {
         gameRoom.setRoomName(gameRoomDTO.getRoom_name());
         gameRoom.setRoom_goal(gameRoomDTO.getRoom_goal());
         gameRoom.setRoom_size(gameRoomDTO.getRoom_size());
-        System.out.println("principal.getName() = " + principal.getName());
-        Gamer gamer =  gamerService.findByNickname(principal.getName());
+
+        Gamer new_gamer = gamerService.findByNickname(principal.getName());
         List<Gamer> gamers = gameRoom.getGamers();
-        gamers.add(gamer);
+        gamers.add(new_gamer);
         gameRoom.setGamers(gamers);
-        gameRoomService.save(gameRoom);
+        gameRoomRepository.save(gameRoom);
+
+
         GameRoom gameRoom1 = gameRoomRepository.findByRoomName(gameRoomDTO.getRoom_name());
         return gameRoom1.getId();
     }
@@ -42,12 +44,15 @@ public class GameRoomController {
     @PostMapping("/game/room/join")
     public String JoinRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
+        List<Gamer> gamers = gameRoom.getGamers();
+        if (gamers.get(0).getNickname().equals(principal.getName())) {
+            return "You already in room";
+        }
         if (gameRoom.getGamers().size() == 1) {
-            List<Gamer> gamers = gameRoom.getGamers();
-            Gamer gamer = gamerService.findByNickname(principal.getName());
-            gamers.add(gamer);
+            Gamer new_gamer = gamerService.findByNickname(principal.getName());
+            gamers.add(new_gamer);
             gameRoom.setGamers(gamers);
-            gameRoomService.save(gameRoom);
+            gameRoomRepository.save(gameRoom);
             return "Join GameRoom";
         }
         return "You can't join room";

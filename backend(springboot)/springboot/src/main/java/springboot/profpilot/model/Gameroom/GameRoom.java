@@ -26,6 +26,4 @@ public class GameRoom {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Gamer> gamers = new ArrayList<>();
-//    private Boolean room_isPassword;
-//    private Long room_time;
 }
