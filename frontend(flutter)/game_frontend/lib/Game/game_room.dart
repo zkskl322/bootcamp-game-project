@@ -8,7 +8,7 @@ import 'package:game_frontend/backup/game_win.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class GameRoomPage extends StatefulWidget {
-  final String GameId;
+  final int GameId;
   final String myUuid;
 
   GameRoomPage({required this.GameId, required this.myUuid});
@@ -82,6 +82,7 @@ class _GamePageState extends State<GameRoomPage> {
               MaterialPageRoute(
                 builder: (context) => GameResultPage(
                   playerId: widget.myUuid,
+                  gameId: int.parse(game.gameId),
                   score1: game.score1,
                   score2: game.score2,
                 ),

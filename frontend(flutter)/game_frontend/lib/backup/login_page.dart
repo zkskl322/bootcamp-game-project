@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'dart:js' as js;
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -54,6 +54,7 @@ class _LoginPageState extends State<Login> {
   final TextEditingController _PasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final Storage _storage = window.localStorage;
 
   Future<void> _handleLoginButton() async {
     final dio = Dio();
@@ -69,7 +70,7 @@ class _LoginPageState extends State<Login> {
       if (response.statusCode == 200) {
         Navigator.push(
           context, MaterialPageRoute(builder: (context) => Game_Lobby()));
-        print(response);
+        _storage['token'] = response.data['token'];
       } else {
         print("Login failed: ${response.statusCode}");
       }

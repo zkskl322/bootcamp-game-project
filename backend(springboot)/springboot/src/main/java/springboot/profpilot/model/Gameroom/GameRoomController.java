@@ -27,11 +27,4 @@ public class GameRoomController {
         return "delete GameRoom";
     }
 
-    @GetMapping("/game/room/{id}")
-    public RoomStatusDTO getRoomStatus(@PathVariable("id") Long id) {
-        GameRoomDTO gameRoom = gameRoomService.getGameRoom(id);
-        List<ReadyStateDTO> players = gameRoomService.getPlayersStatus(id);
-        return new RoomStatusDTO(gameRoom, players);
-    }
-
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_frontend/backup/ingame.dart';
+import 'package:game_frontend/backup/ingame_lobby.dart';
 // MaterialPageRoute(
 //   builder: (context) => GameResultPage(
 //     score1: game.score1,
@@ -14,11 +14,13 @@ import 'package:game_frontend/backup/ingame.dart';
 
 
 class GameResultPage extends StatefulWidget {
+  final int gameId;
   final String playerId;
   final int score1;
   final int score2;
 
   const GameResultPage({
+    required this.gameId,
     required this.playerId,
     required this.score1,
     required this.score2,
@@ -95,48 +97,16 @@ class _GameResultPage extends State<GameResultPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => IngameLobby(),
+                              builder: (context) => IngameLobby2(
+                                GameId: widget.gameId,
+                                myUuid: widget.playerId,
+                              ),
                             ),
                           );
                         },
                       child: const Text('Play Again'),
                     ),
-                    // SizedBox(
-                    //   width: 400,
-                    //   height: 164,
-                    //   child: Column(
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     mainAxisAlignment: MainAxisAlignment.start,
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     children: [
-                    //       Container(
-                    //         width: double.infinity,
-                    //         height: 60,
-                    //         decoration: ShapeDecoration(
-                    //           color: const Color(0xFF120071),
-                    //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    //         ),
-                    //         child: Row(
-                    //           mainAxisSize: MainAxisSize.min,
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           crossAxisAlignment: CrossAxisAlignment.center,
-                    //           children: [
-                    //             // Text(
-                    //             //   'Try again',
-                    //             //   style: TextStyle(
-                    //             //     color: Colors.white,
-                    //             //     fontSize: 24,
-                    //             //     fontFamily: 'Inter',
-                    //             //     fontWeight: FontWeight.w500,
-                    //             //     height: 0.04,
-                    //             //   ),
-                    //             // ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                    
                   ],
                 ),
               ],

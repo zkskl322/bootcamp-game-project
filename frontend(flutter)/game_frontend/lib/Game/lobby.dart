@@ -21,14 +21,14 @@ class _LobbyPageState extends State<LobbyPage> {
       body: Column(
         children: [
           TextField(
-            controller: _uuidController,
+            controller: _gameIdController,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Game ID',
             ),
           ),
           TextField(
-            controller: _gameIdController,
+            controller: _uuidController,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'UUID',
@@ -40,8 +40,8 @@ class _LobbyPageState extends State<LobbyPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => GameRoomPage(
-                    GameId: _uuidController.text,
-                    myUuid: _gameIdController.text,
+                    GameId: int.parse(_gameIdController.text),
+                    myUuid: _uuidController.text,
                   ),
                 ),
               );

@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MainPageService {
     private final GameRoomRepository gameRoomRepository;
-    private final GamerRepository gamerRepository;
     public MainPageDTO getMainPageData() {
         List<GameRoom> gameRooms = gameRoomRepository.findAll();
         List<GameRoomDTO> gameRoomDTOS = gameRooms.stream()

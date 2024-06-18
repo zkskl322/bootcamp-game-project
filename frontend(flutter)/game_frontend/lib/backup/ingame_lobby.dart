@@ -14,7 +14,7 @@ class Msg {
 }
 
 class IngameLobby2 extends StatefulWidget {
-  final String GameId;
+  final int GameId;
   final String myUuid;
 
   const IngameLobby2({Key? key, required this.GameId, required this.myUuid}) : super(key: key);

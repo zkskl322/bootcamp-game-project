@@ -9,6 +9,8 @@ import springboot.profpilot.model.DTO.auth.VerifyEmail;
 import springboot.profpilot.model.emailverfiy.EmailService;
 import springboot.profpilot.model.emailverfiy.EmailVerify;
 import springboot.profpilot.model.emailverfiy.EmailVerifyService;
+
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -21,15 +23,15 @@ public class GamerController {
     private final EmailVerifyService emailVerifyService;
 
 
-        @GetMapping("/details")
-    public GamerDetailDTO getLoggedInUserInfo(@RequestParam String realname) {
-        Gamer gamer = gamerService.getLoggedInGamer(realname);
-        if(gamer != null) {
-            return new GamerDetailDTO(gamer.getRealname(), gamer.getWinScore(), gamer.getLoseScore(), gamer.getDrawScore());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-    }
+//        @GetMapping("/details")
+//    public GamerDetailDTO getLoggedInUserInfo(@RequestParam String realname) {
+//        Gamer gamer = gamerService.getLoggedInGamer(realname);
+//        if(gamer != null) {
+//            return new GamerDetailDTO(gamer.getRealname(), gamer.getWinScore(), gamer.getLoseScore(), gamer.getDrawScore());
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+//        }
+//    }
 
     @PostMapping("/email/test")
     public String emailTest(@RequestBody VerifyEmail emailDTO) {
@@ -157,6 +159,13 @@ public class GamerController {
         }
     }
 
+
+    @GetMapping("WhoAmI")
+    public String whoAmI(Principal principal) {
+        Gamer gamer = gamerService.findByNickname(principal.getName());
+        Long id = gamer.getId();
+        return id.toString();
+    }
 }
 
 //    @PostMapping("/login")
