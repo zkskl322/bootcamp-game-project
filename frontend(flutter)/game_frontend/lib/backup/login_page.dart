@@ -145,20 +145,16 @@ class _LoginPageState extends State<Login> {
       OAuthToken token = isInstalled
           ? await UserApi.instance.loginWithKakaoTalk()
           : await UserApi.instance.loginWithKakaoAccount();
-
       print(token);
 
       final url = Uri.https('kapi.kakao.com', '/v2/user/me');
-
       final response = await http.get(
         url,
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ${token.accessToken}'
         },
       );
-
       // 로그인 성공 시 처리
-
       final profileInfo = json.decode(response.body);
       print(profileInfo.toString());
       print('user kakao login success');

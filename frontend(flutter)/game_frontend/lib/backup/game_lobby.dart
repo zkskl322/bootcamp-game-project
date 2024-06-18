@@ -54,6 +54,29 @@ class _GameRoomState extends State<GameRoom> {
     fetchGameRooms();
   }
 
+  Future<void> joinRoombtn(BuildContext context, int roomId) async {
+    try {
+      final response = await dio.post(
+        'http://localhost:8080/page/join_room',
+        data: {
+          'gamer':
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Game_Lobby()),
+        );
+        print('Room created successfully');
+      } else {
+        print('Failed to create room: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   Future<void> fetchGameRooms() async {
     try {
       final Response response =
@@ -68,6 +91,7 @@ class _GameRoomState extends State<GameRoom> {
         // List<GameroomDTO> gamerooms = gameRooms.map((gameRoom) => GameroomDTO.fromJson(gameRoom)).toList();
         List<GameRoomsDTO> gameRooms_instance = gameRooms.map((roomData) {
           return GameRoomsDTO(
+            roomId: roomData['id'],
             roomPassword: roomData['room_password'],
             roomName: roomData['room_name'],
             roomSize: roomData['room_size'],
@@ -832,7 +856,7 @@ class _GameRoomState extends State<GameRoom> {
                                                                 width: 192.16,
                                                                 height: 32,
                                                                 child: Text(
-                                                                  room.roomName,
+                                                                  room.roomOwner,
                                                                   style:
                                                                       const TextStyle(
                                                                     color: Colors
@@ -910,35 +934,24 @@ class _GameRoomState extends State<GameRoom> {
                                                     Positioned(
                                                       left: 829.10,
                                                       top: 7,
-                                                      child: Container(
-                                                        width: 122.95,
-                                                        height: 59,
-                                                        // padding:
-                                                        //     const EdgeInsets
-                                                        //         .symmetric(
-                                                        //         horizontal:
-                                                        //             42.48,
-                                                        //         vertical:
-                                                        //             28.32),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              Color(0xFF393434),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(16),
-                                                        ),
-                                                        child: const Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
+                                                      child: GestureDetector(
+                                                        onTap: () =>
+                                                            joinRoombtn(context,
+                                                                room.roomId),
+                                                        child: Container(
+                                                          width: 122.95,
+                                                          height: 59,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Color(
+                                                                0xFF393434),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16),
+                                                          ),
+                                                          child: const Center(
+                                                            child: Text(
                                                               'JOIN',
                                                               style: TextStyle(
                                                                 color: Colors
@@ -954,7 +967,7 @@ class _GameRoomState extends State<GameRoom> {
                                                                     -0.60,
                                                               ),
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
