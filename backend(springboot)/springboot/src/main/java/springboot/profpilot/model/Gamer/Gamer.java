@@ -3,6 +3,7 @@ package springboot.profpilot.model.Gamer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import springboot.profpilot.model.Gameroom.GameRoom;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +17,8 @@ public class Gamer {
 
     @Column(unique = true)
     private String nickname;
-
     private String password;
-
     private String realname;
-
     private String role;
 
     @Column(unique = true)
@@ -28,9 +26,15 @@ public class Gamer {
 
     private LocalDateTime createDate;
 
+    private Boolean isReady = false;
+
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
     private Boolean credentialsNonExpired = true;
     private Boolean enabled = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private GameRoom gameRoom;
 
 }
