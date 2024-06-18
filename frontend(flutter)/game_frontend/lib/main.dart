@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:game_frontend/backup/game_lobby.dart';
+import 'package:game_frontend/backup/game_result.dart';
+import 'package:game_frontend/backup/ingame.dart';
+import 'package:game_frontend/backup/ingame_lobby.dart';
 import 'package:game_frontend/backup/unsigned_main_page.dart';
 import 'package:game_frontend/firebase_options.dart';
-import 'package:game_frontend/lobbytest.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 void main() async {
@@ -25,35 +26,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const UnsignedMainPage(),
+      // home: GameResultPage(playerId: "2", score1: 1, score2: 1),
+      home: IngameLobby2(myUuid: '1', GameId: '1'),
     );
   }
 }
-
-
-
-
-
-                  // Positioned(
-                  //   left: 1106.77,
-                  //   top: -39,
-                  //   child: Transform(
-                  //     transform: Matrix4.identity()
-                  //       ..translate(0.0, 0.0)
-                  //       ..rotateZ(0.26),
-                  //     child: Container(
-                  //       width: 751.85,
-                  //       height: 1019.13,
-                  //       decoration: ShapeDecoration(
-                  //         image: const DecorationImage(
-                  //           image: NetworkImage(
-                  //               "https://via.placeholder.com/752x1019"),
-                  //           fit: BoxFit.fill,
-                  //         ),
-                  //         shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(30),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),

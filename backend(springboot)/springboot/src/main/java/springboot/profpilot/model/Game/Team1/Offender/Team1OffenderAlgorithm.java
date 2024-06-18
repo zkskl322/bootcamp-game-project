@@ -8,10 +8,15 @@ import springboot.profpilot.model.Game.GameState;
 
 import java.util.Arrays;
 
+
+
+// service를 만들어서 알고리즘을 구현
 @Service
 public class Team1OffenderAlgorithm {
 
+    // 공소유시 알고리즘 작성
     public GameState updateOnPossession(GameState gameState) {
+        // 게임 상태를 조건과 액션으로 나누어서 객체 생성
         Team1OffenderGameConditions conditions = new Team1OffenderGameConditions(gameState);
         Team1OffenderGameActions actions = new Team1OffenderGameActions(gameState);
 
@@ -80,5 +85,4 @@ public class Team1OffenderAlgorithm {
         return gameState;
 
     }
-
 }

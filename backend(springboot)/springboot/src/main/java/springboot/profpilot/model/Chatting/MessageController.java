@@ -22,7 +22,6 @@ public class MessageController {
     @MessageMapping("/message")
     public void greeting(Message message) throws Exception {
         Thread.sleep(30); // simulated delay
-//        messageRepository.save(message);
         messagingTemplate.convertAndSend("/topic/message/" + message.getChattingId(), message);
     }
 }

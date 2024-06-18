@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_frontend/Game/Painter.dart';
 import 'package:game_frontend/Game/game_instance.dart';
+import 'package:game_frontend/backup/game_result.dart';
+import 'package:game_frontend/backup/game_win.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class GameRoomPage extends StatefulWidget {
@@ -14,6 +16,15 @@ class GameRoomPage extends StatefulWidget {
   @override
   State<GameRoomPage> createState() => _GamePageState();
 }
+
+
+class Msg {
+  final String content;
+  final String uuid;
+
+  Msg({required this.content, required this.uuid});
+}
+
 
 class _GamePageState extends State<GameRoomPage> {
   StompClient? stompClient;
@@ -64,12 +75,25 @@ class _GamePageState extends State<GameRoomPage> {
           setState(() {
             gameList.add(game);
           });
+
+          if (game.gameStatus == 'END') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GameResultPage(
+                  playerId: widget.myUuid,
+                  score1: game.score1,
+                  score2: game.score2,
+                ),
+              ),
+            );
+          }
         }
       },
     );
   }
 
-  void sendMessage() {
+  void sendAction() {
     if (_textController.text.isNotEmpty) {
       stompClient!.send(
         destination: '/app/action',
@@ -86,7 +110,7 @@ class _GamePageState extends State<GameRoomPage> {
 
   void sendStartMessage() {
     _textController.text = 'START_GAME';
-    sendMessage();
+    sendAction();
     _textController.clear();
   }
 
@@ -116,7 +140,6 @@ class _GamePageState extends State<GameRoomPage> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Game : ${widget.GameId}'),
@@ -129,23 +152,23 @@ class _GamePageState extends State<GameRoomPage> {
             switch (e.logicalKey) {
               case LogicalKeyboardKey.keyW:
                 _textController.text = 'KEY_W';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
 
               case LogicalKeyboardKey.keyD:
                 _textController.text = 'KEY_D';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
               case LogicalKeyboardKey.keyS:
                 _textController.text = 'KEY_S';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
               case LogicalKeyboardKey.keyA:
                 _textController.text = 'KEY_A';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
             }
@@ -153,22 +176,22 @@ class _GamePageState extends State<GameRoomPage> {
             switch (e.logicalKey) {
               case LogicalKeyboardKey.arrowDown:
                 _textController.text = 'DOWN';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
               case LogicalKeyboardKey.arrowUp:
                 _textController.text = 'UP';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
               case LogicalKeyboardKey.arrowLeft:
                 _textController.text = 'LEFT';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
               case LogicalKeyboardKey.arrowRight:
                 _textController.text = 'RIGHT';
-                sendMessage();
+                sendAction();
                 _textController.clear();
                 break;
               default:
@@ -196,7 +219,7 @@ class _GamePageState extends State<GameRoomPage> {
               ElevatedButton(
                 onPressed: () => {
                   _textController.text = 'END_GAME',
-                  sendMessage(),
+                  sendAction(),
                   _textController.clear(),
                 },
                 child: const Icon(Icons.stop),
@@ -236,3 +259,4 @@ class _GamePageState extends State<GameRoomPage> {
     );
   }
 }
+

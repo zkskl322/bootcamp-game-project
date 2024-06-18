@@ -1,8 +1,4 @@
-// [{room_password: $2a$10$7vo6BVhZxamcoumL4WMFl..cqqW1B3hJSkvZvVh64FUPLpa2qxAFC, 
-//room_name: a, 
-//room_size: 1, 
-//room_goal: 1}, 
-        
+
 class GameRoomsDTO {
   final String roomPassword;
   final String roomName;
@@ -14,5 +10,4 @@ class GameRoomsDTO {
     required this.roomName, 
     required this.roomSize, 
     required this.roomGoal});
-
 }
