@@ -7,11 +7,8 @@ import springboot.profpilot.global.Utils.GenerateRandomValue;
 import springboot.profpilot.model.emailverfiy.EmailService;
 import springboot.profpilot.model.emailverfiy.EmailVerify;
 import springboot.profpilot.model.emailverfiy.EmailVerifyService;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +16,11 @@ public class GamerService {
     private final GamerRepository gamerRepository;
     private final EmailVerifyService emailVerifyService;
     private final PasswordEncoder passwordEncoder;
+
+
+    public Gamer getLoggedInGamer(String realname) {
+        return gamerRepository.findByRealname(realname);
+    }
 
     public Gamer save(String email, String nickname, String realname, String password) {
         Gamer user = new Gamer();

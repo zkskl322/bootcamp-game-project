@@ -1,12 +1,9 @@
 package springboot.profpilot.model.Gamer;
 
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import springboot.profpilot.global.Utils.GenerateRandomValue;
 import springboot.profpilot.model.DTO.auth.CheckEmail;
 import springboot.profpilot.model.DTO.auth.VerifyEmail;
@@ -23,6 +20,17 @@ import java.util.Map;
 public class GamerController {
     private final GamerService gamerService;
     private final EmailVerifyService emailVerifyService;
+
+
+        @GetMapping("/details")
+    public GamerDetailDTO getLoggedInUserInfo(@RequestParam String realname) {
+        Gamer gamer = gamerService.getLoggedInGamer(realname);
+        if(gamer != null) {
+            return new GamerDetailDTO(gamer.getRealname(), gamer.getWinScore(), gamer.getLoseScore(), gamer.getDrawScore());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+    }
 
     @PostMapping("/email/test")
     public String emailTest(@RequestBody VerifyEmail emailDTO) {

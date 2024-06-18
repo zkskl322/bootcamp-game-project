@@ -24,9 +24,9 @@ public class Gamer {
     @Column(unique = true)
     private String email;
 
-    private LocalDateTime createDate;
+    private String loginId;
 
-    private Boolean isReady = false;
+    private LocalDateTime createDate;
 
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
