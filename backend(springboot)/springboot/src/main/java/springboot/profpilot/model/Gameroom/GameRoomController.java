@@ -32,6 +32,19 @@ public class GameRoomController {
         return gameRoom1.getId();
     }
 
+//    @DeleteMapping("/game/room/delete/{id}")
+//    public String deleteRoom(@PathVariable("id") Long id, Principal principal) {
+//        if (principal == null) {
+//            throw new RuntimeException("Principal is null");
+//        }
+//        GameRoom gameRoom = gameRoomService.getGameRoom(id);
+//        if (gameRoom != null && gameRoom.getRoom_GamerNickname().equals(principal.getName())) {
+//            gameRoomService.delete(id);
+//            return "GameRoom deleted";
+//        }
+//        return "You are not the owner of this room";
+//    }
+
     @GetMapping("/game/room/delete/{id}")
     public String deleteRoom(@PathVariable("id") Long id) {
         gameRoomService.delete(id);

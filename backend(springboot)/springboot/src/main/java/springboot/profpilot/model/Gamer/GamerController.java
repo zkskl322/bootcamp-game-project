@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/gamer")
 public class GamerController {
     private final GamerService gamerService;
     private final EmailVerifyService emailVerifyService;
@@ -51,6 +51,11 @@ public class GamerController {
     @GetMapping("/signup")
     public String signup() {
         return "signup";
+    }
+
+    @PostMapping("/logout")
+    public String logout() {
+        return "logout";
     }
 
     @PostMapping("/signup/email/verify")
@@ -160,7 +165,7 @@ public class GamerController {
     }
 
 
-    @GetMapping("WhoAmI")
+    @GetMapping("/WhoAmI")
     public String whoAmI(Principal principal) {
         Gamer gamer = gamerService.findByNickname(principal.getName());
         Long id = gamer.getId();
