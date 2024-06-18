@@ -1,6 +1,7 @@
 package springboot.profpilot.model.Gamer;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import springboot.profpilot.global.Utils.GenerateRandomValue;
@@ -24,15 +25,15 @@ public class GamerController {
     private final EmailVerifyService emailVerifyService;
 
 
-    @GetMapping("/details")
-    public GamerDetailDTO getLoggedInUserInfo(@RequestParam String realname) {
-        Gamer gamer = gamerService.getLoggedInGamer(realname);
-        if(gamer != null) {
-            return new GamerDetailDTO(gamer.getRealname(), gamer.getWinScore(), gamer.getLoseScore(), gamer.getDrawScore());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-    }
+//    @GetMapping("/details")
+//    public GamerDetailDTO getLoggedInUserInfo(@RequestParam String realname) {
+//        Gamer gamer = gamerService.getLoggedInGamer(realname);
+//        if(gamer != null) {
+//            return new GamerDetailDTO(gamer.getRealname(), gamer.getWinScore(), gamer.getLoseScore(), gamer.getDrawScore());
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+//        }
+//    }
 
     @PostMapping("/email/test")
     public String emailTest(@RequestBody VerifyEmail emailDTO) {
