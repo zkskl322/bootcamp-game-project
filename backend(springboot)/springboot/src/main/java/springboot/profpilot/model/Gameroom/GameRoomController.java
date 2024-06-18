@@ -40,14 +40,20 @@ public class GameRoomController {
         return "delete GameRoom";
     }
 
-
     @PostMapping("/game/room/join")
     public String JoinRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
         List<Gamer> gamers = gameRoom.getGamers();
+
         if (gamers.get(0).getNickname().equals(principal.getName())) {
-            return "You already in room";
+            return "You already in room1";
         }
+        if (gamers.size() == 2) {
+            if (gamers.get(1).getNickname().equals(principal.getName())) {
+                return "You already in room2";
+            }
+        }
+
         if (gameRoom.getGamers().size() == 1) {
             Gamer new_gamer = gamerService.findByNickname(principal.getName());
             gamers.add(new_gamer);
@@ -56,6 +62,23 @@ public class GameRoomController {
             return "Join GameRoom";
         }
         return "You can't join room";
+    }
+
+    @PostMapping("/game/room/delete")
+    public String leaveOrDeleteRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
+        GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
+        List<Gamer> gamers = gameRoom.getGamers();
+
+        if (gamers.get(0).getNickname().equals(principal.getName())) {
+            gameRoomService.delete(gameRoomId.getId());
+            return "Leave GameRoom";
+        } else if (gamers.get(1).getNickname().equals(principal.getName())) {
+            gamers.remove(1);
+            gameRoom.setGamers(gamers);
+            gameRoomRepository.save(gameRoom);
+            return "Leave GameRoom";
+        }
+        return "You can't leave room";
     }
 
 }

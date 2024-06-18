@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:game_frontend/Game/lobby.dart';
+import 'package:game_frontend/backup/game_lobby.dart';
 import 'package:game_frontend/backup/login_page.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
@@ -69,9 +70,12 @@ class _IngameLobby2State extends State<IngameLobby2> {
       if (response.data == 'Join GameRoom') {
         print('Join room success');
         myUuid = '2';
-      } else if (response.data == 'You already in room') {
+      } else if (response.data == 'You already in room1') {
         print('You already in room');
-      } 
+      } else if (response.data == 'You already in room2') {
+        myUuid = '2';
+        print('You already in room');
+      }
       else {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LobbyPage()));
@@ -80,27 +84,64 @@ class _IngameLobby2State extends State<IngameLobby2> {
       print('Join room failed');
     }
   }
+  
+  Future<void> deleteRoom() async {
+    final Dio dio = Dio();
 
-  // void onConnect(StompFrame frame) {
-  //   stompClient!.subscribe(
-  //     destination: '/topic/message/${widget.GameId}',
-  //     callback: (frame) {
-  //       if (frame.body != null) {
-  //         Map<String, dynamic> obj = json.decode(frame.body!);
-  //         print(obj['content']);
-  //         Msg message = Msg(
-  //           chattingId: obj['chattingId'],
-  //           content: obj['content'], 
-  //           uuid: obj['uuid']);
-  //         setState(() {
-  //           list.add(message);
-  //         });
-  //       }
-  //     },
-  //   );
-  // }
+    final String? accessToken = window.localStorage['token'];
 
-    void onConnect(StompFrame frame) {
+    if (accessToken == null) {
+      window.alert('로그인이 필요합니다.');
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Login_Page()));
+    }
+
+    final response = await dio.post(
+      'http://localhost:8080/game/room/delete',
+      options: Options(
+        headers: {
+          'access': accessToken,
+        },
+        extra: {
+          'withCredentials': true,
+        },
+      ),
+      data: {
+        'id': widget.GameId,
+      },
+      
+    );
+    //     @PostMapping("/game/room/delete")
+    // public String leaveOrDeleteRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
+    //     GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
+    //     List<Gamer> gamers = gameRoom.getGamers();
+
+    //     if (gamers.get(0).getNickname().equals(principal.getName())) {
+    //         gameRoomService.delete(gameRoomId.getId());
+    //         return "Leave GameRoom";
+    //     } else if (gamers.get(1).getNickname().equals(principal.getName())) {
+    //         gamers.remove(1);
+    //         gameRoom.setGamers(gamers);
+    //         gameRoomRepository.save(gameRoom);
+    //         return "Leave GameRoom";
+    //     }
+    //     return "You can't leave room";
+    // }
+
+    if (response.statusCode == 200) {
+      if (response.data == 'Leave GameRoom') {
+        print('Leave room success');
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Game_Lobby()));
+      }
+    } else {
+      print('Leave room failed');
+    }
+  }
+
+
+  void onConnect(StompFrame frame) {
     stompClient!.subscribe(
       destination: '/topic/message/${widget.GameId}',
       callback: (frame) {
@@ -116,7 +157,8 @@ class _IngameLobby2State extends State<IngameLobby2> {
         }
       },
     );
-    }
+  }
+  
   void sendMessage() {
     if (_textController.text.isNotEmpty) {
       stompClient!.send(
@@ -134,6 +176,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
   void initState() {
     super.initState();
     print(widget.GameId);
+    joinRoom();
     if (stompClient == null) {
       stompClient = StompClient(
         config: StompConfig.sockJS(
@@ -526,6 +569,13 @@ class _IngameLobby2State extends State<IngameLobby2> {
                             Row(
                               children: [
                                 ElevatedButton(
+                                  onPressed: ( ) => {
+                                    deleteRoom(),
+                                  }, 
+                                  child: const Text('Delete Room'),
+                                ),
+                                const SizedBox(width: 50),
+                                ElevatedButton(
                                   onPressed: () => {
                                     setState(() {
                                       if (widget.myUuid == '1') {
@@ -538,6 +588,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                   child: const Text('READY'),
                                   
                                 ),
+                                const SizedBox(width: 50),
                                 ElevatedButton(
                                   onPressed: () => {
                                     startGame(),

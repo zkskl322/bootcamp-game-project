@@ -24,6 +24,6 @@ public class GameRoom {
     private Long room_goal;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     private List<Gamer> gamers = new ArrayList<>();
 }
