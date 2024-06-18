@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: GameResultPage(playerId: "2", score1: 1, score2: 1),
-      home: IngameLobby2(myUuid: '1', GameId: '1'),
+      // home: IngameLobby2(myUuid: '1', GameId: '1'),
+      home: UnsignedMainPage(),
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
+import 'package:game_frontend/backup/ingame.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 
@@ -922,7 +924,7 @@ class _GameRoomState extends State<GameRoom> {
                                                                     .circular(
                                                                         16),
                                                           ),
-                                                          child: const Row(
+                                                          child: Row(
                                                             mainAxisSize:
                                                                 MainAxisSize
                                                                     .min,
@@ -933,23 +935,33 @@ class _GameRoomState extends State<GameRoom> {
                                                                 CrossAxisAlignment
                                                                     .center,
                                                             children: [
-                                                              Text(
-                                                                'JOIN',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 20,
-                                                                  fontFamily:
-                                                                      'Press Start 2P',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  height: 0.07,
-                                                                  letterSpacing:
-                                                                      -0.60,
-                                                                ),
+                                                              ElevatedButton(
+                                                                onPressed: () => {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) => IngameLobby2()))
+                                                                  }, 
+                                                                child: const 
+                                                                  Text('JOIN'),
                                                               ),
+                                                              // Text(
+                                                              //   'JOIN',
+                                                              //   style:
+                                                              //       TextStyle(
+                                                              //     color: Colors
+                                                              //         .white,
+                                                              //     fontSize: 20,
+                                                              //     fontFamily:
+                                                              //         'Press Start 2P',
+                                                              //     fontWeight:
+                                                              //         FontWeight
+                                                              //             .w400,
+                                                              //     height: 0.07,
+                                                              //     letterSpacing:
+                                                              //         -0.60,
+                                                              //   ),
+                                                              // ),
                                                             ],
                                                           ),
                                                         ),
