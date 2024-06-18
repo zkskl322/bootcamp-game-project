@@ -1,19 +1,19 @@
 package springboot.profpilot.model.Gameroom;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Gamer.Gamer;
-import springboot.profpilot.model.Gamer.GamerDTO;
 import springboot.profpilot.model.Gamer.GamerLobbyDTO;
 import springboot.profpilot.model.Gamer.GamerRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GameRoomService {
+    private static final Logger logger = LoggerFactory.getLogger(GameRoomService.class);
     private final GameRoomRepository gameRoomRepository;
     private final GamerRepository gamerRepository;
 
@@ -42,7 +42,6 @@ public class GameRoomService {
                         gamer.getIsReady()))
                 .collect(Collectors.toList());
     }
-
 //    public List<ReadyStateDTO> getPlayersStatus(Long id) {
 //        // 실제 데이터베이스 또는 다른 소스로부터 유저와 준비 상태를 가져오는 로직을 구현합니다.
 //        List<ReadyStateDTO> players = new ArrayList<>();

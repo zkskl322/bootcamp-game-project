@@ -2,7 +2,6 @@ package springboot.profpilot.model.Gameroom;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
 
 @Getter

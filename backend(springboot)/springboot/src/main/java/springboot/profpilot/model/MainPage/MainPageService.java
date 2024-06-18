@@ -6,7 +6,6 @@ import springboot.profpilot.model.Gamer.GamerRepository;
 import springboot.profpilot.model.Gameroom.GameRoom;
 import springboot.profpilot.model.Gameroom.GameRoomDTO;
 import springboot.profpilot.model.Gameroom.GameRoomRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

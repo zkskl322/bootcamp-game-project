@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
+import 'dart:js' as js;
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -57,20 +59,22 @@ class _LoginPageState extends State<Login> {
     final dio = Dio();
 
     try {
-      final Response response =
-          await dio.post('http://localhost:8080/login', data: {
-        'username': _EmailController.text,
-        'password': _PasswordController.text,
-      });
+      final Response response = await dio.post(
+        'http://localhost:8080/login',
+        data: {
+          'username': _EmailController.text,
+          'password': _PasswordController.text,
+        },
+      );
       if (response.statusCode == 200) {
         Navigator.push(
           context, MaterialPageRoute(builder: (context) => Game_Lobby()));
         print(response);
       } else {
-        print(response);
+        print("Login failed: ${response.statusCode}");
       }
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
   }
 

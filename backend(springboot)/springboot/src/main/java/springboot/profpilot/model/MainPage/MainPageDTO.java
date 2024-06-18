@@ -3,7 +3,6 @@ package springboot.profpilot.model.MainPage;
 import lombok.Getter;
 import lombok.Setter;
 import springboot.profpilot.model.Gameroom.GameRoomDTO;
-
 import java.util.List;
 
 @Getter
