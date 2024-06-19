@@ -61,9 +61,16 @@ class _SignupPageState extends State<SignupPage> {
         'email': _EmailController.text,
       });
       if (response.statusCode == 200) {
+        if (response.data == 'already exists') {
+          showAboutDialog(context: context, applicationName: 'Error', children: [
+            Text('Error: ${response.statusCode}'),
+            Text('Message: ${response.data}'),
+          ]);
+          return;
+        } else {
         Navigator.push(
           context, MaterialPageRoute(builder: (context) => Login_Page()));
-        print(response);
+        }
       } else {
         showAboutDialog(context: context, applicationName: 'Error', children: [
           Text('Error: ${response.statusCode}'),
