@@ -17,7 +17,7 @@ public class GameRoom {
     private Long id;
 
 
-    private String GamerNickname;
+    private String OwnerNickname;
     private String room_password;
     private String roomName;
     private Long room_size;

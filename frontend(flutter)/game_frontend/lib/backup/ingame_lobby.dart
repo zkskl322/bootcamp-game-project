@@ -1,12 +1,13 @@
-import 'dart:convert';
 import "dart:html";
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:game_frontend/Game/lobby.dart';
+import 'package:stomp_dart_client/stomp_dart_client.dart';
+
+import 'package:game_frontend/Game/game_room.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
 import 'package:game_frontend/backup/login_page.dart';
-import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class Msg {
   final String chattingId;
@@ -34,12 +35,23 @@ class _IngameLobby2State extends State<IngameLobby2> {
   StompClient? stompClient;
   bool player1IsReady = false;
   bool player2IsReady = false;
+  
   String myUuid = '1';
+  String room_name = '';
+  String room_goal = '';
+  String room_size = '';
+  String room_password = '';
+  String owner_nickname = '';
+  String Owner = '';
+  String Gamer1 = '';
+  String Gamer2 = '';
+
+
   final TextEditingController _textController = TextEditingController();
   final List<Msg> list = [];
   final socketUrl = 'http://localhost:8080/chatting';
   
-  Future<void> joinRoom() async {
+  void joinRoom() async {
     final Dio dio = Dio();
 
     final String? accessToken = window.localStorage['token'];
@@ -49,7 +61,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const Login_Page()));
     }
-
     final response = await dio.post(
       'http://localhost:8080/game/room/join',
       options: Options(
@@ -67,19 +78,43 @@ class _IngameLobby2State extends State<IngameLobby2> {
     );
 
     if (response.statusCode == 200) {
-      if (response.data == 'Join GameRoom') {
-        print('Join room success');
-        myUuid = '2';
-      } else if (response.data == 'You already in room1') {
-        print('You already in room');
-      } else if (response.data == 'You already in room2') {
-        myUuid = '2';
-        print('You already in room');
-      }
-      else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LobbyPage()));
-      }
+      Map<String, dynamic> obj = response.data;
+      Map<String, String> data = {
+        'response': obj['response'].toString(),
+        'room_name': obj['room_name'].toString(),
+        'room_goal': obj['room_goal'].toString(),
+        'room_size': obj['room_size'].toString(),
+        'room_password': obj['room_password'].toString(),
+        'owner_nickname': obj['owner_nickname'].toString(),
+        'Owner': obj['Owner'].toString(),
+        'Gamer1': obj['Gamer1'].toString(),
+        'Gamer2': obj['Gamer2'].toString(),
+      };
+
+
+
+      setState(() {
+        if (data['response'] == 'Join GameRoom') {
+          print('Join room success');
+          myUuid = '2';
+        } else if (data['response'] == 'You already in room1') {
+          print('You already in room');
+        } else if (data['response'] == 'You already in room2') {
+          myUuid = '2';
+          print('You already in room');
+        } else {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Game_Lobby()));
+        }
+        room_name = data['room_name'].toString();
+        room_goal = data['room_goal'].toString();
+        room_size = data['room_size'].toString();
+        room_password = data['room_password'].toString();
+        owner_nickname = data['owner_nickname'].toString();
+        Owner = data['Owner'].toString();
+        Gamer1 = data['Gamer1'].toString();
+        Gamer2 = data['Gamer2'].toString();
+      });
     } else {
       print('Join room failed');
     }
@@ -111,31 +146,18 @@ class _IngameLobby2State extends State<IngameLobby2> {
       },
       
     );
-    //     @PostMapping("/game/room/delete")
-    // public String leaveOrDeleteRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
-    //     GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
-    //     List<Gamer> gamers = gameRoom.getGamers();
-
-    //     if (gamers.get(0).getNickname().equals(principal.getName())) {
-    //         gameRoomService.delete(gameRoomId.getId());
-    //         return "Leave GameRoom";
-    //     } else if (gamers.get(1).getNickname().equals(principal.getName())) {
-    //         gamers.remove(1);
-    //         gameRoom.setGamers(gamers);
-    //         gameRoomRepository.save(gameRoom);
-    //         return "Leave GameRoom";
-    //     }
-    //     return "You can't leave room";
-    // }
 
     if (response.statusCode == 200) {
       if (response.data == 'Leave GameRoom') {
         print('Leave room success');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Game_Lobby()));
       } else {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Game_Lobby()));
       }
     } else {
+
       print('Leave room failed');
     }
   }
@@ -151,9 +173,32 @@ class _IngameLobby2State extends State<IngameLobby2> {
             chattingId: obj['chattingId'],
             content: obj['content'], 
             uuid: obj['uuid']);
-          setState(() {
-            list.add(message);
-          });
+          if (message.content == 'PLAYER1_READY') {
+            setState(() {
+              player1IsReady = true;
+            });
+          } else if (message.content == 'PLAYER1_NOT_READY') {
+            setState(() {
+              player1IsReady = false;
+            });
+          } else if (message.content == 'PLAYER2_READY') {
+            setState(() {
+              player2IsReady = true;
+            });
+          } else if (message.content == 'PLAYER2_NOT_READY') {
+            setState(() {
+              player2IsReady = false;
+            });
+          } 
+          else if (message.content == 'START_GAME') {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: widget.myUuid)));
+          }
+          else {
+            setState(() {
+              list.add(message);
+            });
+          }
         }
       },
     );
@@ -175,7 +220,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
   @override
   void initState() {
     super.initState();
-    print(widget.GameId);
     joinRoom();
     if (stompClient == null) {
       stompClient = StompClient(
@@ -194,6 +238,9 @@ class _IngameLobby2State extends State<IngameLobby2> {
       _textController.text = 'START_GAME';
       sendMessage();
       _textController.clear();
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: widget.myUuid)));
+
     } else if (widget.myUuid == '2') {
       showAboutDialog(context: context, children: const <Widget>[
         Text('You are not the host!'),
@@ -236,10 +283,10 @@ class _IngameLobby2State extends State<IngameLobby2> {
                           color: Color(0xFF1F0707),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        child: const Column(
+                        child:Column(
                           children: [
-                            SizedBox(height: 100),
-                            Positioned(
+                            const SizedBox(height: 100),
+                            const Positioned(
                               left: 39,
                               top: 54,
                               child: SizedBox(
@@ -259,13 +306,13 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 100),
+                            const SizedBox(height: 100),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'TARGET GOAL',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -276,10 +323,10 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     letterSpacing: 0.80,
                                   ),
                                 ),
-                                SizedBox(width: 230),
+                                const SizedBox(width: 230),
                                 Text(
-                                  '10',
-                                  style: TextStyle(
+                                  room_goal,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     fontFamily: 'Press Start 2P',
@@ -290,8 +337,8 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 100),
-                            Row(
+                            const SizedBox(height: 100),
+                            const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +356,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     ),
                                     SizedBox(width: 167),
                                     Text(
-                                      '5 MIN',
+                                      '120 (sec)',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
@@ -321,13 +368,13 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     ),
                                   ],
                             ),
-                            SizedBox(height: 100),
+                            const SizedBox(height: 100),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'ROOM PASSWORD',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -338,10 +385,10 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     letterSpacing: 0.80,
                                   ),
                                 ),
-                                SizedBox(width: 162),
+                                const SizedBox(width: 162),
                                 Text(
-                                  '1234',
-                                  style: TextStyle(
+                                  room_password,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     fontFamily: 'Press Start 2P',
@@ -352,13 +399,13 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 100),
+                            const SizedBox(height: 100),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'LIMITED SIZE',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -369,10 +416,10 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     letterSpacing: 0.80,
                                   ),
                                 ),
-                                SizedBox(width: 251),
+                                const SizedBox(width: 251),
                                 Text(
-                                  '2',
-                                  style: TextStyle(
+                                  room_size,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     fontFamily: 'Press Start 2P',
@@ -383,7 +430,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 100),
+                            const SizedBox(height: 100),
                           ],
                         ),
                       ),
@@ -461,12 +508,12 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                   ),
                                 ],)
                               ),
-                              const Positioned(
+                              Positioned(
                                 left: 115,
                                 top: 394,
                                 child: Text(
-                                  'MARIO',
-                                  style: TextStyle(
+                                  Gamer1,
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 24,
                                     fontFamily: 'Press Start 2P',
@@ -476,12 +523,12 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                   ),
                                 ),
                               ),
-                              const Positioned(
+                              Positioned(
                                 left: 522,
                                 top: 394,
                                 child: Text(
-                                  'KOOPA',
-                                  style: TextStyle(
+                                  Gamer2 == '' ? 'Waiting...' : Gamer2,
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 24,
                                     fontFamily: 'Press Start 2P',
@@ -580,8 +627,17 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     setState(() {
                                       if (widget.myUuid == '1') {
                                         player1IsReady = !player1IsReady;
+                                        if (player1IsReady) _textController.text = 'PLAYER1_READY';
+                                        else _textController.text = 'PLAYER1_NOT_READY';
+                                        sendMessage();
+                                        _textController.clear();
+
                                       } else {
                                         player2IsReady = !player2IsReady;
+                                        if (player2IsReady) _textController.text = 'PLAYER2_READY';
+                                        else _textController.text = 'PLAYER2_NOT_READY';
+                                        sendMessage();
+                                        _textController.clear();
                                       }
                                     }),
                                   }, 

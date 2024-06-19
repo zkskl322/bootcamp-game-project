@@ -30,6 +30,10 @@ public class GamerService {
         user.setRealname(realname);
         user.setCreateDate(LocalDateTime.now());
         user.setRole("ROLE_USER");
+        user.setWin(0);
+        user.setLose(0);
+        user.setDraw(0);
+        user.setTier("Bronze");
         return gamerRepository.save(user);
     }
 

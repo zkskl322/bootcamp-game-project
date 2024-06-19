@@ -1,12 +1,15 @@
 package springboot.profpilot.model.Gameroom;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Check;
 import org.springframework.web.bind.annotation.*;
 import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.Gamer.GamerService;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class GameRoomController {
         gameRoom.setRoom_size(gameRoomDTO.getRoom_size());
 
         Gamer new_gamer = gamerService.findByNickname(principal.getName());
+        gameRoom.setOwnerNickname(new_gamer.getNickname());
         List<Gamer> gamers = gameRoom.getGamers();
         gamers.add(new_gamer);
         gameRoom.setGamers(gamers);
@@ -41,16 +45,36 @@ public class GameRoomController {
     }
 
     @PostMapping("/game/room/join")
-    public String JoinRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
+    public Map<String, Object> JoinRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
         List<Gamer> gamers = gameRoom.getGamers();
+        Map<String, Object> response = new HashMap<>();
 
-        if (gamers.get(0).getNickname().equals(principal.getName())) {
-            return "You already in room1";
-        }
+        response.put("response", "");
+        response.put("room_name", gameRoom.getRoomName());
+        response.put("room_goal", gameRoom.getRoom_goal());
+        response.put("room_size", gameRoom.getRoom_size());
+        response.put("room_password", gameRoom.getRoom_password());
+        response.put("owner_nickname", gameRoom.getOwnerNickname());
+        response.put("Owner", gameRoom.getOwnerNickname());
+        response.put("Gamer1", gamers.get(0).getNickname());
         if (gamers.size() == 2) {
+            response.put("Gamer2", gamers.get(1).getNickname());
+        }
+
+        if (gameRoom.getOwnerNickname().equals(principal.getName())) {
+            response.put("response", "You already in room1");
+            return response;
+        } else if (gamers.get(0).getNickname().equals(principal.getName())) {
+            response.put("response", "You already in room2");
+            return response;
+        } else if (gamers.size() == 2) {
             if (gamers.get(1).getNickname().equals(principal.getName())) {
-                return "You already in room2";
+                response.put("response", "You already in room2");
+                return response;
+            } else {
+                response.put("response", "Room is full");
+                return response;
             }
         }
 
@@ -59,9 +83,11 @@ public class GameRoomController {
             gamers.add(new_gamer);
             gameRoom.setGamers(gamers);
             gameRoomRepository.save(gameRoom);
-            return "Join GameRoom";
+            response.put("response", "Join GameRoom");
+            return response;
         }
-        return "You can't join room";
+        response.put("response", "Room is full");
+        return response;
     }
 
     @PostMapping("/game/room/delete")
@@ -69,8 +95,13 @@ public class GameRoomController {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
         List<Gamer> gamers = gameRoom.getGamers();
 
-        if (gamers.get(0).getNickname().equals(principal.getName())) {
+        if (gameRoom.getOwnerNickname().equals(principal.getName())) {
             gameRoomService.delete(gameRoomId.getId());
+            return "Delete GameRoom";
+        } if (gamers.get(0).getNickname().equals(principal.getName())) {
+            gamers.remove(0);
+            gameRoom.setGamers(gamers);
+            gameRoomRepository.save(gameRoom);
             return "Leave GameRoom";
         } else if (gamers.get(1).getNickname().equals(principal.getName())) {
             gamers.remove(1);
@@ -81,4 +112,48 @@ public class GameRoomController {
         return "You can't leave room";
     }
 
+
+
+
+    @PostMapping("/game/room/checkPassword")
+    public Map<String, Object> checkPassword(@RequestBody CheckPassword checkPassword) {
+        GameRoom gameRoom = gameRoomRepository.findById(checkPassword.getRoomId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
+        Map<String, Object> response = new HashMap<>();
+
+        if (gameRoom.getRoom_password().equals(checkPassword.getPassword())) {
+            response.put("result", "success");
+            return response;
+        }
+        response.put("result", "fail");
+        return response;
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
