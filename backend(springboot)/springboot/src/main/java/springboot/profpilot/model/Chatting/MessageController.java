@@ -20,7 +20,6 @@ public class MessageController {
 
     @MessageMapping("/message")
     public void greeting(Message message) throws Exception {
-//        'User info: Gamer1: ' + data['Gamer1'].toString() + ' Gamer2: ' + data['Gamer2'].toString();
         Thread.sleep(30); // simulated delay
         messagingTemplate.convertAndSend("/topic/message/" + message.getChattingId(), message);
     }
