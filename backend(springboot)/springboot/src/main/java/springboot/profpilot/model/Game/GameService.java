@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 import springboot.profpilot.model.Game.Team1.Offender.Team1OffenderAlgorithm;
+import springboot.profpilot.model.Game.Team2.Defender.Team2DefenderAlgorithm;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class GameService {
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final Team1OffenderAlgorithm Team1offenderAlgorithm;
+    private final Team2DefenderAlgorithm team2DefenderAlgorithm;
 
 
     public GameState startGame(String gameId) {
