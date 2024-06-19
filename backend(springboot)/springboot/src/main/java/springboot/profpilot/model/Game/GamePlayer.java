@@ -12,7 +12,7 @@ public class GamePlayer {
     double player_x_speed;
     double player_y_speed;
     int player_direction;
-    boolean possession; // 공 소유 여부 나타내는 필드
+
 
     public GamePlayer(double player_x, double player_y, int player_direction, double player_x_speed, double player_y_speed) {
         this.player_x = player_x;
@@ -20,7 +20,5 @@ public class GamePlayer {
         this.player_direction = player_direction;
         this.player_x_speed = player_x_speed;
         this.player_y_speed = player_y_speed;
-        this.possession = false;
     }
-
 }

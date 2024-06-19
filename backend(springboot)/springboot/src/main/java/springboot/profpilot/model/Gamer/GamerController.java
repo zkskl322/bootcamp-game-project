@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/gamer")
+@RequestMapping("/user")
 public class GamerController {
     private final GamerService gamerService;
     private final EmailVerifyService emailVerifyService;
@@ -52,11 +52,6 @@ public class GamerController {
     @GetMapping("/signup")
     public String signup() {
         return "signup";
-    }
-
-    @PostMapping("/logout")
-    public String logout() {
-        return "logout";
     }
 
     @PostMapping("/signup/email/verify")

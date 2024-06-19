@@ -5,7 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-   
             "name": "game_frontend",
             "cwd": "frontend(flutter)\\game_frontend",
             "request": "launch",

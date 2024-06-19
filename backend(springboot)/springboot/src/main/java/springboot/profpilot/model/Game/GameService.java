@@ -183,6 +183,8 @@ public class GameService {
             players2.get(3).setPlayer_direction(3);
             players2.get(4).setPlayer_x(10.9);
             players2.get(4).setPlayer_y(3.5);
+
+
         } else {
             gameState.setPlayer1_x(8.5);
             gameState.setPlayer1_y(5);

@@ -8,11 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class GamerLobbyDTO {
-    private Long id;
     private String realname;
 
-    public GamerLobbyDTO(String realname, Long id) {
-        this.id = id;
+    public GamerLobbyDTO(String realname) {
         this.realname = realname;
     }
 }

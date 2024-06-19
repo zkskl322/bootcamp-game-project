@@ -16,8 +16,6 @@ public class GameRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String room_GamerNickname;
 
     private String OwnerNickname;
     private String room_password;

@@ -54,11 +54,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
 
-                        .requestMatchers( "/game/room/create", "/game/room/delete/{id}", "/game/room/{id}", "/game/room/decrease/{id}", "/gamer/logout", "/chatting/**", "/game/**", "/page/main",
-                                "/page/gameroom", "/gamer/login", "/gamer/email/test", "/gamer/signup", "/gamer/signup/email/verify", "/gamer/signup/email/verify/check",
-                                "/gamer/email/verify", "/gamer/email/verify/check", "/gamer/find-id/email/verify", "/gamer/find-id/email/verify/check",
-                                "/gamer/find-id/email/verify/check/Id", "/gamer/reset-password/email/verify/check/reset", "/gamer/reset-password/email/verify",
-                                "/gamer/reset-password/email/verify/check", "/sendToken/**", "/gamer/details").permitAll()
+                        .requestMatchers( "/game/room/create", "/game/room/delete/{id}", "/game/room/{id}", "/game/room/decrease/{id}", "/chatting/**", "/game/**", "/page/main",
+                                "/page/gameroom", "/user/login", "/user/email/test", "/user/signup", "/user/signup/email/verify", "/user/signup/email/verify/check",
+                                "/user/email/verify", "/user/email/verify/check", "/user/find-id/email/verify", "/user/find-id/email/verify/check",
+                                "/user/find-id/email/verify/check/Id", "/user/reset-password/email/verify/check/reset", "/user/reset-password/email/verify",
+                                "/user/reset-password/email/verify/check", "/sendToken/**", "/user/details").permitAll()
 
                         .requestMatchers( "/user/whoAmI", "/game/room/join", "/game/room/delete", "/game/room/checkPassword").hasAnyRole("USER", "ADMIN")
 
