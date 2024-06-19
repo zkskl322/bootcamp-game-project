@@ -95,7 +95,9 @@ public class GamerController {
 
     @PostMapping("/signup")
     public String signup(@RequestBody SignUpDTO signUpDTO) {
-
+        Gamer gamer = gamerService.findByNickname(signUpDTO.getNickname());
+        if (gamer != null)
+            return "already exists";
         gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getRealname(), signUpDTO.getPassword());
         return "Success";
     }

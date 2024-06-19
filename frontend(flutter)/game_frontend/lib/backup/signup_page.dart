@@ -61,9 +61,14 @@ class _SignupPageState extends State<SignupPage> {
         'email': _EmailController.text,
       });
       if (response.statusCode == 200) {
+        Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Login_Page()));
         print(response);
       } else {
-        print(response);
+        showAboutDialog(context: context, applicationName: 'Error', children: [
+          Text('Error: ${response.statusCode}'),
+          Text('Message: ${response.data}'),
+        ]);
       }
     } catch (e) {
       print(e);

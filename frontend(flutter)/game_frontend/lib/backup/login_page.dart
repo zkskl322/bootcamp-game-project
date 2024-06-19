@@ -68,9 +68,9 @@ class _LoginPageState extends State<Login> {
         },
       );
       if (response.statusCode == 200) {
+        _storage['token'] = response.data['token'];
         Navigator.push(
           context, MaterialPageRoute(builder: (context) => Game_Lobby()));
-        _storage['token'] = response.data['token'];
       } else {
         print("Login failed: ${response.statusCode}");
       }
