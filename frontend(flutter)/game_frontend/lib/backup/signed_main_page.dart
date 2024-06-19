@@ -1,5 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
+import 'package:game_frontend/backup/unsigned_main_page.dart';
+import 'dart:convert';
+import 'dart:html';
 
 // void main() {
 //   runApp(const MainSignedPage());
@@ -25,6 +29,38 @@ class Main_Signed_Page extends StatelessWidget {
 }
 
 class MainPageSigned extends StatelessWidget {
+  Future<void> _handleLogoutButton(BuildContext context) async {
+    final dio = Dio();
+    final String? accessToken = window.localStorage['token'];
+
+    if (accessToken == null) {
+      print('접근 토큰 없음');
+      return;
+    }
+
+    try {
+      final Response response = await dio.post(
+        'http://localhost:8080/user/logout',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken', // accessToken 변수 사용
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("logout successfully");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const UnsignedMainPage())); // 로그인 페이지로 이동
+      } else {
+        print("logout fail: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -66,7 +102,7 @@ class MainPageSigned extends StatelessWidget {
               ),
               Positioned(
                 left: 58,
-                top: 443,
+                top: 360,
                 child: InkWell(
                   onTap: () {
                     Navigator.push(context,
@@ -94,8 +130,8 @@ class MainPageSigned extends StatelessWidget {
                           'START',
                           style: TextStyle(
                             color: Color(0xFF141414),
-                            fontSize: 37.76,
-                            fontFamily: 'Open Sans',
+                            fontSize: 28,
+                            fontFamily: 'Press Start 2P',
                             fontWeight: FontWeight.w700,
                             height: 0.03,
                             letterSpacing: 1.51,
@@ -108,35 +144,38 @@ class MainPageSigned extends StatelessWidget {
               ),
               Positioned(
                 left: 58,
-                top: 575,
-                child: Container(
-                  width: 631,
-                  height: 87,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 42.48, vertical: 28.32),
-                  decoration: ShapeDecoration(
-                    color: Color(0xFFC8C5C2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2357.89),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'LOGOUT',
-                        style: TextStyle(
-                          color: Color(0xFF141414),
-                          fontSize: 37.76,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.w700,
-                          height: 0.03,
-                          letterSpacing: 1.51,
-                        ),
+                top: 460,
+                child: InkWell(
+                  onTap: () => _handleLogoutButton(context),
+                  child: Container(
+                    width: 631,
+                    height: 87,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 42.48, vertical: 28.32),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFFC8C5C2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2357.89),
                       ),
-                    ],
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'LOGOUT',
+                          style: TextStyle(
+                            color: Color(0xFF141414),
+                            fontSize: 28,
+                            fontFamily: 'Press Start 2P',
+                            fontWeight: FontWeight.w700,
+                            height: 0.03,
+                            letterSpacing: 1.51,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

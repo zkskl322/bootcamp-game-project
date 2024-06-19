@@ -49,6 +49,11 @@ public class GamerController {
         return "login";
     }
 
+    @PostMapping("/logout")
+    public String logout() {
+        return "logout";
+    }
+
     @GetMapping("/signup")
     public String signup() {
         return "signup";

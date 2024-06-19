@@ -6,6 +6,7 @@ import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
+import 'package:game_frontend/backup/unsigned_main_page.dart';
 // import 'package:game_frontend/dto/gamer-dto.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 import 'package:localstorage/localstorage.dart';
@@ -75,6 +76,38 @@ class _GameRoomState extends State<GameRoom> {
   //     print('Error: $e');
   //   }
   // }
+
+  Future<void> _handleLogoutButton(BuildContext context) async {
+    final dio = Dio();
+    final String? accessToken = window.localStorage['token'];
+
+    if (accessToken == null) {
+      print('접근 토큰 없음');
+      return;
+    }
+
+    try {
+      final Response response = await dio.post(
+        'http://localhost:8080/user/logout',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken', // accessToken 변수 사용
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("logout successfully");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const UnsignedMainPage())); // 로그인 페이지로 이동
+      } else {
+        print("logout fail: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("error: $e");
+    }
+  }
 
   Future<void> fetchGameRooms() async {
     final String? accessToken = window.localStorage['token'];
@@ -309,28 +342,30 @@ class _GameRoomState extends State<GameRoom> {
                         ),
                       ),
                       Positioned(
-                        //logout btn
                         left: 1310,
                         top: 0,
-                        child: Container(
-                          width: 190,
-                          height: 60,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF758CFF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                        child: InkWell(
+                          onTap: () => _handleLogoutButton(context),
+                          child: Container(
+                            width: 190,
+                            height: 60,
+                            decoration: ShapeDecoration(
+                              color: Color(0xFF758CFF),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                             ),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'LOGOUT',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 24,
-                                fontFamily: 'Press Start 2P',
-                                fontWeight: FontWeight.w400,
-                                height: 0.07,
-                                letterSpacing: 0.96,
+                            child: const Center(
+                              child: Text(
+                                'LOGOUT',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 24,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.07,
+                                  letterSpacing: 0.96,
+                                ),
                               ),
                             ),
                           ),

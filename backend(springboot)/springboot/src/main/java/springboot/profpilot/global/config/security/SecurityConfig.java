@@ -70,9 +70,11 @@ public class SecurityConfig {
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/gamer/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .invalidateHttpSession(true)
-                        .logoutSuccessUrl("/gamer/login")
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl("/user/login")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;
