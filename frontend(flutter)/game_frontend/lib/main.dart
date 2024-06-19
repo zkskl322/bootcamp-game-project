@@ -13,7 +13,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  KakaoSdk.init(nativeAppKey: '8afe56d45b7b2c0a4d1be6f2bcba8514');
+  KakaoSdk.init(javaScriptAppKey: '038930029f4c94d4bf024f6553f1ba23');
   runApp(const MyApp());
 }
 

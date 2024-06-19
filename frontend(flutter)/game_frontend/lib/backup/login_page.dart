@@ -134,8 +134,13 @@ class _LoginPageState extends State<Login> {
         },
       );
 
+      // 로그인 성공 시 처리
+
       final profileInfo = json.decode(response.body);
       print(profileInfo.toString());
+      print('user kakao login success');
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Game_Lobby()));
     } catch (error) {
       print('카카오톡으로 로그인 실패 $error');
     }

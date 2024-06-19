@@ -6,6 +6,7 @@ import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
+import 'package:game_frontend/backup/unsigned_main_page.dart';
 // import 'package:game_frontend/dto/gamer-dto.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 import 'package:localstorage/localstorage.dart';
@@ -37,7 +38,7 @@ class _GameRoomState extends State<GameRoom> {
   String myLoseScore = '';
   String myDrawScore = '';
   List<GameRoomsDTO> _gamerooms = [];
-  
+
   final Dio dio = Dio();
   final Storage _storage = window.localStorage;
   final TextEditingController _roomPasswordController = TextEditingController();
@@ -48,6 +49,62 @@ class _GameRoomState extends State<GameRoom> {
     fetchGameRooms();
   }
 
+  // Future<void> joinRoombtn(BuildContext context, int roomId) async {
+  //   try {
+  //     final response = await dio.post(
+  //       'http://localhost:8080/page/join_room',
+  //       data: {
+  //         'joingamer': GamerDTO,
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //       builder: (context) => ,
+  //     ),
+  //       );
+  //       print('Room join successfully');
+  //     } else {
+  //       print('Failed to join room: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
+
+  Future<void> _handleLogoutButton(BuildContext context) async {
+    final dio = Dio();
+    final String? accessToken = window.localStorage['token'];
+
+    if (accessToken == null) {
+      print('접근 토큰 없음');
+      return;
+    }
+
+    try {
+      final Response response = await dio.post(
+        'http://localhost:8080/user/logout',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken', // accessToken 변수 사용
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("logout successfully");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const UnsignedMainPage())); // 로그인 페이지로 이동
+      } else {
+        print("logout fail: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("error: $e");
+    }
+  }
+
   Future<void> fetchGameRooms() async {
     final String? accessToken = window.localStorage['token'];
 
@@ -56,32 +113,31 @@ class _GameRoomState extends State<GameRoom> {
       return;
     }
     try {
-      final Response response = await dio.get(
-        'http://localhost:8080/user/whoAmI',
-        options: Options(
-            headers: {
-              'access': accessToken,
-            },
-            extra: {
-              'withCredentials': true,
-            },
-        )
-      );
+      final Response response =
+          await dio.get('http://localhost:8080/user/whoAmI',
+              options: Options(
+                headers: {
+                  'access': accessToken,
+                },
+                extra: {
+                  'withCredentials': true,
+                },
+              ));
 
-    // Dio로 데이터를 받은 후의 처리
-    if (response.statusCode == 200) {
-      // JSON 데이터를 Map<String, dynamic>으로 변환
-      Map<String, dynamic> jsonData = response.data;
+      // Dio로 데이터를 받은 후의 처리
+      if (response.statusCode == 200) {
+        // JSON 데이터를 Map<String, dynamic>으로 변환
+        Map<String, dynamic> jsonData = response.data;
 
-      // Map<String, dynamic>을 Map<String, String>으로 변환
-      Map<String, String> data = {
-        'nickname': jsonData['nickname'],
-        'winScore': jsonData['winScore'].toString(),
-        'loseScore': jsonData['loseScore'].toString(),
-        'drawScore': jsonData['drawScore'].toString(),
-        'tier': jsonData['tier'],
-        'uuid': jsonData['uuid']
-      };
+        // Map<String, dynamic>을 Map<String, String>으로 변환
+        Map<String, String> data = {
+          'nickname': jsonData['nickname'],
+          'winScore': jsonData['winScore'].toString(),
+          'loseScore': jsonData['loseScore'].toString(),
+          'drawScore': jsonData['drawScore'].toString(),
+          'tier': jsonData['tier'],
+          'uuid': jsonData['uuid']
+        };
 
       myNickname = data['nickname']!;
       myWinScore = data['winScore']!;
@@ -133,27 +189,25 @@ class _GameRoomState extends State<GameRoom> {
       return;
     }
     try {
-      final Response response = await dio.post(
-        'http://localhost:8080/game/room/checkPassword',
-        options: Options(
-            headers: {
-              'access': accessToken,
-            },
-            extra: {
-              'withCredentials': true,
-            },
-        ),
-        data: {
-          'roomId': roomId,
-          'password': password,
-        }
-      );
+      final Response response =
+          await dio.post('http://localhost:8080/game/room/checkPassword',
+              options: Options(
+                headers: {
+                  'access': accessToken,
+                },
+                extra: {
+                  'withCredentials': true,
+                },
+              ),
+              data: {
+            'roomId': roomId,
+            'password': password,
+          });
 
       if (response.statusCode == 200) {
         Map<String, dynamic> data = response.data;
         print("data: $data");
         if (data['result'] == 'success') {
-
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -161,65 +215,66 @@ class _GameRoomState extends State<GameRoom> {
             ),
           );
         } else {
-          showAboutDialog(context: context, applicationName: "Join Room", children: [
-            Column(
+          showAboutDialog(
+              context: context,
+              applicationName: "Join Room",
               children: [
-                Text("Password is incorrect"),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
+                Column(
+                  children: [
+                    Text("Password is incorrect"),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ]);
+              ]);
         }
       } else {
-        showAboutDialog(context: context, applicationName: "Join Room", children: [
-          Column(
+        showAboutDialog(
+            context: context,
+            applicationName: "Join Room",
             children: [
-              Text("Error: ${response.statusCode}"),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
+              Column(
+                children: [
+                  Text("Error: ${response.statusCode}"),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ]);
+            ]);
       }
     } catch (e) {
       print('Error: $e');
     }
-
   }
-  
+
   Future<void> joinGameRoombtn(int roomId) async {
-    showAboutDialog(
-      context: context, 
-      applicationName: "Join Room", 
-      children: [
-        Column(
-          children: [
-            Text("Room ID: $roomId"),
-            TextField(
-              controller: _roomPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
+    showAboutDialog(context: context, applicationName: "Join Room", children: [
+      Column(
+        children: [
+          Text("Room ID: $roomId"),
+          TextField(
+            controller: _roomPasswordController,
+            decoration: const InputDecoration(
+              labelText: 'Password',
             ),
-            ElevatedButton(
-              onPressed: () {
-                checkPassword(roomId, _roomPasswordController.text);
-              },
-              child: Text('Join'),
-            ),
-          ],
-        ),
-      ]
-    );
+          ),
+          ElevatedButton(
+            onPressed: () {
+              checkPassword(roomId, _roomPasswordController.text);
+            },
+            child: Text('Join'),
+          ),
+        ],
+      ),
+    ]);
   }
 
   @override
@@ -777,7 +832,6 @@ class _GameRoomState extends State<GameRoom> {
                   ),
                 ),
               ),
-            
             ],
           ),
         ),

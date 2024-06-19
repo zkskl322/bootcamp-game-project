@@ -93,8 +93,8 @@ class MainPageUnsign extends StatelessWidget {
                           'LOGIN',
                           style: TextStyle(
                             color: Color(0xFF141414),
-                            fontSize: 37.76,
-                            fontFamily: 'Open Sans',
+                            fontSize: 28,
+                            fontFamily: 'Press Start 2P',
                             fontWeight: FontWeight.w700,
                             height: 0.03,
                             letterSpacing: 1.51,
@@ -135,8 +135,8 @@ class MainPageUnsign extends StatelessWidget {
                           'SIGN UP',
                           style: TextStyle(
                             color: Color(0xFF141414),
-                            fontSize: 37.76,
-                            fontFamily: 'Open Sans',
+                            fontSize: 28,
+                            fontFamily: 'Press Start 2P',
                             fontWeight: FontWeight.w700,
                             height: 0.03,
                             letterSpacing: 1.51,

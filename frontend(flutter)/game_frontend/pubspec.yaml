@@ -34,3 +34,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Galmuri7
+      fonts:
+        - asset: fonts/Galmuri7.ttf
+    - family: Press Start 2P
+      fonts:
+        - asset: fonts/Press Start 2P.ttf
