@@ -41,4 +41,5 @@ public class Gamer {
 
     @ManyToOne
     private GameRoom gameRoom;
+
 }

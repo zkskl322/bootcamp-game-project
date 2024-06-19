@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
-import 'package:game_frontend/backup/login_page.dart';
 import 'package:game_frontend/backup/unsigned_main_page.dart';
 import 'package:game_frontend/firebase_options.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -11,9 +10,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  KakaoSdk.init(
-      javaScriptAppKey: '038930029f4c94d4bf024f6553f1ba23',
-      nativeAppKey: '8afe56d45b7b2c0a4d1be6f2bcba8514');
+  KakaoSdk.init(nativeAppKey: '8afe56d45b7b2c0a4d1be6f2bcba8514');
   runApp(const MyApp());
 }
 
