@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -165,13 +166,29 @@ public class GamerController {
     }
 
 
-    @GetMapping("/WhoAmI")
-    public String whoAmI(Principal principal) {
+    @GetMapping("whoAmI")
+    public Map<String, String> whoAmI(Principal principal) {
         Gamer gamer = gamerService.findByNickname(principal.getName());
-        Long id = gamer.getId();
-        return id.toString();
+        return Map.of("nickname", gamer.getNickname(), "winScore", String.valueOf(gamer.getWin()) ,
+                "loseScore", String.valueOf(gamer.getLose()), "drawScore", String.valueOf(gamer.getDraw()),
+                "tier", gamer.getTier(), "uuid", gamer.getId().toString());
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    @PostMapping("/login")
 //    public String login(@RequestBody LoginDTO loginDTO) {

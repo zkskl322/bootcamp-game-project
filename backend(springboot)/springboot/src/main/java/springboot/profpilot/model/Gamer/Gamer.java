@@ -33,6 +33,12 @@ public class Gamer {
     private Boolean credentialsNonExpired = true;
     private Boolean enabled = true;
 
+    private int win;
+    private int lose;
+    private int draw;
+    private int total;
+    private String tier;
+
     @ManyToOne
     private GameRoom gameRoom;
 

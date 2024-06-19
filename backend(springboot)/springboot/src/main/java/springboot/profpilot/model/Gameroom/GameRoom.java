@@ -19,14 +19,13 @@ public class GameRoom {
     @Column(unique = true)
     private String room_GamerNickname;
 
+    private String OwnerNickname;
     private String room_password;
     private String roomName;
     private Long room_size;
     private Long room_goal;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     private List<Gamer> gamers = new ArrayList<>();
-//    private Boolean room_isPassword;
-//    private Long room_time;
 }

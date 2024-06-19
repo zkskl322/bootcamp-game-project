@@ -14,7 +14,6 @@ import springboot.profpilot.model.Game.GameState;
 @RequiredArgsConstructor
 public class MessageController {
     private final GameService gameService;
-//    private final MessageRepository messageRepository;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;

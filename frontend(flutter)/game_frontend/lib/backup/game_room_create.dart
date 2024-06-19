@@ -44,39 +44,9 @@ class _CreateRoomState extends State<CreateRoom> {
   @override
   void initState() {
     super.initState();
-    // fetchGameRooms();
   }
 
-  // Future<void> fetchGameRooms() async {
-  //   try {
-  //     final Response response = await dio.get('http://localhost:8080/page/main');
-  //     if (response.statusCode == 200) {
-  //       List<dynamic> data = response.data;
-  //       setState(() {
-  //         _gamerooms = data.map((json) => GameroomDTO.fromJson(json)).toList();
-  //       });
-  //     } else {
-  //       setState(() {
-  //         print('Error: ${response.statusCode}');
-  //       });
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       print('Error: $e');
-  //     });
-  //   }
-  // }
-//  private String room_password;
-//     private String room_name;
-//     private Long room_size;
-//     private Long room_goal;
 
-//     public GameRoomDTO(String room_password, String room_name, Long room_size, Long room_goal) {
-//         this.room_password = room_password;
-//         this.room_name = room_name;
-//         this.room_size = room_size;
-//         this.room_goal = room_goal;
-//     }
 
 
 

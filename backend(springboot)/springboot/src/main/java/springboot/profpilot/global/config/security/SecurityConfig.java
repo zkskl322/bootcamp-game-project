@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 "/gamer/find-id/email/verify/check/Id", "/gamer/reset-password/email/verify/check/reset", "/gamer/reset-password/email/verify",
                                 "/gamer/reset-password/email/verify/check", "/sendToken/**", "/gamer/details").permitAll()
 
-                        .requestMatchers( "/gamer/WhoAmI", "/game/room/join").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( "/user/whoAmI", "/game/room/join", "/game/room/delete", "/game/room/checkPassword").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
