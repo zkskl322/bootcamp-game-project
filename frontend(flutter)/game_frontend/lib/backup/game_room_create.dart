@@ -76,7 +76,7 @@ class _CreateRoomState extends State<CreateRoom> {
       if (response.statusCode == 200) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => IngameLobby2(GameId: response.data, myUuid: '1', method: 'create')),
+          MaterialPageRoute(builder: (context) => IngameLobby2(GameId: response.data, myRealUuid: '1', method: 'create')),
         );
         print('Room created successfully');
       } else {

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 import springboot.profpilot.model.Game.Team1.Offender.Team1OffenderAlgorithm;
+import springboot.profpilot.model.logSystem.GameResultRepository;
+import springboot.profpilot.model.logSystem.GameResultService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -35,6 +37,7 @@ public class GameService {
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final Team1OffenderAlgorithm Team1offenderAlgorithm;
+    private final GameResultService gameResultService;
 
 
     public GameState startGame(String gameId) {
@@ -745,6 +748,8 @@ public class GameService {
         if (gameState.getTime() > gameState.getMax_time()) {
             gameState.setGameStatus("END");
             messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
+            gameResultService.saveByGameState(gameState);
+
             games.remove(gameId);
             return gameState;
         }

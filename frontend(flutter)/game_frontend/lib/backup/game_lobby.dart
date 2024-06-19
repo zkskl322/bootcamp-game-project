@@ -157,7 +157,7 @@ class _GameRoomState extends State<GameRoom> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => IngameLobby2(GameId: roomId, myUuid: myUuid, method: "join"),
+              builder: (context) => IngameLobby2(GameId: roomId, myRealUuid: myUuid, method: "join"),
             ),
           );
         } else {

@@ -99,7 +99,7 @@ class _GameResultPage extends State<GameResultPage> {
                             MaterialPageRoute(
                               builder: (context) => IngameLobby2(
                                 GameId: widget.gameId,
-                                myUuid: widget.playerId,
+                                myRealUuid: widget.playerId,
                                 method: "replay",
                               ),
                             ),
