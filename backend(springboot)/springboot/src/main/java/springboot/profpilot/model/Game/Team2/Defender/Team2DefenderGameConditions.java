@@ -37,8 +37,13 @@ public class Team2DefenderGameConditions {
 
     // 상대방 공격수가 우리팀 수비수가 있는 공간에 들어왔는지 확인
     public boolean isOffenderInDefenseZone() {
-
-
+        double attackZoneBoundary = 9.5; // 경기장을 기준으로 팀2 의 공격진 공간 시작 지점
+        for (int i = 0; i < 2; i++) { // 상대방 공격수들(0, 1)만 검사
+            double x = gameState.getPlayer1_players().getPlayers().get(i).getPlayer_x();
+            if (x >= attackZoneBoundary) { // 공격진 공간에 들어왔는지 확인
+                return true;
+            }
+        }
         return false;
     }
 
