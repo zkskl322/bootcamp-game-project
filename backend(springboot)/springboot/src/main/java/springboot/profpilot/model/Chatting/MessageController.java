@@ -14,7 +14,6 @@ import springboot.profpilot.model.Game.GameState;
 @RequiredArgsConstructor
 public class MessageController {
     private final GameService gameService;
-//    private final MessageRepository messageRepository;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -22,7 +21,6 @@ public class MessageController {
     @MessageMapping("/message")
     public void greeting(Message message) throws Exception {
         Thread.sleep(30); // simulated delay
-//        messageRepository.save(message);
         messagingTemplate.convertAndSend("/topic/message/" + message.getChattingId(), message);
     }
 }

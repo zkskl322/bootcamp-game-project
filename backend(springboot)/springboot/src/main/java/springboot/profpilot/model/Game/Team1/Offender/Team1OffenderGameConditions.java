@@ -3,10 +3,10 @@ package springboot.profpilot.model.Game.Team1.Offender;
 import springboot.profpilot.model.Game.GameState;
 
 // 0~1 offense player 2~3 defense player 4 goalkeeper
-class OffenderGameConditions {
+class Team1OffenderGameConditions {
     private GameState gameState;
 
-    public OffenderGameConditions(GameState gameState) {
+    public Team1OffenderGameConditions(GameState gameState) {
         this.gameState = gameState;
     }
     public boolean isTeamWithBall(int team) {
@@ -18,7 +18,6 @@ class OffenderGameConditions {
     public boolean isOffender0NotPossessBall() {
         return gameState.getPlayer1_control_player() != 0;
     }
-
     // offender0이 2번과 3번 사이에 있는지 확인
     public boolean isOffender0InBetweenDefender() {
         double player2_x, player2_y, player3_x, player3_y;
@@ -70,46 +69,61 @@ class OffenderGameConditions {
         }
         return flag == 1;
     }
-    public boolean isOffeder0InBetweenDefenderButCenterNotOkay() {
+    // Offender0 --------------------------------------------------- //
+
+
+    // Offender1 --------------------------------------------------- //
+    public boolean isOffender1NotPossessBall() {
+        return gameState.getPlayer1_control_player() != 1;
+    }
+
+
+    // 이미 1번이 0,2 혹은 1,3 번 중 거리가 더 먼 사이의 공간에 위치한 경우
+    public boolean isOffdender1InBetweenOpposite() {
+        double op_player0_x, op_player0_y, op_player1_x, op_player1_y;
         double op_player2_x, op_player2_y, op_player3_x, op_player3_y;
+
+        op_player0_x = gameState.getPlayer2_players().getPlayers().get(0).getPlayer_x();
+        op_player0_y = gameState.getPlayer2_players().getPlayers().get(0).getPlayer_y();
+        op_player1_x = gameState.getPlayer2_players().getPlayers().get(1).getPlayer_x();
+        op_player1_y = gameState.getPlayer2_players().getPlayers().get(1).getPlayer_y();
         op_player2_x = gameState.getPlayer2_players().getPlayers().get(2).getPlayer_x();
         op_player2_y = gameState.getPlayer2_players().getPlayers().get(2).getPlayer_y();
         op_player3_x = gameState.getPlayer2_players().getPlayers().get(3).getPlayer_x();
         op_player3_y = gameState.getPlayer2_players().getPlayers().get(3).getPlayer_y();
 
-        double op_middle_x = (op_player2_x + op_player3_x) / 2;
-        double op_middle_y = (op_player2_y + op_player3_y) / 2;
+        double distance02 = Math.sqrt(Math.pow(op_player0_x - op_player2_x, 2) + Math.pow(op_player0_y - op_player2_y, 2));
+        double distance13 = Math.sqrt(Math.pow(op_player1_x - op_player3_x, 2) + Math.pow(op_player1_y - op_player3_y, 2));
 
-        double player0_x = gameState.getPlayer1_players().getPlayers().get(0).getPlayer_x();
-        double player0_y = gameState.getPlayer1_players().getPlayers().get(0).getPlayer_y();
+        double middle_x, middle_y;
+        if (distance02 > distance13) {
+            middle_x = (op_player0_x + op_player2_x) / 2;
+            middle_y = (op_player0_y + op_player2_y) / 2;
 
-        if ((player0_x > op_middle_x - 0.3 && player0_x < op_middle_x + 0.3) && (player0_y > op_middle_y - 0.3 && player0_y < op_middle_y + 0.3)) {
-            double ball_x = gameState.getPlayer1_x();
-            double ball_y = gameState.getPlayer1_y();
+            double my_player1_x = gameState.getPlayer1_players().getPlayers().get(1).getPlayer_x();
+            double my_player1_y = gameState.getPlayer1_players().getPlayers().get(1).getPlayer_y();
 
-            // op_middle과 ball의 직선 방정식 구하기
-            double a = (op_middle_y - ball_y) / (op_middle_x - ball_x);
-            double b = op_middle_y - a * op_middle_x;
-
-            for (int i = 0; i < 2; i++) {
-                double player_x, player_y;
-                player_x = gameState.getPlayer2_players().getPlayers().get(i).getPlayer_x();
-                player_y = gameState.getPlayer2_players().getPlayers().get(i).getPlayer_y();
-
-                // 점과 직선 사이의 거리 구하기
-                double distance = Math.abs(a * player_x - player_y + b) / Math.sqrt(a * a + 1);
-                if (distance < 0.2) {
-                    return false;
-                }
+            if ((my_player1_x > middle_x - 0.1 && my_player1_x < middle_x + 0.1) && (my_player1_y > middle_y - 0.1 && my_player1_y < middle_y + 0.1)) {
+                return false;
+            } else {
+                return true;
             }
         }
-        return true;
+        else {
+            middle_x = (op_player1_x + op_player3_x) / 2;
+            middle_y = (op_player1_y + op_player3_y) / 2;
+
+            double my_player1_x = gameState.getPlayer1_players().getPlayers().get(1).getPlayer_x();
+            double my_player1_y = gameState.getPlayer1_players().getPlayers().get(1).getPlayer_y();
+
+            if ((my_player1_x > middle_x - 0.1 && my_player1_x < middle_x + 0.1) && (my_player1_y > middle_y - 0.1 && my_player1_y < middle_y + 0.1)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
     }
-    // Offender0 --------------------------------------------------- //
-
-
-    // Offender1 --------------------------------------------------- //
-
 
 
     // Offender1 --------------------------------------------------- //

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import springboot.profpilot.model.Gamer.Gamer;
-import springboot.profpilot.model.member.Member;
 
 import java.util.ArrayList;
 import java.util.Collection;

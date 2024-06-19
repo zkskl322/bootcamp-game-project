@@ -6,8 +6,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
-import springboot.profpilot.model.Game.Team1.Offender.OffenderAlgorithm;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
+import springboot.profpilot.model.Game.Team1.Offender.Team1OffenderAlgorithm;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public class GameService {
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
-    private final OffenderAlgorithm offenderAlgorithm;
+    private final Team1OffenderAlgorithm Team1offenderAlgorithm;
 
 
     public GameState startGame(String gameId) {
@@ -62,7 +62,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(120); // 100분
+        gameState.setMax_time(10); // 100분
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);
@@ -736,14 +736,15 @@ public class GameService {
         gameState = UpdateGamePlayer2(gameState, deltaTime);
         gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
-        gameState = offenderAlgorithm.update(gameState);
+        gameState = Team1offenderAlgorithm.updateOnPossession(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {
 
         gameState.setTime(gameState.getTime() + deltaTime);
         if (gameState.getTime() > gameState.getMax_time()) {
-            gameState.setGameStatus("ENDED");
+            gameState.setGameStatus("END");
+            messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
             games.remove(gameId);
             return gameState;
         }
@@ -758,8 +759,6 @@ public class GameService {
         return gameState;
     }
 
-
-
     @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();
@@ -772,69 +771,4 @@ public class GameService {
         });
 
     }
-
-
-
-
-
-
-
-
-
-
-//    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms) 1초에 60번 -> 100초에 6000번
-//    public void updateGameStates() {
-//        long currentTime = System.currentTimeMillis();
-//        double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
-//        lastUpdateTime = currentTime;
-//
-//        // 게임 상태 업데이트
-//
-//        games.forEach((gameId, gameState) -> {
-//
-//            // 게임 아이디를 numThreads로 나눈 나머지 값으로 스레드를 선택
-//            int threadIndex = gameToThreadMap.computeIfAbsent(gameId, id -> gameExecutors.size() % numThreads);
-//            // 게임 아이디를 키로 하는 ExecutorService를 가져오거나 생성
-//            ExecutorService gameExecutor = gameExecutors.computeIfAbsent(gameId, id -> createExecutorForThread(threadIndex));
-//
-//            // 게임 상태 업데이트를 별도의 스레드로 처리 (게임 아이디를 numThreads로 나눈 나머지 값으로 스레드를 선택 후 해당 스레드에서 처리)
-//            gameExecutor.submit(() -> {
-//                System.out.println("Thread: " + Thread.currentThread().getName() + " is updating gameId: " + gameId);
-//                // 게임 상태 업데이트 로직
-//                GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
-//                messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
-//                time++;
-//            });
-//        });
-//
-//        if (time == 3000) { // 3000번 업데이트 후
-//            System.out.println("time: " + time);
-//            time = 0;
-//        }
-//    }
-
-//    private ExecutorService createExecutorForThread(int threadIndex) {
-//        return Executors.newSingleThreadExecutor(new ThreadFactory() {
-//            @Override
-//            public Thread newThread(Runnable r) {
-//                // 게임 스레드 이름 설정
-//                return new Thread(r, "GameThread-" + threadIndex);
-//            }
-//        });
-//    }
-
-//    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
-//    public void updateGameStates() {
-//        long currentTime = System.currentTimeMillis();
-//        double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
-//        lastUpdateTime = currentTime;
-//
-//        games.forEach((gameId, gameState) -> {
-//            executorService.submit(() -> {
-//                // 게임 상태 업데이트 로직
-//                GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
-//                messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
-//            });
-//        });
-//    }
 }
