@@ -1,4 +1,4 @@
-package springboot.profpilot.model.Game.Team1.Defender;
+package springboot.profpilot.model.Game.Team1.Defend;
 
 import springboot.profpilot.model.Game.GameState;
 
