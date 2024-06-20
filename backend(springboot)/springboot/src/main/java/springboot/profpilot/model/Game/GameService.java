@@ -1,6 +1,7 @@
 package springboot.profpilot.model.Game;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,6 +10,7 @@ import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 import springboot.profpilot.model.Game.Team1.Offender.Team1OffenderAlgorithm;
 import springboot.profpilot.model.Game.Team2.Defender.Team2DefenderAlgorithm;
+import springboot.profpilot.model.Game.Team2.Offender.Team2OffenderAlgorithm;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -24,7 +26,7 @@ import java.util.concurrent.*;
 //|    2  0            0 2   |
 //----------------------------
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GameService {
@@ -36,7 +38,8 @@ public class GameService {
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final Team1OffenderAlgorithm Team1offenderAlgorithm;
-    private final Team2DefenderAlgorithm team2DefenderAlgorithm;
+    private final Team2DefenderAlgorithm Team2defenderAlgorithm;
+    private final Team2OffenderAlgorithm Team2offenderAlgorithm;
 
 
     public GameState startGame(String gameId) {
@@ -64,7 +67,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(10); // 100분
+        gameState.setMax_time(100); // 100분
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);
@@ -739,6 +742,8 @@ public class GameService {
         gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
         gameState = Team1offenderAlgorithm.updateOnPossession(gameState);
+        gameState = Team2defenderAlgorithm.updateOnPossession(gameState);
+        gameState = Team2offenderAlgorithm.updateOnPossession(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {

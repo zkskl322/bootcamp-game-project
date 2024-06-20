@@ -1,4 +1,5 @@
 package springboot.profpilot.model.Game.Team2.Defender;
+import org.springframework.security.core.parameters.P;
 import springboot.profpilot.model.Game.GamePlayer;
 import springboot.profpilot.model.Game.GameState;
 //    1                2
@@ -19,32 +20,35 @@ public class Team2DefenderGameConditions {
         return gameState.getWho_has_ball() == team;
     }
 
-    // Defender3
-    public boolean isDefender3NotPossessBall() {
-        return gameState.getPlayer2_control_player() != 0;
+    public boolean isOffender1HasBall() {
+        int number = gameState.getPlayer1_control_player();
+        return number == 1;
+
+//        GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1); // 상대방 팀 공격수 1번
+//        System.out.println("offender1 : " + offender1.isPossession());
+//        return offender1.isPossession();
+//        return false;
     }
 
-    // 상대방 공격수 0, 1 번이 공을 가지고 있는지 확인
-    public boolean isOffenderHasBall() {
-        if (gameState.getWho_has_ball() == 1) {
-            GamePlayer offender0 = gameState.getPlayer1_players().getPlayers().get(0); // 상대방 팀 공격수 0번
-            GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1); // 상대방 팀 공격수 1번
+    public boolean isOffender1InDefenseZone() {
 
-            return offender0.isPossession() || offender1.isPossession();
-        }
-        return false;
-    }
+        if (gameState.getIsFirstHalf() == 1) {
+            double defenseZoneBoundary1 = 7.0; // 수비진 영역
+            double defenseZoneBoundary2 = 10.5; // 수비진 영역
+            GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
+            double x = offender1.getPlayer_x();
 
-    // 상대방 공격수가 우리팀 수비수가 있는 공간에 들어왔는지 확인
-    public boolean isOffenderInDefenseZone() {
-        double attackZoneBoundary = 9.5; // 경기장을 기준으로 팀2 의 공격진 공간 시작 지점
-        for (int i = 0; i < 2; i++) { // 상대방 공격수들(0, 1)만 검사
-            double x = gameState.getPlayer1_players().getPlayers().get(i).getPlayer_x();
-            if (x >= attackZoneBoundary) { // 공격진 공간에 들어왔는지 확인
-                return true;
-            }
+            if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
+            else return false;
+        } else {
+            double defenseZoneBoundary1 = 0.5;
+            double defenseZoneBoundary2 = 4.0; // 수비진 영역
+            GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
+            double x = offender1.getPlayer_x();
+
+            if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
+            else return false;
         }
-        return false;
     }
 
 }
