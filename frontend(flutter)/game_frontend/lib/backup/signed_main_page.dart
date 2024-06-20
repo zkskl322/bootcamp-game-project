@@ -34,7 +34,7 @@ class MainPageSigned extends StatelessWidget {
     final String? accessToken = window.localStorage['token'];
 
     if (accessToken == null) {
-      print('접근 토큰 없음');
+      print('access token null');
       return;
     }
 
@@ -76,7 +76,7 @@ class MainPageSigned extends StatelessWidget {
                 left: 69,
                 top: 102,
                 child: Text(
-                  'Pin-Pong Game',
+                  'Soccer Game',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 64,

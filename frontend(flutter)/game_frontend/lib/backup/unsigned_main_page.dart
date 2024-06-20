@@ -39,7 +39,7 @@ class MainPageUnsign extends StatelessWidget {
                 left: 69,
                 top: 102,
                 child: Text(
-                  'Pin-Pong Game',
+                  'Soccer Game',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 64,
