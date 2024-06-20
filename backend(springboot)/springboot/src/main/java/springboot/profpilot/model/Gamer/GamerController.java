@@ -59,6 +59,19 @@ public class GamerController {
         return "signup";
     }
 
+    @PostMapping("/signup")
+    public String signup(@RequestBody SignUpDTO signUpDTO) {
+        Gamer gamer = gamerService.findByNickname(signUpDTO.getNickname());
+        EmailVerify emailVerify = emailVerifyService.findByEmail(signUpDTO.getEmail());
+
+        if (emailVerify == null || !emailVerify.isVerified())
+            return "Email not verified";
+        if (gamer != null)
+            return "already exists";
+        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getRealname(), signUpDTO.getPassword());
+        return "Success";
+    }
+
     @PostMapping("/signup/email/verify")
     public @ResponseBody String verifyEmail(@RequestBody Map<String, String> jsonParam) {
 //        String email = jsonParam.substring(10, json_email.length() - 2);
@@ -96,15 +109,6 @@ public class GamerController {
         String email = checkEmail.getEmail();
         String code = checkEmail.getVerifyCode();
         return gamerService.checkEmailVerifyCode(email, code);
-    }
-
-    @PostMapping("/signup")
-    public String signup(@RequestBody SignUpDTO signUpDTO) {
-        Gamer gamer = gamerService.findByNickname(signUpDTO.getNickname());
-        if (gamer != null)
-            return "already exists";
-        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getRealname(), signUpDTO.getPassword());
-        return "Success";
     }
 
     @PostMapping("/find-id/email/verify")
