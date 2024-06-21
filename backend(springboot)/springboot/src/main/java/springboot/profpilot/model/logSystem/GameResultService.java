@@ -3,23 +3,44 @@ package springboot.profpilot.model.logSystem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.GameState;
-
+import springboot.profpilot.model.Gamer.Gamer;
+import springboot.profpilot.model.Gamer.GamerService;
 
 
 @Service
 @RequiredArgsConstructor
 public class GameResultService {
     private final GameResultRepository gameResultRepository;
+    private final GamerService gamerService;
 
+    public GameResult findByPlayer1Name(String player1Name) {
+        return gameResultRepository.findByPlayer1Name(player1Name);
+    }
+
+    public GameResult findByPlayer2Name(String player2Name) {
+        return gameResultRepository.findByPlayer2Name(player2Name);
+    }
+
+    public String saveRawDataInMongoDB(GameResult gameResult) {
+        gameResultRepository.save(gameResult);
+        return "success";
+    }
+
+    public GameResult findByGameId(Long gameId) {
+        return gameResultRepository.findByGameId(gameId);
+    }
 
     public String saveByGameState(GameState gameState) {
-        GameResult gameResult = new GameResult();
-        gameResult.setGameId(gameState.getGameId());
+        Gamer gamer1 = gamerService.findByNickname(gameState.getPlayer1Nickname());
+        Gamer gamer2 = gamerService.findByNickname(gameState.getPlayer2Nickname());
+
+
+
+
+        GameResult gameResult = findByGameId(Long.parseLong(gameState.getGameId()));
+        gameResult.setGameId(Long.parseLong(gameState.getGameId()));
         gameResult.setGameName(gameState.getGameId());
         gameResult.setGameDatetime(gameState.getGameDatetime());
-
-        gameResult.setPlayer1Name("player1");
-        gameResult.setPlayer2Name("player2");
 
         gameResult.setPlayer1Score(gameState.getScore1());
         gameResult.setPlayer2Score(gameState.getScore2());
@@ -46,32 +67,26 @@ public class GameResultService {
         gameResult.setPlayer2AvailableShoots(player2AvailableShoots);
 
         if (gameState.getScore1() > gameState.getScore2()) {
-            gameResult.setWinnerName("player1");
-            gameResult.setLoserName("player2");
-            gameResult.setPlayer1MatchRankPoints(100);
-            gameResult.setPlayer2MatchRankPoints(-100);
+            gameResult.setWinnerName(gamer1.getNickname());
+            gameResult.setLoserName(gamer2.getNickname());
+            gamer1.setRankPoint(gamer1.getRankPoint() + 100);
+            gamer2.setRankPoint(gamer2.getRankPoint() - 100);
         } else if (gameState.getScore1() < gameState.getScore2()) {
-            gameResult.setWinnerName("player2");
-            gameResult.setLoserName("player1");
-            gameResult.setPlayer1MatchRankPoints(-100);
-            gameResult.setPlayer2MatchRankPoints(100);
+            gameResult.setWinnerName(gamer2.getNickname());
+            gameResult.setLoserName(gamer1.getNickname());
+            gamer1.setRankPoint(gamer1.getRankPoint() - 100);
+            gamer2.setRankPoint(gamer2.getRankPoint() + 100);
+
         } else {
             gameResult.setWinnerName("draw");
             gameResult.setLoserName("draw");
-            gameResult.setPlayer1MatchRankPoints(0);
-            gameResult.setPlayer2MatchRankPoints(0);
         }
 
         gameResultRepository.save(gameResult);
+        gamerService.save(gamer1);
+        gamerService.save(gamer2);
         return "success";
     }
-
-    public String saveRawDataInMongoDB(GameResult gameResult) {
-        gameResultRepository.save(gameResult);
-        return "success";
-    }
-
-
     public GameResult save(GameResult gameResult) {
         return gameResultRepository.save(gameResult);
     }

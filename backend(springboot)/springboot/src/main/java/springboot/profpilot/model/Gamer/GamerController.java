@@ -13,6 +13,7 @@ import springboot.profpilot.model.emailverfiy.EmailVerifyService;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,15 +25,6 @@ public class GamerController {
     private final EmailVerifyService emailVerifyService;
 
 
-//        @GetMapping("/details")
-//    public GamerDetailDTO getLoggedInUserInfo(@RequestParam String realname) {
-//        Gamer gamer = gamerService.getLoggedInGamer(realname);
-//        if(gamer != null) {
-//            return new GamerDetailDTO(gamer.getRealname(), gamer.getWinScore(), gamer.getLoseScore(), gamer.getDrawScore());
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-//        }
-//    }
 
     @PostMapping("/email/test")
     public String emailTest(@RequestBody VerifyEmail emailDTO) {
@@ -74,7 +66,6 @@ public class GamerController {
 
     @PostMapping("/signup/email/verify")
     public @ResponseBody String verifyEmail(@RequestBody Map<String, String> jsonParam) {
-//        String email = jsonParam.substring(10, json_email.length() - 2);
         String email = jsonParam.get("email");
         EmailVerify emailVerify = emailVerifyService.findByEmail(email);
 
@@ -171,14 +162,22 @@ public class GamerController {
         }
     }
 
-
-    @GetMapping("whoAmI")
+    @GetMapping("/whoAmI")
     public Map<String, String> whoAmI(Principal principal) {
         Gamer gamer = gamerService.findByNickname(principal.getName());
         return Map.of("nickname", gamer.getNickname(), "winScore", String.valueOf(gamer.getWin()) ,
                 "loseScore", String.valueOf(gamer.getLose()), "drawScore", String.valueOf(gamer.getDraw()),
                 "tier", gamer.getTier(), "uuid", gamer.getId().toString());
     }
+
+
+    @GetMapping("/ranking")
+    public List<RankDTO> getGamers() {
+        List<Gamer> gamers = gamerService.getGamerOrderByRankPoint();
+
+        return gamers.stream().map(gamer -> new RankDTO(gamer.getNickname(), gamer.getWin(), gamer.getLose(), gamer.getDraw(), gamer.getRankPoint(), gamer.getTier())).toList();
+    }
+
 }
 
 

@@ -264,6 +264,86 @@ class _GameRoomState extends State<GameRoom> {
   }
 
 
+  Future<void> showRankingModal() async {
+    final String? accessToken = window.localStorage['token'];
+    if (accessToken == null) {
+      return;
+    }
+
+    final Response response = await dio.get(
+      'http://localhost:8080/user/ranking',
+      options: Options(
+        headers: {
+          'access': accessToken,
+        },
+        extra: {
+          'withCredentials': true,
+        },
+      ),
+    );
+
+    print(response.data);
+    // [{nickname: aaa, win: 0, lose: 0, draw: 0, rankPoint: 1100, tier: Bronze}, {nickname: bbb, win: 0, lose: 0, draw: 0, rankPoint: 900, tier: Bronze}]
+
+    List<dynamic> rankingData = response.data;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            height: 620,
+            width: 500,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'GAME RANKING',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: rankingData.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      leading: Text(
+                        '${index + 1}',
+                        style: const TextStyle(
+                          fontSize: 16, // 예시로 폰트 크기를 16으로 설정
+                          fontWeight: FontWeight.bold, // 폰트의 두께 설정
+                        ),
+                      ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(rankingData[index]['nickname']),
+                          Text('${rankingData[index]['rankPoint']} PT.'),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('CLOSE'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -773,69 +853,7 @@ class _GameRoomState extends State<GameRoom> {
                         top: 0,
                         child: InkWell(
                           onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                  child: Container(
-                                    height: 620,
-                                    width: 500,
-                                    padding: const EdgeInsets.all(16),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          'GAME RANKING',
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: 10,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return ListTile(
-                                              leading: Text(
-                                                '${index + 1}',
-                                                style: const TextStyle(
-                                                  fontSize:
-                                                      16, // 예시로 폰트 크기를 16으로 설정
-                                                  fontWeight: FontWeight
-                                                      .bold, // 폰트의 두께 설정
-                                                ),
-                                              ),
-                                              title: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                      'Test User ${index + 1}'),
-                                                  Text(
-                                                      '${1000 - index * 100} PT.'),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        const SizedBox(height: 24),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('CLOSE'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
+                            showRankingModal();
                           },
                           borderRadius: BorderRadius.circular(16),
                           child: SizedBox(
@@ -882,6 +900,9 @@ class _GameRoomState extends State<GameRoom> {
                             ),
                           ),
                         ),
+                      
+                      
+                      
                       ),
                       Positioned(
                         left: 1175,
