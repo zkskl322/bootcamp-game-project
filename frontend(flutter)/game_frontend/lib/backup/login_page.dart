@@ -77,62 +77,77 @@ class _LoginPageState extends State<Login> {
   late final FirebaseAuth auth;
 
   Future<void> _handleSocialLoginButton_G(BuildContext context) async {
+    // Dio 인스턴스 생성 - HTTP 요청을 처리하기 위한 라이브러리
     Dio dio = Dio();
 
     try {
+      // 구글 로그인 처리 -> 화면에 구글 로그인 페이지가 표시됨
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         // 사용자가 로그인을 취소한 경우 처리
-        print('cancle google login');
+        print('cancel google login');
         return;
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final OAuthCredential credential = await GoogleAuthProvider.credential(
+      // 구글 로그인 인증 정보 가져오기
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      
+      // 구글 OAuth 인증 정보 생성
+      final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+      // Firebase로 구글 인증 정보로 로그인
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
       
+      // 현재 Firebase 인증 인스턴스와 로그인된 사용자 가져오기
       FirebaseAuth auth = FirebaseAuth.instance;
       User? currentUser = auth.currentUser;
       
       if (currentUser != null) {
+        // 현재 사용자의 ID 토큰을 가져오기
         String? idToken = await currentUser.getIdToken(true);
 
+        // 서버에 로그인 요청 보내기
         final Response response = await dio.post(
           'http://localhost:8080/login',
           options: Options(
             headers: {
-            'Authorization': 'Bearer $idToken',
+              'Authorization': 'Bearer $idToken', // 헤더에 인증 토큰 추가
+              'Social': 'Google', // 헤더에 소셜 로그인 정보 추가
             },
           ),
         );
-
+        
+        // 서버 응답이 성공적일 경우
+        if (response.statusCode == 200) {
+          // 게임 로비 페이지로 이동
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Game_Lobby()));
+          // 받은 토큰을 저장소에 저장
+          _storage['token'] = response.data['token'];
+        } else {
+          // 서버 응답이 실패할 경우 디버그 모드에서 오류 메시지 출력
+          if (kDebugMode) {
+            print("Login failed: ${response.statusCode}");
+          }
+        }
       } 
       else {
+        // 현재 사용자가 없을 경우 로그인 페이지로 이동
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Login_Page()));
+            context, MaterialPageRoute(builder: (context) => const Login_Page()));
       }
-      // 로그인 성공 시 처리
-      print('user google login success: ${userCredential.user!.displayName}');
-      // 페이지 이동
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Game_Lobby()));
     } catch (error) {
-      // 구글 로그인 오류 처리
-      print('google login error: $error');
+      // 예외 발생 시 디버그 모드에서 오류 메시지 출력
+      if (kDebugMode) {
+        print('구글로 로그인 실패 $error');
+      }
     }
   }
 
-  void _handleSocialLoginButton(BuildContext context) {
-    _handleSocialLoginButton_G(context);
-  }
 
   Future<void> _handleSocialLoginButton_K() async {
     try {
@@ -461,7 +476,7 @@ class _LoginPageState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () => _handleSocialLoginButton(context),
+                    onTap: () => _handleSocialLoginButton_G(context),
                     child: Container(
                       width: 522, // 버튼 너비 조정
                       height: 60, // 버튼 높이 조정
@@ -599,28 +614,3 @@ class _LoginPageState extends State<Login> {
     );
   }
 }
-
-
-                  // Positioned(
-                  //   left: 1106.77,
-                  //   top: -39,
-                  //   child: Transform(
-                  //     transform: Matrix4.identity()
-                  //       ..translate(0.0, 0.0)
-                  //       ..rotateZ(0.26),
-                  //     child: Container(
-                  //       width: 751.85,
-                  //       height: 1019.13,
-                  //       decoration: ShapeDecoration(
-                  //         image: const DecorationImage(
-                  //           image: NetworkImage(
-                  //               "https://via.placeholder.com/752x1019"),
-                  //           fit: BoxFit.fill,
-                  //         ),
-                  //         shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(30),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),

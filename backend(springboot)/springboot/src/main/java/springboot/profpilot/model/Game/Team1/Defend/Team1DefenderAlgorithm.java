@@ -16,8 +16,15 @@ public class Team1DefenderAlgorithm {
 
         // 수비 행동트리
 
+//----------------------------
+//|    3  1            1 3   |
+//| 4         vs           4 |
+//|    2  0            0 2   |
+//----------------------------
+
+
         // team1 공격수0 행동트리
-        // 1. 상대 팀이 공을 가지면, 일단 우리 팀 골대 앞 측정 지정한 위치에 간다.
+        // 1. 상대 팀이 공을 가지면, 일단 우리 팀 골대 앞 특정 지정한 위치에 간다.
         // 2. 해당 지역 위치에 상대팀 선수가 들어오지 않아야 한다.
         AiNode Offender0_behaviorTree0 = new Selector(Arrays.asList(
             new Condition(() -> defenderGameCondition.isTeamWithBall(2)), // 2 팀이 공을 가지고 있는 경우

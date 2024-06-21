@@ -1,6 +1,9 @@
 package springboot.profpilot.global.config.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,35 +30,50 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final FirebaseAuth firebaseAuth;
 
     public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshRepository refreshRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        if (request.getHeader("Social") != null) {
+            FirebaseToken decodedToken;
+            String header = request.getHeader("Authorization").substring(7);
+            try {
+                decodedToken = firebaseAuth.verifyIdToken(header);//디코딩한 firebase 토큰을 반환
 
-        ObjectMapper mapper = new ObjectMapper();
-        LoginDTO loginDTO = null;
+                String username = decodedToken.getName();
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, "firebase", null);
+                return authenticationManager.authenticate(authToken);
+            } catch (FirebaseAuthException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            ObjectMapper mapper = new ObjectMapper();
+            LoginDTO loginDTO = null;
 
-        try {
-            loginDTO = mapper.readValue(request.getInputStream(), LoginDTO.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse login request body");
+            try {
+                loginDTO = mapper.readValue(request.getInputStream(), LoginDTO.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse login request body");
+            }
+
+            //클라이언트 요청에서 username, password 추출
+            String username = loginDTO.getUsername();
+            String password = loginDTO.getPassword();
+
+            //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+            //token에 담은 검증을 위한 AuthenticationManager로 전달
+            return authenticationManager.authenticate(authToken);
         }
 
-        //클라이언트 요청에서 username, password 추출
-        String username = loginDTO.getUsername();
-        String password = loginDTO.getPassword();
-
-        //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
-
-        //token에 담은 검증을 위한 AuthenticationManager로 전달
-        return authenticationManager.authenticate(authToken);
     }
 
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
