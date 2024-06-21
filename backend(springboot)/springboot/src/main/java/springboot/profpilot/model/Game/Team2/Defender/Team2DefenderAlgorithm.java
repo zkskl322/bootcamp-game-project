@@ -17,11 +17,19 @@ public class Team2DefenderAlgorithm {
         Team2DefenderGameConditions conditions = new Team2DefenderGameConditions(gameState);
         Team2DefenderGameActions actions = new Team2DefenderGameActions(gameState);
 
-        AiNode Offender0_behaviorTree = new Selector(Arrays.asList(
+        AiNode Offender0_behaviorTree = new Sequence(Arrays.asList(
                 new Condition(() -> !conditions.isTeamWithBall(2)), // 팀2가 공을 가지고 있지 않은 경우
                 new Condition(conditions::isOpponentCrossedMidLine), // 팀1의 공격수가 중앙선을 넘어온 경우
+                new Condition(() -> !conditions.isPlayerNearOpponent(0, 0.5)), // 0번 선수가 팀1의 공격수와 0.5 이내에 있지 않은 경우
                 new Action(actions::followOpponentOffender) // 0번 공격수가 팀1의 공격수를 따라다닙니다.
         ));
+
+        AiNode Defender2_behaviorTree = new Sequence(Arrays.asList(
+                new Condition(() -> conditions.isTeamWithBall(1)), // 팀2가 공을 가지고 있지 않은 경우
+                new Action(() -> actions.movePlayer2ToY(3.5)) // 2번 선수가 Y축으로 3.5 움직입니다.
+        ));
+
+        Defender2_behaviorTree.run();
         Offender0_behaviorTree.run();
         return gameState;
     }

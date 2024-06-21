@@ -23,12 +23,23 @@ public class Team2DefenderGameActions {
 
         if (player0_x < offender1_x - 0.1) {
             gameState.getPlayer2_players().getPlayers().get(0).setPlayer_x_speed(1);
-        } if (player0_x > offender1_x + 0.1) {
-            gameState.getPlayer2_players().getPlayers ().get(0).setPlayer_x_speed(-1);
-        } if (player0_y < offender1_y - 0.1) {
+        } else if (player0_x > offender1_x + 0.1) {
+            gameState.getPlayer2_players().getPlayers().get(0).setPlayer_x_speed(-1);
+        }
+        if (player0_y < offender1_y - 0.1) {
             gameState.getPlayer2_players().getPlayers().get(0).setPlayer_y_speed(1);
-        } if (player0_y > offender1_y + 0.1) {
+        } else if (player0_y > offender1_y + 0.1) {
             gameState.getPlayer2_players().getPlayers().get(0).setPlayer_y_speed(-1);
+        }
+    }
+
+    public void movePlayer2ToY(double targetY) {
+        double player2_y = gameState.getPlayer2_players().getPlayers().get(2).getPlayer_y();
+
+        if (player2_y < targetY - 0.1) {
+            gameState.getPlayer2_players().getPlayers().get(2).setPlayer_y_speed(1);
+        } else if (player2_y > targetY + 0.1) {
+            gameState.getPlayer2_players().getPlayers().get(2).setPlayer_y_speed(-1);
         }
     }
 }
