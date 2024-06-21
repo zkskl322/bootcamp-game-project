@@ -9,6 +9,7 @@ import springboot.profpilot.model.emailverfiy.EmailVerify;
 import springboot.profpilot.model.emailverfiy.EmailVerifyService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +34,12 @@ public class GamerService {
         user.setWin(0);
         user.setLose(0);
         user.setDraw(0);
+        user.setRankPoint(1000);
         user.setTier("Bronze");
         return gamerRepository.save(user);
+    }
+    public Gamer save(Gamer gamer) {
+        return gamerRepository.save(gamer);
     }
 
     public boolean login(String email, String password) {
@@ -97,15 +102,8 @@ public class GamerService {
         return gamerRepository.findByNickname(nickname);
     }
 
-//    public List<GamerDTO> getGamerData() {
-//        List<Gamer> gamers = gamerRepository.findAll();
-//        return gamers.stream()
-//                .map(gamer -> new GamerDTO(
-//                        gamer.getNickname(),
-//                        gamer.getPassword(),
-//                        gamer.getName(),
-//                        gamer.getEmail()
-//                )).collect(Collectors.toList());
-//    }
+    public List<Gamer> getGamerOrderByRankPoint() {
+        return gamerRepository.findAllByOrderByRankPointDescWinDesc();
+    }
 
 }

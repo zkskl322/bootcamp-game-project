@@ -15,9 +15,10 @@ public class GameResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String gameId;
+    private Long gameId;
     private String gameName;
     private String gameDatetime;
+    private String gameStatus;
 
     private String player1Name;
     private String player2Name;

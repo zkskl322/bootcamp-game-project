@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 import springboot.profpilot.model.Game.Team1.Offend.Team1OffenderAlgorithm;
+import springboot.profpilot.model.logSystem.GameResult;
+import springboot.profpilot.model.logSystem.GameResultRepository;
 import springboot.profpilot.model.logSystem.GameResultService;
 
 import java.io.IOException;
@@ -38,9 +40,8 @@ public class GameService {
     private final Team1OffenderAlgorithm Team1offenderAlgorithm;
     private final GameResultService gameResultService;
 
-
     public GameState startGame(String gameId) {
-
+        GameResult gameResult = gameResultService.findByGameId(Long.parseLong(gameId));
 
         GameState gameState = new GameState();
 
@@ -50,6 +51,8 @@ public class GameService {
         gameState.setGameStatus("STARTED");
         gameState.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTick(0);
+        gameState.setPlayer1Nickname(gameResult.getPlayer1Name());
+        gameState.setPlayer2Nickname(gameResult.getPlayer2Name());
 
         gameState.setScore1(0);
         gameState.setScore2(0);
@@ -64,7 +67,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(100); // 100초
+        gameState.setMax_time(20); // 100초
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);

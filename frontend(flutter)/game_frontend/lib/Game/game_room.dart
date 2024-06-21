@@ -103,6 +103,7 @@ class _GamePageState extends State<GameRoomPage> {
           'playerId': widget.myUuid,
           'action': _textController.text,
           'isDone': 'false',
+          
         }),
       );
       _textController.clear();
