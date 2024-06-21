@@ -100,7 +100,7 @@ class _GameRoomState extends State<GameRoom> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const UnsignedMainPage())); // 로그인 페이지로 이동
+                builder: (context) => const MainPageUnsign())); // 로그인 페이지로 이동
       } else {
         print("logout fail: ${response.statusCode}");
       }
@@ -1105,12 +1105,74 @@ class _GameRoomState extends State<GameRoom> {
                   child: Stack(
                     children: [
                       Positioned(
-                        // setting btn
+                        // Ranking btn
                         left: 0,
                         top: 0,
                         child: InkWell(
                           onTap: () {
-                            print('Setting 버튼이 눌렸습니다.');
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  child: Container(
+                                    height: 620,
+                                    width: 500,
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'GAME RANKING',
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: 10,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return ListTile(
+                                              leading: Text(
+                                                '${index + 1}',
+                                                style: const TextStyle(
+                                                  fontSize:
+                                                      16, // 예시로 폰트 크기를 16으로 설정
+                                                  fontWeight: FontWeight
+                                                      .bold, // 폰트의 두께 설정
+                                                ),
+                                              ),
+                                              title: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                      'Test User ${index + 1}'),
+                                                  Text(
+                                                      '${1000 - index * 100} PT.'),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        const SizedBox(height: 24),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('CLOSE'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
                           },
                           borderRadius: BorderRadius.circular(16),
                           child: SizedBox(
@@ -1125,7 +1187,7 @@ class _GameRoomState extends State<GameRoom> {
                                     width: 220,
                                     height: 70,
                                     decoration: ShapeDecoration(
-                                      color: Color(0xFFC8C5C2),
+                                      color: const Color(0xFFC8C5C2),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
                                       ),
@@ -1138,9 +1200,9 @@ class _GameRoomState extends State<GameRoom> {
                                   child: SizedBox(
                                     width: 176,
                                     height: 36,
-                                    child: const Center(
+                                    child: Center(
                                       child: Text(
-                                        'SETTING',
+                                        'RANKING',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 24,
@@ -1169,7 +1231,7 @@ class _GameRoomState extends State<GameRoom> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Create_Room()));
+                                      builder: (context) => CreateRoom()));
                               print('Create Room');
                             },
                             borderRadius: BorderRadius.circular(16),
