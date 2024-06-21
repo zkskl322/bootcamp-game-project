@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
-import springboot.profpilot.model.Game.Team1.Offend.Team1OffenderAlgorithm;
+import springboot.profpilot.model.Game.Team1.Defend.Team1DefendAlgorithm;
+import springboot.profpilot.model.Game.Team1.Offend.Team1OffendAlgorithm;
 import springboot.profpilot.model.logSystem.GameResult;
-import springboot.profpilot.model.logSystem.GameResultRepository;
 import springboot.profpilot.model.logSystem.GameResultService;
 
 import java.io.IOException;
@@ -37,7 +37,8 @@ public class GameService {
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
-    private final Team1OffenderAlgorithm Team1offenderAlgorithm;
+    private final Team1OffendAlgorithm Team1offendAlgorithm;
+    private final Team1DefendAlgorithm Team1defendAlgorithm;
     private final GameResultService gameResultService;
 
     public GameState startGame(String gameId) {
@@ -67,7 +68,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(20); // 100초
+        gameState.setMax_time(100); // 100초
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);
@@ -741,7 +742,8 @@ public class GameService {
         gameState = UpdateGamePlayer2(gameState, deltaTime);
         gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
-        gameState = Team1offenderAlgorithm.updateOnPossession(gameState);
+        gameState = Team1offendAlgorithm.updateOnPossession(gameState);
+        gameState = Team1defendAlgorithm.update(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {

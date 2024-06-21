@@ -12,13 +12,13 @@ import java.util.Arrays;
 
 // service를 만들어서 알고리즘을 구현
 @Service
-public class Team1OffenderAlgorithm {
+public class Team1OffendAlgorithm {
 
     // 공소유시 알고리즘 작성
     public GameState updateOnPossession(GameState gameState) {
         // 게임 상태를 조건과 액션으로 나누어서 객체 생성
-        Team1OffenderGameConditions conditions = new Team1OffenderGameConditions(gameState);
-        Team1OffenderGameActions actions = new Team1OffenderGameActions(gameState);
+        Team1OffendGameConditions conditions = new Team1OffendGameConditions(gameState);
+        Team1OffendGameActions actions = new Team1OffendGameActions(gameState);
 
         // team1 공격수0 행동트리
         // select와 squence를 이용하여 행동트리를 구성 -> false가 나오면 종료.

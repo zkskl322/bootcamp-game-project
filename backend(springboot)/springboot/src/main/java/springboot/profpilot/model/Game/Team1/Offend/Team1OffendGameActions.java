@@ -8,9 +8,9 @@ import springboot.profpilot.model.Game.GameState;
 //| 4         vs           4 |
 //|    2  0            0 2   |
 //----------------------------
-class Team1OffenderGameActions {
+class Team1OffendGameActions {
     private GameState gameState;
-    public Team1OffenderGameActions(GameState gameState) {
+    public Team1OffendGameActions(GameState gameState) {
         this.gameState = gameState;
     }
 
