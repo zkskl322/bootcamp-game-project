@@ -82,7 +82,7 @@ class _GameRoomState extends State<GameRoom> {
     final String? accessToken = window.localStorage['token'];
 
     if (accessToken == null) {
-      print('접근 토큰 없음');
+      print('access token null');
       return;
     }
 
@@ -100,7 +100,7 @@ class _GameRoomState extends State<GameRoom> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const MainPageUnsign())); // 로그인 페이지로 이동
+                builder: (context) => const UnsignedMainPage())); // 로그인 페이지로 이동
       } else {
         print("logout fail: ${response.statusCode}");
       }
