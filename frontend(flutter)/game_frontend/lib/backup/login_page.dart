@@ -77,10 +77,7 @@ class _LoginPageState extends State<Login> {
   late final FirebaseAuth auth;
 
   Future<void> _handleSocialLoginButton_G(BuildContext context) async {
-<<<<<<< HEAD
-=======
     // Dio 인스턴스 생성 - HTTP 요청을 처리하기 위한 라이브러리
->>>>>>> main
     Dio dio = Dio();
 
     try {
@@ -94,52 +91,23 @@ class _LoginPageState extends State<Login> {
       }
 
       // 구글 로그인 인증 정보 가져오기
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
       // 구글 OAuth 인증 정보 생성
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-<<<<<<< HEAD
-      FirebaseAuth auth = FirebaseAuth.instance;
-
-      User? currentUser = auth.currentUser; // null 검사
-
-      if (currentUser != null) {
-        String? idToken = await currentUser.getIdToken(true);
-        print(idToken);
-      } else {
-        print('No user is currently signed in.');
-      }
-
+      // Firebase로 구글 인증 정보로 로그인
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      // 로그인 성공 시 처리
-      print('user google login success: ${userCredential.user!.displayName}');
-
-      // 페이지 이동
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Game_Lobby()));
-    } catch (error) {
-      // 구글 로그인 오류 처리
-      print('google login error: $error');
-    }
-  }
-
-  void _handleSocialLoginButton(BuildContext context) {
-    _handleSocialLoginButton_G(context);
-  }
-=======
-      // Firebase로 구글 인증 정보로 로그인
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
-      
       // 현재 Firebase 인증 인스턴스와 로그인된 사용자 가져오기
       FirebaseAuth auth = FirebaseAuth.instance;
       User? currentUser = auth.currentUser;
-      
+
       if (currentUser != null) {
         // 현재 사용자의 ID 토큰을 가져오기
         String? idToken = await currentUser.getIdToken(true);
@@ -154,7 +122,7 @@ class _LoginPageState extends State<Login> {
             },
           ),
         );
-        
+
         // 서버 응답이 성공적일 경우
         if (response.statusCode == 200) {
           // 게임 로비 페이지로 이동
@@ -168,11 +136,10 @@ class _LoginPageState extends State<Login> {
             print("Login failed: ${response.statusCode}");
           }
         }
-      } 
-      else {
+      } else {
         // 현재 사용자가 없을 경우 로그인 페이지로 이동
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Login_Page()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const Login_Page()));
       }
     } catch (error) {
       // 예외 발생 시 디버그 모드에서 오류 메시지 출력
@@ -181,8 +148,6 @@ class _LoginPageState extends State<Login> {
       }
     }
   }
-
->>>>>>> main
 
   Future<void> _handleSocialLoginButton_K() async {
     try {
@@ -511,11 +476,7 @@ class _LoginPageState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-<<<<<<< HEAD
-                    onTap: () => _handleSocialLoginButton(context),
-=======
                     onTap: () => _handleSocialLoginButton_G(context),
->>>>>>> main
                     child: Container(
                       width: 522, // 버튼 너비 조정
                       height: 60, // 버튼 높이 조정
