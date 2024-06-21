@@ -44,61 +44,246 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _handleVerifyCodeButton() async {
     final dio = Dio();
 
-    // get 예시
-    // try {
-    //   final response = await dio.get(
-    //     'http://localhost:8080/member/test',
-    //   );
-    //   print(response);
-    // } catch (e) {
-    //   print(e);
-    // }
+    final email = _EmailController.text;
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$'); //email format check
+    if (!isVerifyCodeSent && (!emailRegex.hasMatch(email) || email.isEmpty)) {
+      // 이메일 형식이 잘못되었거나 공란일 때
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('잘못된 이메일 형식입니다. 다시 시도해 주세요.')),
+      );
+      return;
+    }
 
     // post 예시
     try {
-      final Response response = await dio
-          .post('http://localhost:8080/user/signup/email/verify', data: {
-        'email': _EmailController.text,
-      });
+      final Response response = await dio.post(
+        'http://localhost:8080/user/signup/email/verify', 
+        data: {
+          'email': _EmailController.text,
+        }
+      );
       if (response.statusCode == 200) {
-        print(response);
+        if (response.data == 'already') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Email already verified.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else if (response.data == 'wait') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Please wait for 5 minutes before requesting another verify code.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else if (response.data == 'fail') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Failed to send verify code.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else if (response.data == 'success') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Verify code sent successfully.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+        }
+        setState(() { //verifycode send logic
+          isVerifyCodeSent = true;
+        });
       } else {
-        print(response);
+        showAboutDialog(context: context, applicationName: 'Error', children: [
+          Text('Error: ${response.statusCode}'),
+          Text('Message: ${response.data}'),
+        ]);
       }
     } catch (e) {
       print(e);
     }
+  }
 
-    // final email = _EmailController.text;
-    // final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$'); //email format check
-    // if (!isVerifyCodeSent && (!emailRegex.hasMatch(email) || email.isEmpty)) {
-    //   // 이메일 형식이 잘못되었거나 공란일 때
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('잘못된 이메일 형식입니다. 다시 시도해 주세요.')),
-    //   );
-    //   return;
-    // }
+  Future<void> _checkVerifyCodeButton() async {
+    final dio = Dio();
 
-    // final verifycode = _VerifycodeController.text;
+    final email = _EmailController.text;
+    final verifycode = _VerifycodeController.text;
+    if (verifycode.isEmpty) {
+      showDialog(context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please fill in all the fields.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        }
+      ); 
+      return;
+    }
 
-    // setState(() { //verifycode send logic
-    //   if (isVerifyCodeSent) {
-    //     // Verify code 확인 로직을 여기에 추가
-    //     print('Verify code 확인');
-    //     print('verifycode: $verifycode');
-    //   } else {
-    //     // Verify code 보내는 로직을 여기에 추가
-    //     print('Verify code 보냄');
-    //     print('email: $email');
-    //   }
-    //   isVerifyCodeSent = !isVerifyCodeSent;
-    // });
+    try {
+      final Response response = await dio.post(
+        'http://localhost:8080/user/signup/email/verify/check', 
+        data: {
+          'email': email,
+          'verifyCode': verifycode,
+        }
+      );
+      if (response.statusCode == 200) {
+        if (response.data == 'fail') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Verify code is incorrect.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else if (response.data == 'notfound') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Email not found.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Email verified successfully.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+        }
+        
+      } else {
+        showAboutDialog(context: context, applicationName: 'Error', children: [
+          Text('Error: ${response.statusCode}'),
+          Text('Message: ${response.data}'),
+        ]);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _handleSginupButton() async {
     //sign up null exception, data send logic
-    final dio = Dio();
+    final email = _EmailController.text;
+    final realname = _RealnameController.text;
+    final nickname = _NicknameController.text;
+    final password = _PasswordController.text;
+    final reconfirm_password = _ReconfirmpasswordController.text;
+    final verifycode = _VerifycodeController.text;
 
+    if (email.isEmpty || realname.isEmpty || nickname.isEmpty || password.isEmpty || reconfirm_password.isEmpty) {
+      showDialog(context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please fill in all the fields.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        }
+      ); 
+      return;
+    } else if (password != reconfirm_password) {
+      showDialog(context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Passwords do not match.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        }
+      ); 
+      return;
+    }
+
+
+    final dio = Dio();
     try {
       final Response response =
           await dio.post('http://localhost:8080/user/signup', data: {
@@ -106,9 +291,56 @@ class _SignupPageState extends State<SignupPage> {
         'realname': _RealnameController.text,
         'nickname': _NicknameController.text,
         'password': _PasswordController.text,
-        'reconfirm_password': _ReconfirmpasswordController.text,
       });
       if (response.statusCode == 200) {
+        if (response.data == 'already exists') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Nickname already exists.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else if (response.data == 'Email not verified') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Email not verified.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+          return;
+        } else if (response.data == 'Success') {
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Sign up successful.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+        }
         print(response);
       } else {
         print(response);
@@ -117,24 +349,17 @@ class _SignupPageState extends State<SignupPage> {
       print(e);
     }
 
-    // final email = _EmailController.text;
-    // final realname = _RealnameController.text;
-    // final nickname = _NicknameController.text;
-    // final password = _PasswordController.text;
-    // final reconfirm_password = _ReconfirmpasswordController.text;
-    // final verifycode = _VerifycodeController.text;
-
-    // if (email.isEmpty || realname.isEmpty || nickname.isEmpty || password.isEmpty || reconfirm_password.isEmpty) {
-    //   print('모든 입력란을 채워주세요.');
-    //   return;
-    // } else {
-    //     print('email: $email');
-    //     print('realname: $realname');
-    //     print('nickname: $nickname');
-    //     print('password: $password');
-    //     print('reconfirmpassword: $reconfirm_password');
-    // }
   }
+
+
+
+
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -567,7 +792,7 @@ class _SignupPageState extends State<SignupPage> {
                           children: [
                             InkWell(
                               // verify code btn
-                              onTap: _handleVerifyCodeButton,
+                              onTap: isVerifyCodeSent ? _checkVerifyCodeButton : _handleVerifyCodeButton,
                               child: Container(
                                 width: double.infinity,
                                 height: 60,

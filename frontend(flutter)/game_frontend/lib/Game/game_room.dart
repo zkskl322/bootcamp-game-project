@@ -119,6 +119,7 @@ class _GamePageState extends State<GameRoomPage> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
+    
     if (stompClient == null) {
       stompClient = StompClient(
         config: StompConfig.sockJS(

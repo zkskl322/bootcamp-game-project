@@ -11,4 +11,7 @@ public class GameAction {
     private String playerId;
     private String action;
     private boolean isDone;
+
+//    private String player1Nickname;
+//    private String player2Nickname;
 }
