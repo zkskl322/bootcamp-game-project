@@ -22,10 +22,10 @@ class Msg {
 
 class IngameLobby2 extends StatefulWidget {
   final int GameId;
-  final String myUuid;
+  final String myRealUuid;
   final String method; 
 
-  const IngameLobby2({Key? key, required this.GameId, required this.myUuid, required this.method} ) : super(key: key);
+  const IngameLobby2({Key? key, required this.GameId, required this.myRealUuid, required this.method} ) : super(key: key);
 
   @override
   State<IngameLobby2> createState() => _IngameLobby2State();
@@ -36,7 +36,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
   bool player1IsReady = false;
   bool player2IsReady = false;
   
-  String myUuid = '1';
+  String myPlayer = '1';
   String room_name = '';
   String room_goal = '';
   String room_size = '';
@@ -91,16 +91,19 @@ class _IngameLobby2State extends State<IngameLobby2> {
         'Gamer2': obj['Gamer2'].toString(),
       };
 
-
+      _textController.text = 'User info: Gamer1: ' + data['Gamer1'].toString() + ' Gamer2: ' + data['Gamer2'].toString();
+      sendMessage();
+      _textController.clear();
 
       setState(() {
         if (data['response'] == 'Join GameRoom') {
+          myPlayer = '2';
           print('Join room success');
-          myUuid = '2';
         } else if (data['response'] == 'You already in room1') {
+          myPlayer = '1';
           print('You already in room');
         } else if (data['response'] == 'You already in room2') {
-          myUuid = '2';
+          myPlayer = '2';
           print('You already in room');
         } else {
           Navigator.push(
@@ -110,8 +113,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
         room_goal = data['room_goal'].toString();
         room_size = data['room_size'].toString();
         room_password = data['room_password'].toString();
-        owner_nickname = data['owner_nickname'].toString();
-        Owner = data['Owner'].toString();
         Gamer1 = data['Gamer1'].toString();
         Gamer2 = data['Gamer2'].toString();
       });
@@ -162,7 +163,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
     }
   }
 
-
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
       destination: '/topic/message/${widget.GameId}',
@@ -173,6 +173,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
             chattingId: obj['chattingId'],
             content: obj['content'], 
             uuid: obj['uuid']);
+          
           if (message.content == 'PLAYER1_READY') {
             setState(() {
               player1IsReady = true;
@@ -189,10 +190,18 @@ class _IngameLobby2State extends State<IngameLobby2> {
             setState(() {
               player2IsReady = false;
             });
-          } 
-          else if (message.content == 'START_GAME') {
+          } else if (message.content == 'START_GAME') {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: widget.myUuid)));
+                context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: widget.myRealUuid)));
+          } 
+          // User info가 전달된 경우 Gamer1, Gamer2의 정보를 업데이트
+          else if (message.content.contains('User info: ')) {
+            setState(() {
+              Gamer1 = message.content.split(' ')[3];
+              Gamer2 = message.content.split(' ')[5];
+            });
+            // Gamer1: Gamer1: Gamer2: Gamer2:
+            print('Gamer1: ' + Gamer1 + ' Gamer2: ' + Gamer2);
           }
           else {
             setState(() {
@@ -211,37 +220,21 @@ class _IngameLobby2State extends State<IngameLobby2> {
         body: json.encode({
           "chattingId": widget.GameId,
           "content": _textController.text, 
-          "uuid": widget.myUuid}),
+          "uuid": widget.myRealUuid,}),
       );
       _textController.clear();
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    joinRoom();
-    if (stompClient == null) {
-      stompClient = StompClient(
-        config: StompConfig.sockJS(
-          url: socketUrl,
-          onConnect: onConnect,
-          onWebSocketError: (dynamic error) => print(error.toString()),
-        ),
-      );
-      stompClient!.activate();
     }
   }
 
   void startGame() {
-    if (player1IsReady && player2IsReady && widget.myUuid == '1') {
+    if (player1IsReady && player2IsReady && myPlayer == '1') {
       _textController.text = 'START_GAME';
       sendMessage();
       _textController.clear();
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: widget.myUuid)));
+          context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: myPlayer)));
 
-    } else if (widget.myUuid == '2') {
+    } else if (myPlayer == '2') {
       showAboutDialog(context: context, children: const <Widget>[
         Text('You are not the host!'),
       ]);
@@ -255,7 +248,25 @@ class _IngameLobby2State extends State<IngameLobby2> {
       ]);
     }
   }
-  
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (stompClient == null) {
+      stompClient = StompClient(
+        config: StompConfig.sockJS(
+          url: socketUrl,
+          onConnect: onConnect,
+          onWebSocketError: (dynamic error) => print(error.toString()),
+        ),
+      );
+      stompClient!.activate();
+    }
+    joinRoom();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
@@ -274,167 +285,164 @@ class _IngameLobby2State extends State<IngameLobby2> {
                 Row(
                   children: [
                     const SizedBox(width: 100),
-                    Positioned( // 왼쪽 정보 : 게임 설정
-                      child: Container(
-                        width: 700,
-                        height: 900,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFF1F0707),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        ),
-                        child:Column(
-                          children: [
-                            const SizedBox(height: 100),
-                            const Positioned(
-                              left: 39,
-                              top: 54,
-                              child: SizedBox(
-                                width: 612,
-                                height: 47,
-                                child: Text(
-                                  'GAME SETTING',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 40,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.02,
-                                    letterSpacing: 1.60,
-                                  ),
-                                ),
+                    Container(
+                      width: 700,
+                      height: 900,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF1F0707),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child:Column(
+                        children: [
+                          const SizedBox(height: 100),
+                          const SizedBox(
+                            width: 612,
+                            height: 47,
+                            child: Text(
+                              'GAME SETTING',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                                fontFamily: 'Press Start 2P',
+                                fontWeight: FontWeight.w400,
+                                height: 0.02,
+                                letterSpacing: 1.60,
                               ),
                             ),
-                            const SizedBox(height: 100),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'TARGET GOAL',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.09,
-                                    letterSpacing: 0.80,
-                                  ),
+                          ),
+                          const SizedBox(height: 100),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'TARGET GOAL',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.09,
+                                  letterSpacing: 0.80,
                                 ),
-                                const SizedBox(width: 230),
-                                Text(
-                                  room_goal,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.09,
-                                    letterSpacing: 0.80,
-                                  ),
+                              ),
+                              const SizedBox(width: 230),
+                              Text(
+                                room_goal,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.09,
+                                  letterSpacing: 0.80,
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 100),
-                            const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'LIMITED TIME',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontFamily: 'Press Start 2P',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0.09,
-                                        letterSpacing: 0.80,
-                                      ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 100),
+                          const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'LIMITED TIME',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: 'Press Start 2P',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0.09,
+                                      letterSpacing: 0.80,
                                     ),
-                                    SizedBox(width: 167),
-                                    Text(
-                                      '120 (sec)',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontFamily: 'Press Start 2P',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0.09,
-                                        letterSpacing: 0.80,
-                                      ),
+                                  ),
+                                  SizedBox(width: 167),
+                                  Text(
+                                    '120 (sec)',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: 'Press Start 2P',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0.09,
+                                      letterSpacing: 0.80,
                                     ),
-                                  ],
-                            ),
-                            const SizedBox(height: 100),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'ROOM PASSWORD',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.09,
-                                    letterSpacing: 0.80,
                                   ),
+                                ],
+                          ),
+                          const SizedBox(height: 100),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'ROOM PASSWORD',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.09,
+                                  letterSpacing: 0.80,
                                 ),
-                                const SizedBox(width: 162),
-                                Text(
-                                  room_password,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.09,
-                                    letterSpacing: 0.80,
-                                  ),
+                              ),
+                              const SizedBox(width: 162),
+                              Text(
+                                room_password,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.09,
+                                  letterSpacing: 0.80,
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 100),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'LIMITED SIZE',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.09,
-                                    letterSpacing: 0.80,
-                                  ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 100),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'LIMITED SIZE',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.09,
+                                  letterSpacing: 0.80,
                                 ),
-                                const SizedBox(width: 251),
-                                Text(
-                                  room_size,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Press Start 2P',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0.09,
-                                    letterSpacing: 0.80,
-                                  ),
+                              ),
+                              const SizedBox(width: 251),
+                              Text(
+                                room_size,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Press Start 2P',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.09,
+                                  letterSpacing: 0.80,
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 100),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 100),
+                        
+                        ],
                       ),
                     ),
+                    
+                    
                     const SizedBox(width: 100),
                     Column( // 오른쪽 정보 : 게임 유저 정보, 채팅
                       children: [
@@ -473,7 +481,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                       ),
                                     ),
                                   )
-  
                                 ],)
                               ),
                               Positioned(
@@ -560,15 +567,14 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                   itemBuilder: (context, position) {
                                     return GestureDetector(
                                       child: Card(
-                                        
                                         child: Container(
-                                          color: list[position].uuid == widget.myUuid ? Color.fromARGB(255, 214, 168, 16) : Color.fromARGB(255, 0, 0, 0),
+                                          color: list[position].uuid == myPlayer ? Color.fromARGB(255, 214, 168, 16) : Color.fromARGB(255, 0, 0, 0),
                                           width: 200,
                                           child: Text(
                                             list[position].content,
-                                            textAlign: list[position].uuid == widget.myUuid ? TextAlign.right : TextAlign.left,
+                                            textAlign: list[position].uuid == myPlayer ? TextAlign.right : TextAlign.left,
                                             style: TextStyle(
-                                              color: list[position].uuid == widget.myUuid ? Color.fromARGB(255, 0, 0, 0) : Color.fromARGB(255, 255, 255, 255),
+                                              color: list[position].uuid == myPlayer ? Color.fromARGB(255, 0, 0, 0) : Color.fromARGB(255, 255, 255, 255),
                                             ),
                                           ),
                                         ),
@@ -598,7 +604,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                       keyboardType: TextInputType.text,
                                       decoration: InputDecoration(hintText: "Send Message"),
                                     ),
-                                    
                                   ),
                                   SizedBox(width: 10),
                                   SizedBox(
@@ -625,13 +630,12 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                 ElevatedButton(
                                   onPressed: () => {
                                     setState(() {
-                                      if (widget.myUuid == '1') {
+                                      if (myPlayer == '1') {
                                         player1IsReady = !player1IsReady;
                                         if (player1IsReady) _textController.text = 'PLAYER1_READY';
                                         else _textController.text = 'PLAYER1_NOT_READY';
                                         sendMessage();
                                         _textController.clear();
-
                                       } else {
                                         player2IsReady = !player2IsReady;
                                         if (player2IsReady) _textController.text = 'PLAYER2_READY';
@@ -642,7 +646,6 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                     }),
                                   }, 
                                   child: const Text('READY'),
-                                  
                                 ),
                                 const SizedBox(width: 50),
                                 ElevatedButton(
@@ -657,6 +660,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
                         )
                       ],
                     )
+                  
                   ],
                 ),
               ],

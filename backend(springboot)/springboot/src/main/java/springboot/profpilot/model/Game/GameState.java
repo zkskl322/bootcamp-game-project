@@ -22,6 +22,8 @@ public class GameState {
     private String  gameName;
     private String  gameStatus;
     private String  gameDatetime;
+    private Long    player1Id;
+    private Long    player2Id;
     private String  player1Name;
     private String  player2Name;
     private int     tick;

@@ -49,9 +49,27 @@ public class GamerController {
         return "login";
     }
 
+    @PostMapping("/logout")
+    public String logout() {
+        return "logout";
+    }
+
     @GetMapping("/signup")
     public String signup() {
         return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@RequestBody SignUpDTO signUpDTO) {
+        Gamer gamer = gamerService.findByNickname(signUpDTO.getNickname());
+        EmailVerify emailVerify = emailVerifyService.findByEmail(signUpDTO.getEmail());
+
+        if (emailVerify == null || !emailVerify.isVerified())
+            return "Email not verified";
+        if (gamer != null)
+            return "already exists";
+        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getRealname(), signUpDTO.getPassword());
+        return "Success";
     }
 
     @PostMapping("/signup/email/verify")
@@ -91,13 +109,6 @@ public class GamerController {
         String email = checkEmail.getEmail();
         String code = checkEmail.getVerifyCode();
         return gamerService.checkEmailVerifyCode(email, code);
-    }
-
-    @PostMapping("/signup")
-    public String signup(@RequestBody SignUpDTO signUpDTO) {
-
-        gamerService.save(signUpDTO.getEmail(), signUpDTO.getNickname(), signUpDTO.getRealname(), signUpDTO.getPassword());
-        return "Success";
     }
 
     @PostMapping("/find-id/email/verify")

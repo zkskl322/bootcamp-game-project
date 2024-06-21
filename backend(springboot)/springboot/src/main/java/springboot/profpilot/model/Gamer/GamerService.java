@@ -64,6 +64,8 @@ public class GamerService {
         if (emailVerfiy == null) {
             return "notfound";
         }
+        System.out.println(emailVerfiy.getCode());
+        System.out.println(code);
         if (emailVerfiy.getCode().equals(code)) {
             emailVerfiy.setVerified(true);
             emailVerifyService.save(emailVerfiy);

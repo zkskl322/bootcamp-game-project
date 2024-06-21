@@ -57,8 +57,12 @@ public class GameRoomController {
         response.put("room_password", gameRoom.getRoom_password());
         response.put("owner_nickname", gameRoom.getOwnerNickname());
         response.put("Owner", gameRoom.getOwnerNickname());
-        response.put("Gamer1", gamers.get(0).getNickname());
+        if (gamers.size() == 1) {
+            response.put("Gamer1", gamers.get(0).getNickname());
+            response.put("Gamer2", "waiting...");
+        }
         if (gamers.size() == 2) {
+            response.put("Gamer1", gamers.get(0).getNickname());
             response.put("Gamer2", gamers.get(1).getNickname());
         }
 
@@ -111,9 +115,6 @@ public class GameRoomController {
         }
         return "You can't leave room";
     }
-
-
-
 
     @PostMapping("/game/room/checkPassword")
     public Map<String, Object> checkPassword(@RequestBody CheckPassword checkPassword) {
