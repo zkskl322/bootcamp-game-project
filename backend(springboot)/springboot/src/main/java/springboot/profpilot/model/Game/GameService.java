@@ -31,7 +31,7 @@ public class GameService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     private long lastUpdateTime = System.currentTimeMillis();
-    private int time = 0;
+    private final int time = 0;
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
@@ -564,13 +564,13 @@ public class GameService {
         double ball_x = gameState.getBall_x();
         double ball_y = gameState.getBall_y();
         double leftover_x = 0, leftover_y = 0;
+        direction_x = direction_x * 0.9;
+        direction_y = direction_y * 0.9;
 
         GameSoccerTeam player1_players = gameState.getPlayer1_players();
         GameSoccerTeam player2_players = gameState.getPlayer2_players();
 
         // 공의 저항을 추가함
-        direction_x = direction_x * 0.9;
-        direction_y = direction_y * 0.9;
 
 
         gameState.setBall_direction_x(direction_x);
@@ -762,7 +762,6 @@ public class GameService {
 
         return gameState;
     }
-
     @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();
