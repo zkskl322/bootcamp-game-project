@@ -16,9 +16,7 @@ public class GameController {
 
     @MessageMapping("/action")
     public void handleAction(GameAction action) throws Exception {
-
         if (action.getAction().equals("START_GAME")){
-            // GameAction으로 player1Nickname, player2Nickname을 받아와서 gameService.startGame()에 넘겨줘야 함
             gameService.startGame(action.getGameId());
         }
         else if (action.getAction().equals("END_GAME"))

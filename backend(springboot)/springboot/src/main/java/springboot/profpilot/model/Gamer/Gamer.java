@@ -37,6 +37,7 @@ public class Gamer {
     private int lose;
     private int draw;
     private int total;
+    private int rankPoint;
     private String tier;
 
     @ManyToOne

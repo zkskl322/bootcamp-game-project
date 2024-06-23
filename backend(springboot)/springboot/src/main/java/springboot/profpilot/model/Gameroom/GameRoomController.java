@@ -5,8 +5,12 @@ import org.hibernate.annotations.Check;
 import org.springframework.web.bind.annotation.*;
 import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.Gamer.GamerService;
+import springboot.profpilot.model.logSystem.GameResult;
+import springboot.profpilot.model.logSystem.GameResultService;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +21,13 @@ public class GameRoomController {
     private final GameRoomService gameRoomService;
     private final GamerService gamerService;
     private final GameRoomRepository gameRoomRepository;
+    private final GameResultService gameResultService;
 
     @PostMapping("/game/room/create")
     public Long createRoom(@RequestBody GameRoomDTO gameRoomDTO, Principal principal) {
         GameRoom gameRoom = new GameRoom();
+        GameResult gameResult = new GameResult();
+
         gameRoom.setRoom_password(gameRoomDTO.getRoom_password());
         gameRoom.setRoomName(gameRoomDTO.getRoom_name());
         gameRoom.setRoom_goal(gameRoomDTO.getRoom_goal());
@@ -34,7 +41,16 @@ public class GameRoomController {
         gameRoomRepository.save(gameRoom);
 
 
+        gameResult.setGameName(gameRoomDTO.getRoom_name());
+        gameResult.setPlayer1Name(new_gamer.getNickname());
+        gameResult.setPlayer2Name("None");
+        gameResult.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        gameResult.setGameStatus("Waiting");
+
         GameRoom gameRoom1 = gameRoomRepository.findByRoomName(gameRoomDTO.getRoom_name());
+        gameResult.setGameId(gameRoom1.getId());
+
+        gameResultService.save(gameResult);
         return gameRoom1.getId();
     }
 
@@ -47,8 +63,9 @@ public class GameRoomController {
     @PostMapping("/game/room/join")
     public Map<String, Object> JoinRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
-        List<Gamer> gamers = gameRoom.getGamers();
+        GameResult gameResult = gameResultService.findByGameId(gameRoomId.getId());
         Map<String, Object> response = new HashMap<>();
+        List<Gamer> gamers = gameRoom.getGamers();
 
         response.put("response", "");
         response.put("room_name", gameRoom.getRoomName());
@@ -84,6 +101,10 @@ public class GameRoomController {
 
         if (gameRoom.getGamers().size() == 1) {
             Gamer new_gamer = gamerService.findByNickname(principal.getName());
+            gameResult.setPlayer2Name(new_gamer.getNickname());
+            gameResult.setGameStatus("Ready");
+            gameResultService.save(gameResult);
+
             gamers.add(new_gamer);
             gameRoom.setGamers(gamers);
             gameRoomRepository.save(gameRoom);

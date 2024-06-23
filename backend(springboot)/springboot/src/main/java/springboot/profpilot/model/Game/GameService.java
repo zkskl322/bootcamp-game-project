@@ -8,7 +8,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
-import springboot.profpilot.model.Game.Team1.Offend.Team1OffenderAlgorithm;
+import springboot.profpilot.model.Game.Team1.Defend.Team1DefendAlgorithm;
+import springboot.profpilot.model.Game.Team1.Offend.Team1OffendAlgorithm;
+import springboot.profpilot.model.logSystem.GameResult;
 import springboot.profpilot.model.logSystem.GameResultService;
 
 import java.io.IOException;
@@ -36,12 +38,12 @@ public class GameService {
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
-    private final Team1OffenderAlgorithm Team1offenderAlgorithm;
+    private final Team1OffendAlgorithm Team1offendAlgorithm;
+    private final Team1DefendAlgorithm Team1defendAlgorithm;
     private final GameResultService gameResultService;
 
-
     public GameState startGame(String gameId) {
-
+        GameResult gameResult = gameResultService.findByGameId(Long.parseLong(gameId));
 
         GameState gameState = new GameState();
 
@@ -51,6 +53,8 @@ public class GameService {
         gameState.setGameStatus("STARTED");
         gameState.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTick(0);
+        gameState.setPlayer1Nickname(gameResult.getPlayer1Name());
+        gameState.setPlayer2Nickname(gameResult.getPlayer2Name());
 
         gameState.setScore1(0);
         gameState.setScore2(0);
@@ -739,9 +743,8 @@ public class GameService {
         gameState = UpdateGamePlayer2(gameState, deltaTime);
         gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
-        gameState = Team1offenderAlgorithm.updateOnPossession(gameState);
-        gameState = Team2defenderAlgorithm.updateOnPossession(gameState);
-        gameState = Team2offenderAlgorithm.updateOnPossession(gameState);
+        gameState = Team1offendAlgorithm.updateOnPossession(gameState);
+        gameState = Team1defendAlgorithm.update(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {

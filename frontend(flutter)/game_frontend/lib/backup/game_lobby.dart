@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:game_frontend/Game/lobby.dart';
@@ -7,7 +8,6 @@ import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
 import 'package:game_frontend/backup/unsigned_main_page.dart';
-// import 'package:game_frontend/dto/gamer-dto.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -49,36 +49,14 @@ class _GameRoomState extends State<GameRoom> {
     fetchGameRooms();
   }
 
-  // Future<void> joinRoombtn(BuildContext context, int roomId) async {
-  //   try {
-  //     final response = await dio.post(
-  //       'http://localhost:8080/page/join_room',
-  //       data: {
-  //         'joingamer': GamerDTO,
-  //       },
-  //     );
-  //     if (response.statusCode == 200) {
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //       builder: (context) => ,
-  //     ),
-  //       );
-  //       print('Room join successfully');
-  //     } else {
-  //       print('Failed to join room: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  // }
-
   Future<void> _handleLogoutButton(BuildContext context) async {
     final dio = Dio();
     final String? accessToken = window.localStorage['token'];
 
     if (accessToken == null) {
-      print('접근 토큰 없음');
+      if (kDebugMode) {
+        print('access token null');
+      }
       return;
     }
 
@@ -92,16 +70,22 @@ class _GameRoomState extends State<GameRoom> {
         ),
       );
       if (response.statusCode == 200) {
-        print("logout successfully");
+        if (kDebugMode) {
+          print("logout successfully");
+        }
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => const UnsignedMainPage())); // 로그인 페이지로 이동
       } else {
-        print("logout fail: ${response.statusCode}");
+        if (kDebugMode) {
+          print("logout fail: ${response.statusCode}");
+        }
       }
     } catch (e) {
-      print("error: $e");
+      if (kDebugMode) {
+        print("error: $e");
+      }
     }
   }
 
@@ -109,7 +93,9 @@ class _GameRoomState extends State<GameRoom> {
     final String? accessToken = window.localStorage['token'];
 
     if (accessToken == null) {
-      print('No access token');
+      if (kDebugMode) {
+        print('No access token');
+      }
       return;
     }
     try {
@@ -277,6 +263,88 @@ class _GameRoomState extends State<GameRoom> {
     ]);
   }
 
+
+  Future<void> showRankingModal() async {
+    final String? accessToken = window.localStorage['token'];
+    if (accessToken == null) {
+      return;
+    }
+
+    final Response response = await dio.get(
+      'http://localhost:8080/user/ranking',
+      options: Options(
+        headers: {
+          'access': accessToken,
+        },
+        extra: {
+          'withCredentials': true,
+        },
+      ),
+    );
+
+    print(response.data);
+    // [{nickname: aaa, win: 0, lose: 0, draw: 0, rankPoint: 1100, tier: Bronze}, {nickname: bbb, win: 0, lose: 0, draw: 0, rankPoint: 900, tier: Bronze}]
+
+    List<dynamic> rankingData = response.data;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            height: 620,
+            width: 500,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'GAME RANKING',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: rankingData.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      leading: Text(
+                        '${index + 1}',
+                        style: const TextStyle(
+                          fontSize: 16, // 예시로 폰트 크기를 16으로 설정
+                          fontWeight: FontWeight.bold, // 폰트의 두께 설정
+                        ),
+                      ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(rankingData[index]['nickname']),
+                          Text('${rankingData[index]['rankPoint']} PT.'),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('CLOSE'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -326,41 +394,92 @@ class _GameRoomState extends State<GameRoom> {
                         ),
                       ),
                     ),
-                  Container(
+                  
+                  InkWell(
+                  onTap: () => _handleLogoutButton(context),
+                  child: Container(
                     width: 190,
                     height: 60,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFF758CFF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'LOGOUT',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontFamily: 'Press Start 2P',
-                          fontWeight: FontWeight.w400,
-                          height: 0.07,
-                          letterSpacing: 0.96,
+                  decoration: ShapeDecoration(
+                          color: const Color(0xFF758CFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                    child: 
+                      Container(
+                        width: 190,
+                        height: 60,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFF758CFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'LOGOUT',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontFamily: 'Press Start 2P',
+                              fontWeight: FontWeight.w400,
+                              height: 0.07,
+                              letterSpacing: 0.96,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
+                  
+                  
+                  // Container(
+                  //   width: 190,
+                  //   height: 60,
+                  //   decoration: ShapeDecoration(
+                  //     color: const Color(0xFF758CFF),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //     ),
+                  //   ),
+                  //   child: const Center(
+                  //     child: Text(
+                  //       'LOGOUT',
+                  //       style: TextStyle(
+                  //         color: Colors.black,
+                  //         fontSize: 24,
+                  //         fontFamily: 'Press Start 2P',
+                  //         fontWeight: FontWeight.w400,
+                  //         height: 0.07,
+                  //         letterSpacing: 0.96,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 ],
               ),
               const SizedBox(height: 20,),
               Row(
                 children: [
-                  const SizedBox(
-                    width: 50,
-                  ),
-                    
+                  const SizedBox(width: 50),
                   Container(
-                    width: 355.80,
-                    height: 680.17,
+                    width: 400,
+                    height: 700,
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: const Color(0xFF1B1B1B),
@@ -373,7 +492,7 @@ class _GameRoomState extends State<GameRoom> {
                       children: [
                         const SizedBox(height: 30,),
                         SizedBox(
-                          width: 250,
+                          width: 350,
                           height: 50,
                           child: Text(
                             'USERNAME : $myNickname',
@@ -382,7 +501,7 @@ class _GameRoomState extends State<GameRoom> {
                             style: const TextStyle(
                               color:
                                   Colors.white,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontFamily:
                                   'Press Start 2P',
                               fontWeight:
@@ -395,8 +514,8 @@ class _GameRoomState extends State<GameRoom> {
                           ),
                         ),
                         SizedBox(
-                          width: 120,
-                          height: 52,
+                          width: 350,
+                          height: 50,
                           child: SizedBox(
                                   width: 120,
                                   height: 20,
@@ -407,7 +526,7 @@ class _GameRoomState extends State<GameRoom> {
                                     style: const TextStyle(
                                       color:
                                           Colors.white,
-                                      fontSize: 24,
+                                      fontSize: 20,
                                       fontFamily:
                                           'Press Start 2P',
                                       fontWeight:
@@ -421,8 +540,8 @@ class _GameRoomState extends State<GameRoom> {
                                 ),
                         ),
                         SizedBox(
-                          width: 120,
-                          height: 52,
+                          width: 350,
+                          height: 50,
                           child: 
                           Text(
                             'LOSE : $myLoseScore',
@@ -431,7 +550,7 @@ class _GameRoomState extends State<GameRoom> {
                             style: const TextStyle(
                               color:
                                   Colors.white,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontFamily:
                                   'Press Start 2P',
                               fontWeight:
@@ -444,8 +563,8 @@ class _GameRoomState extends State<GameRoom> {
                           ),
                         ),
                         SizedBox(
-                          width: 120,
-                          height: 52,
+                          width: 350,
+                          height: 50,
                           child: Text(
                             'DRAW : $myDrawScore',
                             textAlign: TextAlign
@@ -453,7 +572,7 @@ class _GameRoomState extends State<GameRoom> {
                             style: const TextStyle(
                               color:
                                   Colors.white,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontFamily:
                                   'Press Start 2P',
                               fontWeight:
@@ -466,8 +585,8 @@ class _GameRoomState extends State<GameRoom> {
                           ),
                         ),
                         const SizedBox(
-                          width: 120,
-                          height: 52,
+                          width: 350,
+                          height: 50,
                           child: 
                           Text(
                             'Win Rate : ',
@@ -476,7 +595,7 @@ class _GameRoomState extends State<GameRoom> {
                             style: TextStyle(
                               color:
                                   Colors.white,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontFamily:
                                   'Press Start 2P',
                               fontWeight:
@@ -489,8 +608,8 @@ class _GameRoomState extends State<GameRoom> {
                           ),
                         ),
                         SizedBox(
-                          width: 230,
-                          height: 52,
+                          width: 350,
+                          height: 50,
                           child: 
                           Text(
                             "TIER : $myTier",
@@ -499,7 +618,7 @@ class _GameRoomState extends State<GameRoom> {
                             style: const TextStyle(
                               color:
                                   Colors.white,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontFamily:
                                   'Press Start 2P',
                               fontWeight:
@@ -514,9 +633,7 @@ class _GameRoomState extends State<GameRoom> {
                       ],
                     ),
                   ),
-
-                  const SizedBox(width: 100,),
-                  
+                  const SizedBox(width: 100),
                   Container(
                     width: 1000,
                     height: 750,
@@ -720,13 +837,8 @@ class _GameRoomState extends State<GameRoom> {
                         ],
                       ),
                     ),
-
-
-
-
                 ],
               ),
-          
               const SizedBox(height: 20,),
               Container(
                 //bottom btn
@@ -741,7 +853,7 @@ class _GameRoomState extends State<GameRoom> {
                         top: 0,
                         child: InkWell(
                           onTap: () {
-                            print('Ranking');
+                            showRankingModal();
                           },
                           borderRadius: BorderRadius.circular(16),
                           child: SizedBox(
@@ -756,7 +868,7 @@ class _GameRoomState extends State<GameRoom> {
                                     width: 220,
                                     height: 70,
                                     decoration: ShapeDecoration(
-                                      color: Color(0xFFC8C5C2),
+                                      color: const Color(0xFFC8C5C2),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
                                       ),
@@ -769,9 +881,9 @@ class _GameRoomState extends State<GameRoom> {
                                   child: SizedBox(
                                     width: 176,
                                     height: 36,
-                                    child: const Center(
+                                    child: Center(
                                       child: Text(
-                                        'Ranking',
+                                        'RANKING',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 24,
@@ -788,6 +900,9 @@ class _GameRoomState extends State<GameRoom> {
                             ),
                           ),
                         ),
+                      
+                      
+                      
                       ),
                       Positioned(
                         left: 1175,
