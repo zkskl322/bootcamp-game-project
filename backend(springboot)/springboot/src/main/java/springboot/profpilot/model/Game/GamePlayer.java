@@ -12,6 +12,7 @@ public class GamePlayer {
     double player_x_speed;
     double player_y_speed;
     int player_direction;
+    private boolean has_ball;
 
 
     public GamePlayer(double player_x, double player_y, int player_direction, double player_x_speed, double player_y_speed) {
@@ -20,5 +21,9 @@ public class GamePlayer {
         this.player_direction = player_direction;
         this.player_x_speed = player_x_speed;
         this.player_y_speed = player_y_speed;
+    }
+
+    public boolean getHas_ball() {
+        return this.has_ball;
     }
 }
