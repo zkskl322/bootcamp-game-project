@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
       // home: GameRoomPage(myUuid: '1', GameId: 11),
       // home: IngameLobby2(myUuid: '1', GameId: 11, method: "1"),
       // home: Game_Lobby(),
-      home: LobbyPage(),
-      // home: UnsignedMainPage(),
+    home: LobbyPage(),
+      //home: UnsignedMainPage(),
     );
   }
 }

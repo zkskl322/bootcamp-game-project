@@ -49,4 +49,18 @@ public class Team2OffenderGameConditions {
         return number == 3;
     }
 
+    public boolean isTeam2Offender1WithBall() {
+        int number = gameState.getPlayer2_control_player();
+        return number == 1; // 조건: 우리팀 공격수 1번이 공을 가지고 있다
+    }
+
+    public boolean isTeam2Offender1InOffensiveZone() {
+        if (gameState.getIsFirstHalf() == 1) {
+            double x = gameState.getPlayer2_players().getPlayers().get(1).getPlayer_x();
+            return x < 5.0; // 조건: 우리팀 공격수 1번이 x값 5.0(전반 기준)보다 작은 수로 들어간다
+        } else {
+            double x = gameState.getPlayer2_players().getPlayers().get(1).getPlayer_x();
+            return x > 5.5;
+        }
+    }
 }
