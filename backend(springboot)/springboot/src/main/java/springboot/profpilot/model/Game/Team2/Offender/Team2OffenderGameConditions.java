@@ -60,7 +60,7 @@ public class Team2OffenderGameConditions {
             return x < 5.0; // 조건: 우리팀 공격수 1번이 x값 5.0(전반 기준)보다 작은 수로 들어간다
         } else {
             double x = gameState.getPlayer2_players().getPlayers().get(1).getPlayer_x();
-            return x > 5.5;
+            return x > 6.0;
         }
     }
 }
