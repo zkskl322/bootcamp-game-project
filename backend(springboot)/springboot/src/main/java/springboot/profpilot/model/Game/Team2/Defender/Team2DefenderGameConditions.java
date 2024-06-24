@@ -1,9 +1,7 @@
 package springboot.profpilot.model.Game.Team2.Defender;
 
+import springboot.profpilot.model.Game.GamePlayer;
 import springboot.profpilot.model.Game.GameState;
-
-import java.rmi.server.RMIClassLoader;
-import java.rmi.server.RMIClassLoaderSpi;
 
 public class Team2DefenderGameConditions {
     private GameState gameState;
@@ -46,6 +44,30 @@ public class Team2DefenderGameConditions {
 
             double distance = Math.sqrt(Math.pow(player0_x - offender1_x, 2) + Math.pow(player0_y - offender1_y, 2));
             return distance < threshold;
+        }
+    }
+
+    public boolean isOffender1HasBall() {
+        int number = gameState.getPlayer1_control_player();
+        return number == 1;
+    }
+
+    public boolean isOffender1InDefenseZone() {
+
+        if (gameState.getIsFirstHalf() == 1) {
+            double defenseZoneBoundary1 = 7.0; // 수비진 영역
+            double defenseZoneBoundary2 = 10.5; // 수비진 영역
+            GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
+            double x = offender1.getPlayer_x();
+            if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
+            else return false;
+        } else {
+            double defenseZoneBoundary1 = 0.5;
+            double defenseZoneBoundary2 = 4.0; // 수비진 영역
+            GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
+            double x = offender1.getPlayer_x();
+            if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
+            else return false;
         }
     }
 }

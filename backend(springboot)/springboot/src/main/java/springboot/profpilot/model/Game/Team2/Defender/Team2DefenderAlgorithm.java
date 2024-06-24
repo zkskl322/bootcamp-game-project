@@ -29,7 +29,17 @@ public class Team2DefenderAlgorithm {
                 new Action(() -> actions.movePlayer2ToY(3.5)) // 2번 선수가 Y축으로 3.5 움직입니다.
         ));
 
+        AiNode Defender3_behaviorTree1 = new Selector(Arrays.asList(
+            new Condition(() -> conditions.isTeamWithBall(1)),
+            new Sequence(Arrays.asList(
+                    new Condition(conditions::isOffender1HasBall),
+                    new Condition(conditions::isOffender1InDefenseZone),
+                    new Action(() -> actions.mirrorFollowOffender())
+                ))
+        ));
+        
         Defender2_behaviorTree.run();
+        Defender3_behaviorTree1.run();
         Offender0_behaviorTree.run();
         return gameState;
     }
