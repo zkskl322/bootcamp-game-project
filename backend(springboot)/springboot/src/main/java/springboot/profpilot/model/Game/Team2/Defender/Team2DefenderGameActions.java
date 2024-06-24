@@ -42,4 +42,22 @@ public class Team2DefenderGameActions {
             gameState.getPlayer2_players().getPlayers().get(2).setPlayer_y_speed(-1);
         }
     }
+
+    public void mirrorFollowOffender() {
+        int defenderIndex = 3; // 수비수 인덱스 3번
+        int offenderIndex = 1; // 공격수 인덱스 1번
+
+        // 상대팀 공격수 1번 위치 가져오기
+        double offenderX = gameState.getPlayer1_players().getPlayers().get(offenderIndex).getPlayer_x();
+        double offenderY = gameState.getPlayer1_players().getPlayers().get(offenderIndex).getPlayer_y();
+
+        // 우리팀 수비수 3번 위치 가져오기
+        double defenderX = gameState.getPlayer2_players().getPlayers().get(defenderIndex).getPlayer_x();
+        double defenderY = gameState.getPlayer2_players().getPlayers().get(defenderIndex).getPlayer_y();
+
+        if (offenderX < defenderX - 0.1) gameState.getPlayer2_players().getPlayers().get(defenderIndex).setPlayer_x_speed(-1);
+        if (offenderX > defenderX + 0.1) gameState.getPlayer2_players().getPlayers().get(defenderIndex).setPlayer_x_speed(1);
+        if (offenderY < defenderY - 0.1) gameState.getPlayer2_players().getPlayers().get(defenderIndex).setPlayer_y_speed(-1);
+        if (offenderY > defenderY + 0.1) gameState.getPlayer2_players().getPlayers().get(defenderIndex).setPlayer_y_speed(1);
+    }
 }
