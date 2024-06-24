@@ -19,7 +19,7 @@ public class MainPageService {
                 .map(gameRoom -> new GameRoomDTO(
                         gameRoom.getId(),
                         gameRoom.getRoom_password(),
-                        gameRoom.getGamers().get(0).getNickname(),
+                        gameRoom.getOwnerNickname(),
                         gameRoom.getRoomName(),
                         gameRoom.getRoom_size(),
                         gameRoom.getRoom_goal()

@@ -1,5 +1,7 @@
 package springboot.profpilot.global.config.security;
 
+import com.google.firebase.auth.FirebaseAuth;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +20,8 @@ import springboot.profpilot.global.Utils.JwtUtil;
 import springboot.profpilot.global.config.token.JwtFilter;
 import springboot.profpilot.global.config.token.JwtLogoutFilter;
 import springboot.profpilot.global.config.token.LoginFilter;
+import springboot.profpilot.model.Gamer.GamerRepository;
+import springboot.profpilot.model.Gamer.GamerService;
 import springboot.profpilot.model.refresh.RefreshRepository;
 
 @Configuration
@@ -28,12 +32,18 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    @Autowired
+    private FirebaseAuth firebaseAuth;
 
+    private final GamerRepository gamerRepository;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
+                          JwtUtil jwtUtil, RefreshRepository refreshRepository,
+                          GamerRepository gamerRepository) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.gamerRepository = gamerRepository;
     }
 
     @Bean //AuthenticationManager Bean 등록
@@ -60,19 +70,22 @@ public class SecurityConfig {
                                 "/user/find-id/email/verify/check/Id", "/user/reset-password/email/verify/check/reset", "/user/reset-password/email/verify",
                                 "/user/reset-password/email/verify/check", "/sendToken/**", "/user/details").permitAll()
 
-                        .requestMatchers( "/user/whoAmI", "/game/room/join", "/game/room/delete", "/game/room/checkPassword").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( "/user/whoAmI", "/game/room/join", "/game/room/delete",
+                                            "user/ranking", "/game/room/checkPassword").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, firebaseAuth, gamerRepository), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/gamer/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .invalidateHttpSession(true)
-                        .logoutSuccessUrl("/gamer/login")
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl("/user/login")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;

@@ -7,9 +7,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
-import springboot.profpilot.model.Game.Team1.Offender.Team1OffenderAlgorithm;
-import springboot.profpilot.model.Game.Team2.Defender.Team2DefenderAlgorithm;
-import springboot.profpilot.model.Game.Team2.Offender.Team2OffenderAlgorithm;
+import springboot.profpilot.model.Game.Team1.Defend.Team1DefendAlgorithm;
+import springboot.profpilot.model.Game.Team1.Offend.Team1OffendAlgorithm;
+import springboot.profpilot.model.logSystem.GameResult;
+import springboot.profpilot.model.logSystem.GameResultService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -32,16 +33,16 @@ public class GameService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     private long lastUpdateTime = System.currentTimeMillis();
-    private int time = 0;
+    private final int time = 0;
     private Map<String, GameState> games = new ConcurrentHashMap<>();
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
-    private final Team1OffenderAlgorithm Team1offenderAlgorithm;
-    private final Team2OffenderAlgorithm team2OffenderAlgorithm;
-    private final Team2DefenderAlgorithm team2DefenderAlgorithm;
+    private final Team1OffendAlgorithm Team1offendAlgorithm;
+    private final Team1DefendAlgorithm Team1defendAlgorithm;
+    private final GameResultService gameResultService;
 
     public GameState startGame(String gameId) {
-
+        GameResult gameResult = gameResultService.findByGameId(Long.parseLong(gameId));
 
         GameState gameState = new GameState();
 
@@ -51,6 +52,8 @@ public class GameService {
         gameState.setGameStatus("STARTED");
         gameState.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTick(0);
+        gameState.setPlayer1Nickname(gameResult.getPlayer1Name());
+        gameState.setPlayer2Nickname(gameResult.getPlayer2Name());
 
         gameState.setScore1(0);
         gameState.setScore2(0);
@@ -65,7 +68,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(100); // 100분
+        gameState.setMax_time(100); // 100초
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);
@@ -565,13 +568,13 @@ public class GameService {
         double ball_x = gameState.getBall_x();
         double ball_y = gameState.getBall_y();
         double leftover_x = 0, leftover_y = 0;
+        direction_x = direction_x * 0.9;
+        direction_y = direction_y * 0.9;
 
         GameSoccerTeam player1_players = gameState.getPlayer1_players();
         GameSoccerTeam player2_players = gameState.getPlayer2_players();
 
         // 공의 저항을 추가함
-        direction_x = direction_x * 0.9;
-        direction_y = direction_y * 0.9;
 
 
         gameState.setBall_direction_x(direction_x);
@@ -739,9 +742,8 @@ public class GameService {
         gameState = UpdateGamePlayer2(gameState, deltaTime);
         gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
-        gameState = Team1offenderAlgorithm.updateOnPossession(gameState);
-        gameState = team2OffenderAlgorithm.updateOnPossession(gameState);
-        gameState = team2DefenderAlgorithm.updateOnPossession(gameState);
+        gameState = Team1offendAlgorithm.updateOnPossession(gameState);
+        gameState = Team1defendAlgorithm.update(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {
@@ -750,6 +752,8 @@ public class GameService {
         if (gameState.getTime() > gameState.getMax_time()) {
             gameState.setGameStatus("END");
             messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
+            gameResultService.saveByGameState(gameState);
+
             games.remove(gameId);
             return gameState;
         }
@@ -763,7 +767,6 @@ public class GameService {
 
         return gameState;
     }
-
     @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();

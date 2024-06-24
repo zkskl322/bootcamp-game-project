@@ -8,4 +8,7 @@ public interface GamerRepository extends JpaRepository<Gamer, Long> {
     Gamer findByEmail(String email);
     Gamer findByNickname(String nickname);
     List<Gamer> findByGameRoomId(Long gameRoomId);
+
+    // 랭크 점수 순위에 따라서 내림차순 정렬, 랭크 점수가 같다면 승수가 높은 순으로 정렬
+    List<Gamer> findAllByOrderByRankPointDescWinDesc();
 }

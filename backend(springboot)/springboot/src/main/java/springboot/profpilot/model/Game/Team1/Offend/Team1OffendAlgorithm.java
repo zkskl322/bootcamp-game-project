@@ -1,4 +1,4 @@
-package springboot.profpilot.model.Game.Team1.Offender;
+package springboot.profpilot.model.Game.Team1.Offend;
 
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.Core.*;
@@ -12,13 +12,13 @@ import java.util.Arrays;
 
 // service를 만들어서 알고리즘을 구현
 @Service
-public class Team1OffenderAlgorithm {
+public class Team1OffendAlgorithm {
 
     // 공소유시 알고리즘 작성
     public GameState updateOnPossession(GameState gameState) {
         // 게임 상태를 조건과 액션으로 나누어서 객체 생성
-        Team1OffenderGameConditions conditions = new Team1OffenderGameConditions(gameState);
-        Team1OffenderGameActions actions = new Team1OffenderGameActions(gameState);
+        Team1OffendGameConditions conditions = new Team1OffendGameConditions(gameState);
+        Team1OffendGameActions actions = new Team1OffendGameActions(gameState);
 
         // team1 공격수0 행동트리
         // select와 squence를 이용하여 행동트리를 구성 -> false가 나오면 종료.
@@ -62,25 +62,35 @@ public class Team1OffenderAlgorithm {
         ));
 
 
+        // team1 수비수2 행동 트리
+        // 1. 1번 공격수와 y축으로 대칭한 위치를 가지고, 1번 공격수보다 x축으로 2정도 뒤에 위치
+        AiNode Defender2_behaviorTree1 = new Selector(Arrays.asList(
+                new Condition(() -> conditions.isTeamWithBall(1)), // 1 팀이 공을 가지고 있는 경우
+                new Sequence(Arrays.asList(
+                        new Condition(conditions::isDefender2NotPossessBall), // 2번이 공을 가지고 있지 않은 경우
+                        new Condition(conditions::isDefender2SymmetryAndBack2Offender1), // 1번 공격수와 y축으로 대칭 및 x축으로 2정도 뒤에 위치한 경우
+                        new Action(actions::MoveDefender2SymmetryAndBack2Offender1) // 2번 수비수 이동 -> 1번 공격수와 y축으로 대칭 및 x축으로 2정도 뒤에 위치
+
+                ))
+        ));
 
 
-
-        // 2. 상대팀 0번과 2번, 그리고 1번과 3번 사이의 거리가 둘 다 3보다 작으면 아래 알고리즘
-        // 2-1. 아크 서클 정도 거리에서 위아래로 이동
-//        AiNode Offender1_behaviorTree2 = new Selector(Arrays.asList(
-//                new Condition(() -> conditions.isTeamWithBall(1)), // 1 팀이 공을 가지고 있는 경우
-//                new Sequence(Arrays.asList(
-//                        new Condition(conditions::isOffender1NotPossessBall), // 1번이 공을 가지고 있지 않은 경우
-//                        new Condition(conditions::isOtherTeamDistanceOkay(0)), // 상대팀 0,2 혹은 1,3 사이의 거리가 3보다 작은 경우
-//                        new Action(actions::MoveOffender1BetweenArcCircle) // 1번 공격수 이동 -> 상대팀과 겹치지 않도록 이동
-//                ))
-//        ));
-
+        // team1 수비수3 행동 트리
+        // 1.2번 수비수와 y축으로 대칭한 위치를 가지고, 2번 수비수보다 x축으로 2정도 뒤에 위치
+        AiNode Defender3_behaviorTree1 = new Selector(Arrays.asList(
+                new Condition(() -> conditions.isTeamWithBall(1)), // 1 팀이 공을 가지고 있는 경우
+                new Sequence(Arrays.asList(
+                        new Condition(conditions::isDefender3NotPossessBall), // 3번이 공을 가지고 있지 않은 경우
+                        new Condition(conditions::isDefender3SymmetryDefender2), // 2번 수비수와 y축으로 대칭 및 x축으로 2정도 뒤에 위치한 경우
+                        new Action(actions::MoveDefender3SymmetryDefender2) // 3번 수비수 이동 -> 2번 수비수와 y축으로 대칭 및 x축으로 2정도 뒤에 위치
+                ))
+        ));
 
         Offender0_behaviorTree1.run();
         Offender0_behaviorTree2.run();
         Offender1_behaviorTree1.run();
-//        Offender1_behaviorTree2.run();
+        Defender2_behaviorTree1.run();
+        Defender3_behaviorTree1.run();
 
         return gameState;
 

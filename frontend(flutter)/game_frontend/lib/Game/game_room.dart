@@ -103,6 +103,7 @@ class _GamePageState extends State<GameRoomPage> {
           'playerId': widget.myUuid,
           'action': _textController.text,
           'isDone': 'false',
+          
         }),
       );
       _textController.clear();
@@ -119,6 +120,7 @@ class _GamePageState extends State<GameRoomPage> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
+    
     if (stompClient == null) {
       stompClient = StompClient(
         config: StompConfig.sockJS(

@@ -1,12 +1,12 @@
-package springboot.profpilot.model.Game.Team1.Offender;
+package springboot.profpilot.model.Game.Team1.Offend;
 
 import springboot.profpilot.model.Game.GameState;
 
 // 0~1 offense player 2~3 defense player 4 goalkeeper
-class Team1OffenderGameConditions {
+class Team1OffendGameConditions {
     private GameState gameState;
 
-    public Team1OffenderGameConditions(GameState gameState) {
+    public Team1OffendGameConditions(GameState gameState) {
         this.gameState = gameState;
     }
     public boolean isTeamWithBall(int team) {
@@ -73,10 +73,10 @@ class Team1OffenderGameConditions {
 
 
     // Offender1 --------------------------------------------------- //
+    // 1번 공격수가 공을 가지고 있지 않은 경우
     public boolean isOffender1NotPossessBall() {
         return gameState.getPlayer1_control_player() != 1;
     }
-
 
     // 이미 1번이 0,2 혹은 1,3 번 중 거리가 더 먼 사이의 공간에 위치한 경우
     public boolean isOffdender1InBetweenOpposite() {
@@ -124,11 +124,147 @@ class Team1OffenderGameConditions {
         }
 
     }
-
-
     // Offender1 --------------------------------------------------- //
 
 
+    // Defender2 --------------------------------------------------- //
+    // 1번 공격수와 y축으로 대칭한 위치를 가지고, 1번 공격수보다 x축으로 2정도 뒤에 위치
+    public boolean isDefender2NotPossessBall() {
+        return gameState.getPlayer1_control_player() != 2;
+    }
+
+    // 1번 공격수와 y축으로 대칭 및 x축으로 2정도 뒤에 위치한 경우
+    public boolean isDefender2SymmetryAndBack2Offender1() {
+        double player1_x, player1_y;
+        double player2_x, player2_y;
+
+        player1_x = gameState.getPlayer1_players().getPlayers().get(1).getPlayer_x();
+        player1_y = gameState.getPlayer1_players().getPlayers().get(1).getPlayer_y();
+        player2_x = gameState.getPlayer1_players().getPlayers().get(2).getPlayer_x();
+        player2_y = gameState.getPlayer1_players().getPlayers().get(2).getPlayer_y();
+
+        double half_y = 3.5, high_y = 5.2, low_y = 1.8;
+
+        if (gameState.getIsFirstHalf() == 1) {
+            double back_x = player1_x - 2;
+
+            if (player1_y < half_y) {
+                if (player2_y < high_y + 0.1 && player2_y > high_y - 0.1) {
+                    if (player2_x < back_x + 0.1 && player2_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            } else if (player1_y > half_y) {
+                if (player2_y < low_y + 0.1 && player2_y > low_y - 0.1) {
+                    if (player2_x < back_x + 0.1 && player2_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            double back_x = player1_x + 2;
+
+            if (player1_y < half_y) {
+                if (player2_y < high_y + 0.1 && player2_y > high_y - 0.1) {
+                    if (player2_x < back_x + 0.1 && player2_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            } else if (player1_y > half_y) {
+                if (player2_y < low_y + 0.1 && player2_y > low_y - 0.1) {
+                    if (player2_x < back_x + 0.1 && player2_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    // Defender2 --------------------------------------------------- //
 
 
+    // Defender3 --------------------------------------------------- //
+    // 1.2번 수비수와 y축으로 대칭한 위치를 가지고, 2번 수비수보다 x축으로 2정도 뒤에 위치
+    public boolean isDefender3NotPossessBall() {
+        return gameState.getPlayer1_control_player() != 3;
+    }
+
+    // 2번 수비수와 y축으로 대칭 및 x축으로 2정도 뒤에 위치한 경우
+    public boolean isDefender3SymmetryDefender2() {
+        double player2_x, player2_y;
+        double player3_x, player3_y;
+
+        player2_x = gameState.getPlayer1_players().getPlayers().get(2).getPlayer_x();
+        player2_y = gameState.getPlayer1_players().getPlayers().get(2).getPlayer_y();
+        player3_x = gameState.getPlayer1_players().getPlayers().get(3).getPlayer_x();
+        player3_y = gameState.getPlayer1_players().getPlayers().get(3).getPlayer_y();
+
+        double half_y = 3.5, high_y = 5.2, low_y = 1.8;
+
+        if (gameState.getIsFirstHalf() == 1) {
+            double back_x = player2_x - 2;
+
+            if (player2_y < half_y) {
+                if (player3_y < high_y + 0.1 && player3_y > high_y - 0.1) {
+                    if (player3_x < back_x + 0.1 && player3_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            } else if (player2_y > half_y) {
+                if (player3_y < low_y + 0.1 && player3_y > low_y - 0.1) {
+                    if (player3_x < back_x + 0.1 && player3_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            double back_x = player2_x + 2;
+
+            if (player2_y < half_y) {
+                if (player3_y < high_y + 0.1 && player3_y > high_y - 0.1) {
+                    if (player3_x < back_x + 0.1 && player3_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            } else if (player2_y > half_y) {
+                if (player3_y < low_y + 0.1 && player3_y > low_y - 0.1) {
+                    if (player3_x < back_x + 0.1 && player3_x > back_x - 0.1) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+    // Defender3 --------------------------------------------------- //
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

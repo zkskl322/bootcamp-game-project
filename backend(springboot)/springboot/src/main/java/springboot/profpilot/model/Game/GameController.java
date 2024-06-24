@@ -16,9 +16,9 @@ public class GameController {
 
     @MessageMapping("/action")
     public void handleAction(GameAction action) throws Exception {
-
-        if (action.getAction().equals("START_GAME"))
+        if (action.getAction().equals("START_GAME")){
             gameService.startGame(action.getGameId());
+        }
         else if (action.getAction().equals("END_GAME"))
             gameService.endGame(action.getGameId());
         gameService.processAction(action);

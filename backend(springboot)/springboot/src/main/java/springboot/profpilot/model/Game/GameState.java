@@ -22,8 +22,8 @@ public class GameState {
     private String  gameName;
     private String  gameStatus;
     private String  gameDatetime;
-    private String  player1Name;
-    private String  player2Name;
+    private String  player1Nickname;
+    private String  player2Nickname;
     private int     tick;
 
 
