@@ -306,34 +306,44 @@ class _GameRoomState extends State<GameRoom> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: rankingData.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      leading: Text(
-                        '${index + 1}',
-                        style: const TextStyle(
-                          fontSize: 16, // 예시로 폰트 크기를 16으로 설정
-                          fontWeight: FontWeight.bold, // 폰트의 두께 설정
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: rankingData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: Text(
+                          '${index + 1}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(rankingData[index]['nickname']),
-                          Text('${rankingData[index]['rankPoint']} PT.'),
-                        ],
-                      ),
-                    );
-                  },
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(rankingData[index]['nickname']),
+                            Text('${rankingData[index]['rankPoint']} PT.'),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('CLOSE'),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('CLOSE'),
+                  ),
                 ),
               ],
             ),
@@ -758,21 +768,34 @@ class _GameRoomState extends State<GameRoom> {
                                           left: 829.10,
                                           top: 7,
                                           child: GestureDetector(
-                                            child: Container(
+                                            child: SizedBox(
                                               width: 122.95,
                                               height: 59,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFF393434),
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                              ),
-                                              child: Center(
-                                                child: ElevatedButton(
-                                                  onPressed: () => {
-                                                    joinGameRoombtn(
-                                                        room.roomId),
-                                                  },
-                                                  child: Text('JOIN'),
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  joinGameRoombtn(room.roomId);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: const Color(
+                                                      0xFF393434), // 버튼 배경색 설정
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                  ),
+                                                  padding:
+                                                      EdgeInsets.zero, // 패딩 초기화
+                                                ),
+                                                child: const Center(
+                                                  child: Text(
+                                                    'JOIN',
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      color: Colors.white,
+                                                      fontFamily:
+                                                          'Press Start 2P',
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
