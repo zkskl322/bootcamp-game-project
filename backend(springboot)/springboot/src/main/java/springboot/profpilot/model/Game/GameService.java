@@ -10,6 +10,8 @@ import springboot.profpilot.model.Game.AI.GoalkeeperAiService;
 import springboot.profpilot.model.Game.Action.onPossession.PassAlgorithm;
 import springboot.profpilot.model.Game.Team1.Defend.Team1DefendAlgorithm;
 import springboot.profpilot.model.Game.Team1.Offend.Team1OffendAlgorithm;
+import springboot.profpilot.model.Game.Team2.Defender.Team2DefenderAlgorithm;
+import springboot.profpilot.model.Game.Team2.Offender.Team2OffenderAlgorithm;
 import springboot.profpilot.model.logSystem.GameResult;
 import springboot.profpilot.model.logSystem.GameResultService;
 
@@ -40,6 +42,8 @@ public class GameService {
     private final PassAlgorithm passAlgorithm;
     private final Team1OffendAlgorithm Team1offendAlgorithm;
     private final Team1DefendAlgorithm Team1defendAlgorithm;
+    private final Team2OffenderAlgorithm Team2offenderAlgorithm;
+    private final Team2DefenderAlgorithm Team2defenderAlgorithm;
     private final GameResultService gameResultService;
 
     public GameState startGame(String gameId) {
@@ -743,8 +747,10 @@ public class GameService {
         gameState = UpdateGamePlayer2(gameState, deltaTime);
         gameState = UpdateGamePlayer3(gameState, deltaTime);
         gameState = goalkeeperAiService.update(gameState);
-        gameState = Team1offendAlgorithm.updateOnPossession(gameState);
+        gameState = Team1offendAlgorithm.update(gameState);
         gameState = Team1defendAlgorithm.update(gameState);
+        gameState = Team2offenderAlgorithm.updateOnPossession(gameState);
+        gameState = Team2defenderAlgorithm.updateOnPossession(gameState);
         return gameState;
     }
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {

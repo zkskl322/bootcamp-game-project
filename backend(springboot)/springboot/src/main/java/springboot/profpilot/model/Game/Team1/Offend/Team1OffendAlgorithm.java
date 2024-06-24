@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class Team1OffendAlgorithm {
 
     // 공소유시 알고리즘 작성
-    public GameState updateOnPossession(GameState gameState) {
+    public GameState update(GameState gameState) {
         // 게임 상태를 조건과 액션으로 나누어서 객체 생성
         Team1OffendGameConditions conditions = new Team1OffendGameConditions(gameState);
         Team1OffendGameActions actions = new Team1OffendGameActions(gameState);

@@ -40,7 +40,9 @@ public class Team2OffenderAlgorithm {
                 new Action(action::moveOffender1ToDifferentYSameX) // 행동: 우리팀 공격수 1번이 0번과 다른 y값의 같은 x값으로 뛴다
                 ))
         ));
-                
+
+
+
         AiNode Offender0_behaviorTree1 = new Selector(Arrays.asList(
             new Condition(() -> condition.isTeamWithBall(2)),
             new Sequence(Arrays.asList(

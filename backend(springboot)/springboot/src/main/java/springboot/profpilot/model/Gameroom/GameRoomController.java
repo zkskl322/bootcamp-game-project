@@ -64,6 +64,7 @@ public class GameRoomController {
     public Map<String, Object> JoinRoom(@RequestBody GameRoomIdDTO gameRoomId, Principal principal) {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId.getId()).orElseThrow(() -> new RuntimeException("GameRoom not found"));
         GameResult gameResult = gameResultService.findByGameId(gameRoomId.getId());
+        Gamer new_gamer = gamerService.findByNickname(principal.getName());
         Map<String, Object> response = new HashMap<>();
         List<Gamer> gamers = gameRoom.getGamers();
 
@@ -74,33 +75,47 @@ public class GameRoomController {
         response.put("room_password", gameRoom.getRoom_password());
         response.put("owner_nickname", gameRoom.getOwnerNickname());
         response.put("Owner", gameRoom.getOwnerNickname());
+
         if (gamers.size() == 1) {
-            response.put("Gamer1", gamers.get(0).getNickname());
-            response.put("Gamer2", "waiting...");
+            if (gameRoom.getOwnerNickname().equals(new_gamer.getNickname())) {
+                response.put("Gamer1", gameRoom.getOwnerNickname());
+                response.put("Gamer2", "waiting...");
+                response.put("response", "You already in room1");
+            } else {
+                response.put("Gamer1", gameRoom.getOwnerNickname());
+                response.put("Gamer2", new_gamer.getNickname());
+                response.put("response", "Join GameRoom Success");
+            }
         }
         if (gamers.size() == 2) {
-            response.put("Gamer1", gamers.get(0).getNickname());
-            response.put("Gamer2", gamers.get(1).getNickname());
+            response.put("Gamer1", gameRoom.getOwnerNickname());
+            if (gamers.get(0).getNickname().equals(gameRoom.getOwnerNickname())) {
+                response.put("Gamer2", gamers.get(1).getNickname());
+            } else {
+                response.put("Gamer2", gamers.get(0).getNickname());
+            }
         }
 
-        if (gameRoom.getOwnerNickname().equals(principal.getName())) {
+        if (gameRoom.getOwnerNickname().equals(new_gamer.getNickname())) {
             response.put("response", "You already in room1");
             return response;
-        } else if (gamers.get(0).getNickname().equals(principal.getName())) {
+        } else if (gamers.get(0).getNickname().equals(new_gamer.getNickname())) {
             response.put("response", "You already in room2");
             return response;
-        } else if (gamers.size() == 2) {
-            if (gamers.get(1).getNickname().equals(principal.getName())) {
+        }
+
+        else if (gamers.size() == 2) {
+            if (gamers.get(1).getNickname().equals(new_gamer.getNickname())) {
                 response.put("response", "You already in room2");
-                return response;
-            } else {
+            }
+            if (!gameRoom.getGamers().get(0).getNickname().equals(new_gamer.getNickname() ) && !gameRoom.getGamers().get(1).getNickname().equals(new_gamer.getNickname())) {
                 response.put("response", "Room is full");
                 return response;
             }
         }
 
         if (gameRoom.getGamers().size() == 1) {
-            Gamer new_gamer = gamerService.findByNickname(principal.getName());
+
             gameResult.setPlayer2Name(new_gamer.getNickname());
             gameResult.setGameStatus("Ready");
             gameResultService.save(gameResult);
@@ -108,10 +123,10 @@ public class GameRoomController {
             gamers.add(new_gamer);
             gameRoom.setGamers(gamers);
             gameRoomRepository.save(gameRoom);
-            response.put("response", "Join GameRoom");
+            System.out.println("Join GameRoom Success");
+            System.out.println("response : " + response.get("response"));
             return response;
         }
-        response.put("response", "Room is full");
         return response;
     }
 

@@ -96,15 +96,19 @@ class _IngameLobby2State extends State<IngameLobby2> {
       _textController.clear();
 
       setState(() {
-        if (data['response'] == 'Join GameRoom') {
+        print("=====================================");
+        print("Join GameRoom Success");
+        print(data);
+        print("=====================================");
+        if (data['response'] == 'Join GameRoom Success') {
           myPlayer = '2';
           print('Join room success');
         } else if (data['response'] == 'You already in room1') {
           myPlayer = '1';
-          print('You already in room');
+          print('You already in room1');
         } else if (data['response'] == 'You already in room2') {
           myPlayer = '2';
-          print('You already in room');
+          print('You already in room2');
         } else {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => Game_Lobby()));
@@ -191,8 +195,9 @@ class _IngameLobby2State extends State<IngameLobby2> {
               player2IsReady = false;
             });
           } else if (message.content == 'START_GAME') {
+            print("Game Start" + myPlayer);
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: widget.myRealUuid)));
+                context, MaterialPageRoute(builder: (context) => GameRoomPage(GameId: widget.GameId, myUuid: myPlayer)));
           } 
           // User info가 전달된 경우 Gamer1, Gamer2의 정보를 업데이트
           else if (message.content.contains('User info: ')) {
