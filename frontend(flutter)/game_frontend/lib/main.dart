@@ -21,13 +21,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
 // <<<<<<< HEAD
       title: 'Unsigned start page',
-      theme: ThemeData(),
-      // home: GameResultPage(playerId: "2", score1: 1, score2: 1, gameId: int.parse("1")),
-      // home: GameRoomPage(myUuid: '1', GameId: 11),
-      // home: IngameLobby2(myUuid: '1', GameId: 11, method: "1"),
-      // home: Game_Lobby(),
-      home: LobbyPage(),
-      // home: UnsignedMainPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: UnsignedMainPage(),
     );
 // >>>>>>> main
   }
