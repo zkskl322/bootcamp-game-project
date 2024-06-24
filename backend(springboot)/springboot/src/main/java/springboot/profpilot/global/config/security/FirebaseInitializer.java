@@ -16,7 +16,7 @@ public class FirebaseInitializer {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         FileInputStream serviceAccount =
-                new FileInputStream("C:\\Users\\admin\\project\\bootcamp-game-project\\backend(springboot)\\springboot\\src\\main\\java\\springboot\\profpilot\\firebase.json");
+                new FileInputStream("C:\\Users\\admin\\Documents\\GitHub\\bootcamp-game-project\\backend(springboot)\\springboot\\src\\main\\java\\springboot\\profpilot\\firebase.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
