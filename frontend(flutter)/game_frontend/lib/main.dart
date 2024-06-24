@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/unsigned_main_page.dart';
 import 'package:game_frontend/firebase_options.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -20,12 +21,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
 // <<<<<<< HEAD
-      title: 'Unsigned start page',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: UnsignedMainPage(),
-    );
+        title: 'Unsigned start page',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: LobbyPage()
+        // home: UnsignedMainPage(),
+        );
 // >>>>>>> main
   }
 }
