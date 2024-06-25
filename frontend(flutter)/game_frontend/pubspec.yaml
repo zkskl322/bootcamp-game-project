@@ -21,7 +21,6 @@ dependencies:
   localstorage: ^5.0.0
   flutter_web_auth: ^0.5.0
   shared_preferences: ^2.2.3
- 
 
 dev_dependencies:
   flutter_test:
@@ -41,3 +40,7 @@ flutter:
     - family: Press Start 2P
       fonts:
         - asset: fonts/Press Start 2P.ttf
+
+  assets:
+    - images/Google.png
+    - images/game.png

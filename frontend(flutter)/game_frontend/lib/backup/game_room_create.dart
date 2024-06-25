@@ -7,7 +7,6 @@ import 'package:game_frontend/backup/signed_main_page.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 import "dart:html";
 
-
 class Create_Room extends StatelessWidget {
   const Create_Room({super.key});
 
@@ -46,10 +45,6 @@ class _CreateRoomState extends State<CreateRoom> {
     super.initState();
   }
 
-
-
-
-
   Future<void> createRoombtn() async {
     if (accessToken == null) {
       window.alert('로그인이 필요합니다.');
@@ -59,12 +54,10 @@ class _CreateRoomState extends State<CreateRoom> {
     try {
       final response = await dio.post(
         'http://localhost:8080/game/room/create',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'access': accessToken,
-          }
-        ),
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'access': accessToken,
+        }),
         data: {
           'room_password': roomPasswordController.text,
           'room_name': roomNameController.text,
@@ -76,7 +69,9 @@ class _CreateRoomState extends State<CreateRoom> {
       if (response.statusCode == 200) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => IngameLobby2(GameId: response.data, myRealUuid: '1', method: 'create')),
+          MaterialPageRoute(
+              builder: (context) => IngameLobby2(
+                  GameId: response.data, myRealUuid: '1', method: 'create')),
         );
         print('Room created successfully');
       } else {

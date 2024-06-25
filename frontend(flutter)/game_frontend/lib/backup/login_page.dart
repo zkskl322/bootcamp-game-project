@@ -44,7 +44,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginPageState extends State<Login> {
-  final TextEditingController _EmailController = TextEditingController();
+  final TextEditingController _NicknameController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -59,7 +59,7 @@ class _LoginPageState extends State<Login> {
       final Response response = await dio.post(
         'http://localhost:8080/login',
         data: {
-          'username': _EmailController.text,
+          'username': _NicknameController.text,
           'password': _PasswordController.text,
         },
       );
@@ -90,8 +90,9 @@ class _LoginPageState extends State<Login> {
       }
 
       // 구글 로그인 인증 정보 가져오기
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
       // 구글 OAuth 인증 정보 생성
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -99,12 +100,13 @@ class _LoginPageState extends State<Login> {
       );
 
       // Firebase로 구글 인증 정보로 로그인
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
-      
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
       // 현재 Firebase 인증 인스턴스와 로그인된 사용자 가져오기
       FirebaseAuth auth = FirebaseAuth.instance;
       User? currentUser = auth.currentUser;
-      
+
       if (currentUser != null) {
         // 현재 사용자의 ID 토큰을 가져오기
         String? idToken = await currentUser.getIdToken(true);
@@ -119,7 +121,7 @@ class _LoginPageState extends State<Login> {
             },
           ),
         );
-        
+
         // 서버 응답이 성공적일 경우
         if (response.statusCode == 200) {
           // 게임 로비 페이지로 이동
@@ -133,48 +135,16 @@ class _LoginPageState extends State<Login> {
             print("Login failed: ${response.statusCode}");
           }
         }
-      } 
-      else {
+      } else {
         // 현재 사용자가 없을 경우 로그인 페이지로 이동
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Login_Page()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const Login_Page()));
       }
     } catch (error) {
       // 예외 발생 시 디버그 모드에서 오류 메시지 출력
       if (kDebugMode) {
         print('구글로 로그인 실패 $error');
       }
-    }
-  }
-
-  Future<void> _handleSocialLoginButton_K() async {
-    try {
-      bool isInstalled = await kakaoUser.isKakaoTalkInstalled();
-
-      kakaoUser.OAuthToken token = isInstalled
-          ? await kakaoUser.UserApi.instance.loginWithKakaoTalk()
-          : await kakaoUser.UserApi.instance.loginWithKakaoAccount();
-
-      print(token);
-
-      final url = Uri.https('kapi.kakao.com', '/v2/user/me');
-
-      final response = await http.get(
-        url,
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ${token.accessToken}'
-        },
-      );
-
-      // 로그인 성공 시 처리
-
-      final profileInfo = json.decode(response.body);
-      print(profileInfo.toString());
-      print('user kakao login success');
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Game_Lobby()));
-    } catch (error) {
-      print('카카오톡으로 로그인 실패 $error');
     }
   }
 
@@ -271,7 +241,7 @@ class _LoginPageState extends State<Login> {
                                     ),
                                   ),
                                   child: TextField(
-                                    controller: _EmailController,
+                                    controller: _NicknameController,
                                     decoration: const InputDecoration(
                                       hintText: 'Nickname',
                                       hintStyle: TextStyle(
@@ -499,60 +469,11 @@ class _LoginPageState extends State<Login> {
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
-                            child: const FlutterLogo(), // 구글 로고 또는 아이콘으로 변경
+                            child: Image.asset('images/Google.png'),
                           ),
                           const SizedBox(width: 12),
                           const Text(
                             'Sign in with Google',
-                            style: TextStyle(
-                              color: Color(0xFF7D7D7D),
-                              fontSize: 18, // 폰트 크기 조정
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Column(
-                //sociallogin (kakao)
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: _handleSocialLoginButton_K,
-                    child: Container(
-                      width: 522, // 버튼 너비 조정
-                      height: 60, // 버튼 높이 조정
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              width: 1, color: Color(0x7F07021F)),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 24, // 구글 로고 크기 조정
-                            height: 24, // 구글 로고 크기 조정
-                            clipBehavior: Clip.antiAlias,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: const FlutterLogo(), // 구글 로고 또는 아이콘으로 변경
-                          ),
-                          const SizedBox(width: 12),
-                          const Text(
-                            'Sign in with Kakao',
                             style: TextStyle(
                               color: Color(0xFF7D7D7D),
                               fontSize: 18, // 폰트 크기 조정
@@ -588,7 +509,8 @@ class _LoginPageState extends State<Login> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Signup_Page()),
+                        MaterialPageRoute(
+                            builder: (context) => const Signup_Page()),
                       );
                     },
                     child: const Text(

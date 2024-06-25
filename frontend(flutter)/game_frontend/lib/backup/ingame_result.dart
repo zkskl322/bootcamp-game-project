@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
+// MaterialPageRoute(
+//   builder: (context) => GameResultPage(
+//     score1: game.score1,
+//     score2: game.score2,
+//   ),
+// ),
 
 class GameResultPage extends StatefulWidget {
   final int gameId;
@@ -18,11 +24,9 @@ class GameResultPage extends StatefulWidget {
   State<GameResultPage> createState() => _GameResultPage();
 }
 
-
-
 class _GameResultPage extends State<GameResultPage> {
   String GameReultString = "";
-  
+
   @override
   void initState() {
     if (widget.score1 > widget.score2) {
@@ -36,19 +40,17 @@ class _GameResultPage extends State<GameResultPage> {
         GameReultString = "You Win!";
       } else {
         GameReultString = "You Lose!";
-      } 
+      }
     } else {
       GameReultString = "Draw!";
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      body: 
-        Column(
+      body: Column(
         children: [
           Container(
             width: screenSize.width,
@@ -80,22 +82,20 @@ class _GameResultPage extends State<GameResultPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed:   
-                        () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => IngameLobby2(
-                                GameId: widget.gameId,
-                                myRealUuid: widget.playerId,
-                                method: "replay",
-                              ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => IngameLobby2(
+                              GameId: widget.gameId,
+                              myRealUuid: widget.playerId,
+                              method: "replay",
                             ),
-                          );
-                        },
+                          ),
+                        );
+                      },
                       child: const Text('Play Again'),
                     ),
-                    
                   ],
                 ),
               ],

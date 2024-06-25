@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:game_frontend/backup/login_page.dart';
+import 'package:game_frontend/backup/unsigned_main_page.dart';
 
 // void main() {
 //   runApp(const FigmaToCodeApp());
@@ -56,78 +57,86 @@ class _SignupPageState extends State<SignupPage> {
 
     // post 예시
     try {
-      final Response response = await dio.post(
-        'http://localhost:8080/user/signup/email/verify',
-        data: {
-          'email': _EmailController.text,
-        }
-      );
+      final Response response = await dio
+          .post('http://localhost:8080/user/signup/email/verify', data: {
+        'email': _EmailController.text,
+      });
       if (response.statusCode == 200) {
         if (response.data == 'already') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Email already verified.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Email already verified.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else if (response.data == 'wait') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Please wait for 5 minutes before requesting another verify code.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text(
+                      'Please wait for 5 minutes before requesting another verify code.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else if (response.data == 'fail') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Failed to send verify code.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Failed to send verify code.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else if (response.data == 'success') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: Text('Verify code sent successfully.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Success'),
+                  content: Text('Verify code sent successfully.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
         }
-        setState(() { //verifycode send logic
+        setState(() {
+          //verifycode send logic
           isVerifyCodeSent = true;
         });
       } else {
@@ -147,83 +156,86 @@ class _SignupPageState extends State<SignupPage> {
     final email = _EmailController.text;
     final verifycode = _VerifycodeController.text;
     if (verifycode.isEmpty) {
-      showDialog(context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please fill in all the fields.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        }
-      ); 
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Please fill in all the fields.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
       return;
     }
 
     try {
-      final Response response = await dio.post(
-        'http://localhost:8080/user/signup/email/verify/check', 
-        data: {
-          'email': email,
-          'verifyCode': verifycode,
-        }
-      );
+      final Response response = await dio
+          .post('http://localhost:8080/user/signup/email/verify/check', data: {
+        'email': email,
+        'verifyCode': verifycode,
+      });
       if (response.statusCode == 200) {
         if (response.data == 'fail') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Verify code is incorrect.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Verify code is incorrect.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else if (response.data == 'notfound') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Email not found.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Email not found.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: Text('Email verified successfully.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Success'),
+                  content: Text('Email verified successfully.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
         }
-        
       } else {
         showAboutDialog(context: context, applicationName: 'Error', children: [
           Text('Error: ${response.statusCode}'),
@@ -244,44 +256,47 @@ class _SignupPageState extends State<SignupPage> {
     final reconfirm_password = _ReconfirmpasswordController.text;
     final verifycode = _VerifycodeController.text;
 
-    if (email.isEmpty || realname.isEmpty || nickname.isEmpty || password.isEmpty || reconfirm_password.isEmpty) {
-      showDialog(context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please fill in all the fields.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        }
-      ); 
+    if (email.isEmpty ||
+        realname.isEmpty ||
+        nickname.isEmpty ||
+        password.isEmpty ||
+        reconfirm_password.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Please fill in all the fields.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
       return;
     } else if (password != reconfirm_password) {
-      showDialog(context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Passwords do not match.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        }
-      ); 
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Passwords do not match.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
       return;
     }
-
 
     final dio = Dio();
     try {
@@ -294,52 +309,62 @@ class _SignupPageState extends State<SignupPage> {
       });
       if (response.statusCode == 200) {
         if (response.data == 'already exists') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Nickname already exists.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Nickname already exists.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else if (response.data == 'Email not verified') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Email not verified.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Email not verified.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
           return;
         } else if (response.data == 'Success') {
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: Text('Sign up successful.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Success'),
+                  content: Text('Sign up successful.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const Login_Page())); // 로그인 페이지로 이동
         }
         print(response);
       } else {
@@ -348,18 +373,7 @@ class _SignupPageState extends State<SignupPage> {
     } catch (e) {
       print(e);
     }
-
   }
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -792,7 +806,9 @@ class _SignupPageState extends State<SignupPage> {
                           children: [
                             InkWell(
                               // verify code btn
-                              onTap: isVerifyCodeSent ? _checkVerifyCodeButton : _handleVerifyCodeButton,
+                              onTap: isVerifyCodeSent
+                                  ? _checkVerifyCodeButton
+                                  : _handleVerifyCodeButton,
                               child: Container(
                                 width: double.infinity,
                                 height: 60,
