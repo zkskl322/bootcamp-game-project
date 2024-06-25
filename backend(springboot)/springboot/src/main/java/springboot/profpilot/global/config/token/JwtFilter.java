@@ -70,6 +70,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     gamer.setWin(0);
                     gamer.setLose(0);
                     gamer.setDraw(0);
+                    gamer.setRankPoint(1000);
                     gamer.setTier("Bronze");
                     gamerRepository.save(gamer);
                 }

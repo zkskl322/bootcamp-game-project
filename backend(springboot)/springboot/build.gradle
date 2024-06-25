@@ -11,10 +11,6 @@ java {
 	sourceCompatibility = '21'
 }
 
-//bootJar {
-//	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//}
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -41,8 +37,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-//	implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
-	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'

@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:game_frontend/Game/game_room.dart';
 import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
 import 'package:game_frontend/backup/ingame_result.dart';
@@ -29,11 +28,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: GameResultPage(playerId: "2", score1: 1, score2: 1, gameId: int.parse("1")),
-      // home: GameRoomPage(myUuid: '1', GameId: 11),
-      // home: IngameLobby2(myUuid: '1', GameId: 11, method: "1"),
-      // home: Game_Lobby(),
-      // home: LoginPageTest(),
       home: UnsignedMainPage(),
     );
   }

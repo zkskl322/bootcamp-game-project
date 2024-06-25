@@ -3,10 +3,10 @@ package springboot.profpilot.model.Game.Team1.Offend;
 import springboot.profpilot.model.Game.GameState;
 
 // 0~1 offense player 2~3 defense player 4 goalkeeper
-class Team1OffenderGameConditions {
+class Team1OffendGameConditions {
     private GameState gameState;
 
-    public Team1OffenderGameConditions(GameState gameState) {
+    public Team1OffendGameConditions(GameState gameState) {
         this.gameState = gameState;
     }
     public boolean isTeamWithBall(int team) {
