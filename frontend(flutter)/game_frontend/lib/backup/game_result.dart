@@ -1,17 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
-// MaterialPageRoute(
-//   builder: (context) => GameResultPage(
-//     score1: game.score1,
-//     score2: game.score2,
-//   ),
-// ),
-
-
-
-
-
-
 
 class GameResultPage extends StatefulWidget {
   final int gameId;

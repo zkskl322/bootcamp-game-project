@@ -19,13 +19,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-// <<<<<<< HEAD
       title: 'Unsigned start page',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: UnsignedMainPage(),
     );
-// >>>>>>> main
   }
 }

@@ -40,6 +40,7 @@ class MainPageSigned extends StatelessWidget {
 
     try {
       final Response response = await dio.post(
+        // 'http://sprinboot-container:8080/user/logout',
         'http://localhost:8080/user/logout',
         options: Options(
           headers: {

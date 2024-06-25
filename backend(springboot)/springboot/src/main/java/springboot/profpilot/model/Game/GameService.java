@@ -774,7 +774,7 @@ public class GameService {
 
         return gameState;
     }
-    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
+    @Scheduled(fixedRate = 100) // 약 60 FPS (16ms)
     public void updateGameStates() {
         long currentTime = System.currentTimeMillis();
         double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환

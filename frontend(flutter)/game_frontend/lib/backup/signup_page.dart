@@ -57,7 +57,7 @@ class _SignupPageState extends State<SignupPage> {
     // post 예시
     try {
       final Response response = await dio.post(
-        'http://localhost:8080/user/signup/email/verify', 
+        'http://localhost:8080/user/signup/email/verify',
         data: {
           'email': _EmailController.text,
         }
