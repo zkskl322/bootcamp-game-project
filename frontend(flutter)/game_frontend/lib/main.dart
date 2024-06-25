@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:game_frontend/Game/game_room.dart';
 import 'package:game_frontend/Game/lobby.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
-import 'package:game_frontend/backup/game_result.dart';
+import 'package:game_frontend/backup/ingame_result.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
+import 'package:game_frontend/backup%20test/login_page_test.dart';
 import 'package:game_frontend/backup/unsigned_main_page.dart';
 import 'package:game_frontend/firebase_options.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       // home: GameRoomPage(myUuid: '1', GameId: 11),
       // home: IngameLobby2(myUuid: '1', GameId: 11, method: "1"),
       // home: Game_Lobby(),
-      // home: LobbyPage(),
+      // home: LoginPageTest(),
       home: UnsignedMainPage(),
     );
   }

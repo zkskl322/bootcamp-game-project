@@ -276,10 +276,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: "8f2606fffd912ff8c23e8d94da106764c116112ce65fb18c78123331ae628eb3"
+      sha256: "60e4f7947fa413cd9f2e23c955e8406afe640a8b2fbd00b46fb2901058047b8f"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.24"
+    version: "6.1.25"
   google_sign_in_ios:
     dependency: transitive
     description:
@@ -300,10 +300,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_web
-      sha256: fc0f14ed45ea616a6cfb4d1c7534c2221b7092cc4f29a709f0c3053cc3e821bd
+      sha256: d606264c7a1a526a3aa79d938b85a601d8589731a478bd4a3dcbdeb14a572228
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.4"
+    version: "0.12.4+1"
   http:
     dependency: transitive
     description:
@@ -348,26 +348,26 @@ packages:
     dependency: transitive
     description:
       name: kakao_flutter_sdk_auth
-      sha256: "43b81bb90d0e01516d321ab3cedc32303f661f115c564489c0fcc4e4a065c777"
+      sha256: "9e57d360db1333489755c16c9b90c2fa761753d85671c1f8202a9b8d44d8ffd9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.2"
+    version: "1.9.3"
   kakao_flutter_sdk_common:
     dependency: transitive
     description:
       name: kakao_flutter_sdk_common
-      sha256: "0e3ffd97fa35386d6fabe854cb4c5799b303c75b25f15ce4ec10163d87a5caa5"
+      sha256: "0ba1dd075aff7ac878cd9064c80b1f3849cfb460c5fc6770fb6b2eb409dc683d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.2"
+    version: "1.9.3"
   kakao_flutter_sdk_user:
     dependency: "direct main"
     description:
       name: kakao_flutter_sdk_user
-      sha256: "9d3bd35d5b31cf01d45c7d114ca0c589d5098d8e6efce6f13d574ea692ba6a62"
+      sha256: "25f3ae9abdd3fd801fbc66ee1af9187195b4847724360b995096f17024ca6d1d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.2"
+    version: "1.9.3"
   leak_tracker:
     dependency: transitive
     description:
@@ -452,10 +452,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "9c96da072b421e98183f9ea7464898428e764bc0ce5567f27ec8693442e72514"
+      sha256: bca87b0165ffd7cdb9cad8edd22d18d2201e886d9a9f19b4fb3452ea7df3a72a
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.5"
+    version: "2.2.6"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -532,10 +532,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_foundation
-      sha256: "7708d83064f38060c7b39db12aefe449cb8cdc031d6062280087bc4cdb988f5c"
+      sha256: "0a8a893bf4fd1152f93fec03a415d11c27c74454d96e2318a7ac38dd18683ab7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.5"
+    version: "2.4.0"
   shared_preferences_linux:
     dependency: transitive
     description:
