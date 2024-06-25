@@ -40,3 +40,7 @@ flutter:
     - family: Press Start 2P
       fonts:
         - asset: fonts/Press Start 2P.ttf
+
+  assets:
+    - images/Google.png
+    - images/game.png
