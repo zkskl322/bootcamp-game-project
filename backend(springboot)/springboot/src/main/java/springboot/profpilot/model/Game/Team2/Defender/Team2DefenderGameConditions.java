@@ -69,7 +69,6 @@ public class Team2DefenderGameConditions {
             double defenseZoneBoundary2 = 10.5; // 수비진 영역
             GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
             double x = offender1.getPlayer_x();
-            System.out.println("offender1 : " + offender1.isPossession());
             if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
             else return false;
         } else {
@@ -77,7 +76,6 @@ public class Team2DefenderGameConditions {
             double defenseZoneBoundary2 = 4.0; // 수비진 영역
             GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
             double x = offender1.getPlayer_x();
-            System.out.println("offender1 : " + offender1.isPossession());
             if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
             else return false;
         }
