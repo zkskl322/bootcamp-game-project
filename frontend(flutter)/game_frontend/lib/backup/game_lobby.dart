@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:game_frontend/Game/lobby.dart';
+import 'package:game_frontend/backup%20test/game_room_create_test.dart';
 import 'package:game_frontend/backup/game_room_create.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
 import 'package:game_frontend/backup/signed_main_page.dart';
@@ -608,7 +609,7 @@ class _GameRoomState extends State<GameRoom> {
                                   ),
                                 ),
                                 Positioned(
-                                  left: 119.62,
+                                  left: 100,
                                   top: 1,
                                   child: SizedBox(
                                     width: 466.22,
@@ -694,7 +695,7 @@ class _GameRoomState extends State<GameRoom> {
                                                   ),
                                                 ),
                                                 Positioned(
-                                                  left: 300,
+                                                  left: 150,
                                                   top: 0,
                                                   child: SizedBox(
                                                     width: 454.85,
@@ -864,7 +865,8 @@ class _GameRoomState extends State<GameRoom> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Create_Room()));
+                                        builder: (context) =>
+                                            CreateRoomTest()));
                                 print('Create Room');
                               },
                               borderRadius: BorderRadius.circular(16),

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:game_frontend/Game/lobby.dart';
+import 'package:game_frontend/backup%20test/game_lobby_test.dart';
 import 'package:game_frontend/backup/game_lobby.dart';
 import 'package:game_frontend/backup/ingame_result.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: UnsignedMainPage(),
+      // home: UnsignedMainPage(),
+      home: Game_Lobby_Test(),
     );
   }
 }
