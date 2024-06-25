@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_frontend/Game/Painter.dart';
 import 'package:game_frontend/Game/game_instance.dart';
-import 'package:game_frontend/backup/game_result.dart';
-import 'package:game_frontend/backup/game_win.dart';
+import 'package:game_frontend/backup/ingame_result.dart';
+import 'package:game_frontend/backup/ingame_win.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class GameRoomPage extends StatefulWidget {
@@ -17,14 +17,12 @@ class GameRoomPage extends StatefulWidget {
   State<GameRoomPage> createState() => _GamePageState();
 }
 
-
 class Msg {
   final String content;
   final String uuid;
 
   Msg({required this.content, required this.uuid});
 }
-
 
 class _GamePageState extends State<GameRoomPage> {
   StompClient? stompClient;
@@ -103,7 +101,6 @@ class _GamePageState extends State<GameRoomPage> {
           'playerId': widget.myUuid,
           'action': _textController.text,
           'isDone': 'false',
-          
         }),
       );
       _textController.clear();
@@ -120,7 +117,7 @@ class _GamePageState extends State<GameRoomPage> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    
+
     if (stompClient == null) {
       stompClient = StompClient(
         config: StompConfig.sockJS(
@@ -262,4 +259,3 @@ class _GamePageState extends State<GameRoomPage> {
     );
   }
 }
-
