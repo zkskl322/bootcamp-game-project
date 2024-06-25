@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'dart:html' as html;
 import 'package:game_frontend/backup/game_lobby.dart';
 import 'package:game_frontend/backup/ingame_lobby.dart';
 import 'package:game_frontend/backup/login_page.dart';
+import 'package:game_frontend/backup/signed_main_page.dart';
+import 'package:game_frontend/dto/gameroom-dto.dart';
+import "dart:html";
+
+class Create_Room extends StatelessWidget {
+  const Create_Room({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
+      ),
+      home: Scaffold(
+        body: ListView(children: [
+          CreateRoom(),
+        ]),
+      ),
+    );
+  }
+}
 
 class CreateRoom extends StatefulWidget {
   @override
@@ -12,18 +32,24 @@ class CreateRoom extends StatefulWidget {
 
 class _CreateRoomState extends State<CreateRoom> {
   final Dio dio = Dio();
-  final String? accessToken = html.window.localStorage['token'];
+  List<GameRoomsDTO> _gamerooms = [];
+
+  final String? accessToken = window.localStorage['token'];
   final TextEditingController roomNameController = TextEditingController();
   final TextEditingController roomPasswordController = TextEditingController();
   final TextEditingController roomSizeController = TextEditingController();
   final TextEditingController targetGoalController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> createRoombtn() async {
     if (accessToken == null) {
-      html.window.alert('로그인이 필요합니다.');
+      window.alert('로그인이 필요합니다.');
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const Login_Page()));
-      return;
     }
     try {
       final response = await dio.post(
@@ -58,224 +84,368 @@ class _CreateRoomState extends State<CreateRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            width: 1600,
-            height: 960,
-            color: Colors.white,
-          ),
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Container(
-              width: 1600,
-              height: 960,
-              child: Stack(
-                children: [
-                  RoomSettingSection(
-                    roomNameController: roomNameController,
-                    roomPasswordController: roomPasswordController,
-                    roomSizeController: roomSizeController,
-                    targetGoalController: targetGoalController,
-                  ),
-                  Positioned(
-                    left: 50,
-                    top: 862,
-                    child: Container(
-                      width: 1500,
-                      height: 70,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Game_Lobby()));
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: const Color(0xFFC8C5C2),
-                              fixedSize: const Size(220, 70),
-                              textStyle: const TextStyle(
-                                fontSize: 24,
-                                fontFamily: 'Press Start 2P',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: const Text('BACK'),
-                          ),
-                          ElevatedButton(
-                            onPressed: createRoombtn,
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: const Color(0xFFC8C5C2),
-                              fixedSize: const Size(325, 70),
-                              textStyle: const TextStyle(
-                                fontSize: 24,
-                                fontFamily: 'Press Start 2P',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: const Text('CREATE ROOM'),
-                          ),
-                        ],
-                      ),
+    return Column(
+      children: [
+        Container(
+          width: 1600,
+          height: 960,
+          clipBehavior: Clip.antiAlias,
+          decoration: const BoxDecoration(color: Color(0xFFF2F2F2)),
+          child: Stack(
+            children: [
+              Positioned(
+                //middle setting section
+                left: 50,
+                top: 94,
+                child: Container(
+                  width: 1500,
+                  height: 748,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: Color(0xFF080808),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
+                    shadows: const [
+                      BoxShadow(
+                        color: Color(0x7FFFFFFF),
+                        blurRadius: 2.83,
+                        offset: Offset(0, 2.83),
+                        spreadRadius: 0,
+                      )
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class RoomSettingSection extends StatelessWidget {
-  final TextEditingController roomNameController;
-  final TextEditingController roomPasswordController;
-  final TextEditingController roomSizeController;
-  final TextEditingController targetGoalController;
-
-  const RoomSettingSection({
-    Key? key,
-    required this.roomNameController,
-    required this.roomPasswordController,
-    required this.roomSizeController,
-    required this.targetGoalController,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: 50,
-      top: 94,
-      child: Container(
-        width: 1500,
-        height: 748,
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: const Color(0xFF080808),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          shadows: const [
-            BoxShadow(
-              color: Color(0x7FFFFFFF),
-              blurRadius: 2.83,
-              offset: Offset(0, 2.83),
-              spreadRadius: 0,
-            )
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              left: 34,
-              top: 34,
-              child: Container(
-                width: 1431.80,
-                height: 680.17,
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFF1B1B1B),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(2.83),
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    const Positioned(
-                      left: 516,
-                      top: 20,
-                      child: Text(
-                        'ROOM SETTING',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontFamily: 'Press Start 2P',
-                          fontWeight: FontWeight.w400,
-                          height: 0.04,
-                          letterSpacing: 1.28,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 34,
+                        top: 34,
+                        child: Container(
+                          width: 1431.80,
+                          height: 680.17,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: ShapeDecoration(
+                            color: Color(0xFF1B1B1B),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2.83),
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              const Positioned(
+                                //gamerooom text
+                                left: 516,
+                                top: 20,
+                                child: Text(
+                                  'ROOM SETTING',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontFamily: 'Press Start 2P',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.04,
+                                    letterSpacing: 1.28,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                //roomname setting
+                                left: 85,
+                                top: 142,
+                                child: Container(
+                                  width: 612,
+                                  height: 200,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'ROOM NAME',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
+                                        child: TextField(
+                                          controller: roomNameController,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: 'Enter Room Name',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                //roompassword setting
+                                left: 735,
+                                top: 142,
+                                child: Container(
+                                  width: 612,
+                                  height: 200,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'ROOM PASSWORD',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
+                                        child: TextField(
+                                          controller: roomPasswordController,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: 'Enter Room Password',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                //roomsize setting
+                                left: 85,
+                                top: 397,
+                                child: Container(
+                                  width: 612,
+                                  height: 200,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'ROOM SIZE',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
+                                        child: TextField(
+                                          controller: roomSizeController,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: 'Enter Room Size',
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                //targetgoal setting
+                                left: 735,
+                                top: 397,
+                                child: Container(
+                                  width: 612,
+                                  height: 200,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'TARGET GOAL',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Press Start 2P',
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0.80,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0),
+                                        child: TextField(
+                                          controller: targetGoalController,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: 'Enter Target Goal',
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    _buildSettingField(
-                        'ROOM NAME', roomNameController, 85, 142),
-                    _buildSettingField(
-                        'ROOM PASSWORD', roomPasswordController, 735, 142),
-                    _buildSettingField('ROOM SIZE', roomSizeController, 85, 397,
-                        TextInputType.number),
-                    _buildSettingField('TARGET GOAL', targetGoalController, 735,
-                        397, TextInputType.number),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingField(
-      String label, TextEditingController controller, double left, double top,
-      [TextInputType? keyboardType]) {
-    return Positioned(
-      left: left,
-      top: top,
-      child: Container(
-        width: 612,
-        height: 200,
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontFamily: 'Press Start 2P',
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.80,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Material(
-                color: Colors.transparent,
-                child: TextField(
-                  controller: controller,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Enter $label',
+                    ],
                   ),
-                  keyboardType: keyboardType,
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                //bottom btn section
+                left: 50,
+                top: 862,
+                child: SizedBox(
+                  width: 1500,
+                  height: 70,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        // back home btn
+                        left: 0,
+                        top: 0,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Game_Lobby()));
+                            print('Back(Game Lobby)');
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            width: 220,
+                            height: 70,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  left: 0,
+                                  top: 0,
+                                  child: Container(
+                                    width: 220,
+                                    height: 70,
+                                    decoration: ShapeDecoration(
+                                      color: Color(0xFFC8C5C2),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Positioned(
+                                  left: 60,
+                                  top: 17,
+                                  child: SizedBox(
+                                    width: 100,
+                                    height: 36,
+                                    child: const Center(
+                                      child: Text(
+                                        'BACK',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 24,
+                                          fontFamily: 'Press Start 2P',
+                                          fontWeight: FontWeight.w400,
+                                          height: 0.07,
+                                          letterSpacing: 0.96,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 1175,
+                        top: 0,
+                        child: SizedBox(
+                          width: 325,
+                          height: 70,
+                          child: InkWell(
+                            onTap: createRoombtn,
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              width: 325,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFC8C5C2),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'CREATE ROOM',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 24,
+                                    fontFamily: 'Press Start 2P',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.07,
+                                    letterSpacing: 0.96,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
