@@ -180,21 +180,20 @@ class MainPageSigned extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 1137.77,
+                left: 850,
                 top: -55,
                 child: Transform(
                   transform: Matrix4.identity()
                     ..translate(0.0, 0.0)
-                    ..rotateZ(0.26),
+                    ..rotateZ(0.0),
                   child: Container(
                     width: 751.85,
                     height: 1019.13,
                     decoration: ShapeDecoration(
-                      // image: const DecorationImage(
-                      //   image: NetworkImage(
-                      //       "https://via.placeholder.com/752x1019"),
-                      //   fit: BoxFit.fill,
-                      // ),
+                      image: const DecorationImage(
+                        image: AssetImage("images/game.png"),
+                        fit: BoxFit.fill,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
