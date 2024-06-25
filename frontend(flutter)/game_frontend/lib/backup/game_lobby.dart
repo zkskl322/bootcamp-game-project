@@ -401,7 +401,6 @@ class _GameRoomState extends State<GameRoom> {
                         ),
                       ),
                     ),
-
                     InkWell(
                       onTap: () => _handleLogoutButton(context),
                       child: Container(
@@ -438,30 +437,6 @@ class _GameRoomState extends State<GameRoom> {
                         ),
                       ),
                     ),
-
-                    // Container(
-                    //   width: 190,
-                    //   height: 60,
-                    //   decoration: ShapeDecoration(
-                    //     color: const Color(0xFF758CFF),
-                    //     shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(16),
-                    //     ),
-                    //   ),
-                    //   child: const Center(
-                    //     child: Text(
-                    //       'LOGOUT',
-                    //       style: TextStyle(
-                    //         color: Colors.black,
-                    //         fontSize: 24,
-                    //         fontFamily: 'Press Start 2P',
-                    //         fontWeight: FontWeight.w400,
-                    //         height: 0.07,
-                    //         letterSpacing: 0.96,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
                 const SizedBox(
@@ -889,7 +864,7 @@ class _GameRoomState extends State<GameRoom> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => CreateRoom()));
+                                        builder: (context) => Create_Room()));
                                 print('Create Room');
                               },
                               borderRadius: BorderRadius.circular(16),
