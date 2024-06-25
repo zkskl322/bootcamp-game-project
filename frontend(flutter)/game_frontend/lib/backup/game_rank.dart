@@ -42,7 +42,7 @@ class Group4 extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 left: 0,
                 top: 24,
                 child: SizedBox(
@@ -69,7 +69,7 @@ class Group4 extends StatelessWidget {
                   width: 556,
                   height: 646,
                   decoration: ShapeDecoration(
-                    color: Color(0xFF353535),
+                    color: const Color(0xFF353535),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),

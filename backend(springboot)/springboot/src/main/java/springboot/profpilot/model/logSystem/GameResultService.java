@@ -71,15 +71,20 @@ public class GameResultService {
             gameResult.setLoserName(gamer2.getNickname());
             gamer1.setRankPoint(gamer1.getRankPoint() + 100);
             gamer2.setRankPoint(gamer2.getRankPoint() - 100);
+            gamer1.setWin(gamer1.getWin() + 1);
+            gamer2.setLose(gamer2.getLose() + 1);
         } else if (gameState.getScore1() < gameState.getScore2()) {
             gameResult.setWinnerName(gamer2.getNickname());
             gameResult.setLoserName(gamer1.getNickname());
             gamer1.setRankPoint(gamer1.getRankPoint() - 100);
             gamer2.setRankPoint(gamer2.getRankPoint() + 100);
-
+            gamer1.setLose(gamer1.getLose() + 1);
+            gamer2.setWin(gamer2.getWin() + 1);
         } else {
             gameResult.setWinnerName("draw");
             gameResult.setLoserName("draw");
+            gamer1.setDraw(gamer1.getDraw() + 1);
+            gamer2.setDraw(gamer2.getDraw() + 1);
         }
 
         gameResultRepository.save(gameResult);

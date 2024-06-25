@@ -49,6 +49,8 @@ class _LoginPageState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final Storage _storage = window.localStorage;
+  late final FirebaseApp app;
+  late final FirebaseAuth auth;
 
   Future<void> _handleLoginButton() async {
     final dio = Dio();
@@ -72,9 +74,6 @@ class _LoginPageState extends State<Login> {
       print("Error: $e");
     }
   }
-
-  late final FirebaseApp app;
-  late final FirebaseAuth auth;
 
   Future<void> _handleSocialLoginButton_G(BuildContext context) async {
     // Dio 인스턴스 생성 - HTTP 요청을 처리하기 위한 라이브러리
@@ -147,7 +146,6 @@ class _LoginPageState extends State<Login> {
       }
     }
   }
-
 
   Future<void> _handleSocialLoginButton_K() async {
     try {

@@ -21,6 +21,13 @@ import java.util.stream.Collectors;
 public class MainController {
     private final MemberService memberService;
 
+
+    @GetMapping("/test/connection")
+    @ResponseBody
+    public String testConnection() {
+        return "Connection Success";
+    }
+
     @GetMapping("/sendToken/{token}")
     @ResponseBody
     public Map<String, String> sendToken(@PathVariable String token, HttpServletResponse res) {
