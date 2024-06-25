@@ -50,6 +50,13 @@ public class GameService {
         GameResult gameResult = gameResultService.findByGameId(Long.parseLong(gameId));
 
         GameState gameState = new GameState();
+        if (gameResult == null) {
+            // gameResult가 null인 경우 처리
+            throw new IllegalArgumentException("gameResult cannot be null");
+        }
+
+        String player1Name = gameResult.getPlayer1Name();
+        // 게임 시작 로직 구현
 
         // 게임 초기화 ------------------------ //
         gameState.setGameId(gameId);

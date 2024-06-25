@@ -1,5 +1,4 @@
 package springboot.profpilot.model.Game.Team2.Defender;
-
 import org.springframework.stereotype.Service;
 import springboot.profpilot.model.Game.AI.Core.Action.Action;
 import springboot.profpilot.model.Game.AI.Core.AiNode;

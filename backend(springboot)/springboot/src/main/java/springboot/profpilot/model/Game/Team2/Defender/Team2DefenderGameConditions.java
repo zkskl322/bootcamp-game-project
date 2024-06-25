@@ -2,12 +2,17 @@ package springboot.profpilot.model.Game.Team2.Defender;
 
 import springboot.profpilot.model.Game.GamePlayer;
 import springboot.profpilot.model.Game.GameState;
+import org.springframework.security.core.parameters.P;
+import springboot.profpilot.model.Game.GamePlayer;
+import springboot.profpilot.model.Game.GameState;
 
 public class Team2DefenderGameConditions {
     private GameState gameState;
     public Team2DefenderGameConditions(GameState gameState) {
         this.gameState = gameState;
     }
+
+
     public boolean isTeamWithBall(int team) {
         return gameState.getWho_has_ball() == team;
     }
@@ -52,6 +57,11 @@ public class Team2DefenderGameConditions {
         return number == 1;
     }
 
+//        GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1); // 상대방 팀 공격수 1번
+//        System.out.println("offender1 : " + offender1.isPossession());
+//        return offender1.isPossession();
+//        return false;
+
     public boolean isOffender1InDefenseZone() {
 
         if (gameState.getIsFirstHalf() == 1) {
@@ -59,6 +69,7 @@ public class Team2DefenderGameConditions {
             double defenseZoneBoundary2 = 10.5; // 수비진 영역
             GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
             double x = offender1.getPlayer_x();
+            System.out.println("offender1 : " + offender1.isPossession());
             if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
             else return false;
         } else {
@@ -66,6 +77,7 @@ public class Team2DefenderGameConditions {
             double defenseZoneBoundary2 = 4.0; // 수비진 영역
             GamePlayer offender1 = gameState.getPlayer1_players().getPlayers().get(1);
             double x = offender1.getPlayer_x();
+            System.out.println("offender1 : " + offender1.isPossession());
             if (defenseZoneBoundary1 <= x && x <= defenseZoneBoundary2) return true;
             else return false;
         }

@@ -1,12 +1,12 @@
 package springboot.profpilot.model.Game.Team2.Offender;
 
 import org.springframework.stereotype.Service;
-import springboot.profpilot.model.Game.AI.Core.Action.Action;
-import springboot.profpilot.model.Game.AI.Core.AiNode;
-import springboot.profpilot.model.Game.AI.Core.Selector;
-import springboot.profpilot.model.Game.AI.Core.Condition.Condition;
-import springboot.profpilot.model.Game.AI.Core.Sequence;
 import springboot.profpilot.model.Game.GameState;
+import springboot.profpilot.model.Game.AI.Core.AiNode;
+import springboot.profpilot.model.Game.AI.Core.Action.Action;
+import springboot.profpilot.model.Game.AI.Core.Condition.Condition;
+import springboot.profpilot.model.Game.AI.Core.Selector;
+import springboot.profpilot.model.Game.AI.Core.Sequence;
 
 import java.util.Arrays;
 
@@ -51,19 +51,22 @@ public class Team2OffenderAlgorithm {
             ))
         ));
                             
+        
+        
+        AiNode Offender0_behaviorTree2 = new Selector(Arrays.asList(
+            new Condition(() -> conditions.isTeamWithBall(2)),
+            new Sequence(Arrays.asList(
+                new Condition(conditions::isTeam2Offender1WithBall), // 조건: 우리팀 공격수 1번이 공을 가지고 있다
+                new Condition(conditions::isTeam2Offender1InOffensiveZone), // 조건: 우리팀 공격수 1번이 x값 5.0(전반 기준)보다 작은 수로 들어간다
+                new Action(actions::moveOffender0BasedOnOffender1Y) // 행동: 공격수 1번이 y값 3.5 이상일 때, 공격수 0번이 Team1의 2번과 0번 사이로 들어가고, 3.5 이하일 때, Team1의 3번과 1번 사이로 들어간다
+            ))
+        ));
+                
         Defender2_behaviorTree.run();
         Defender3_behaviorTree.run();
         Offender1_behaviorTree1.run();
         Offender0_behaviorTree1.run();
-
+        Offender0_behaviorTree2.run();
         return gameState;
     }
-
-
-
-
-
-
-
-
 }
