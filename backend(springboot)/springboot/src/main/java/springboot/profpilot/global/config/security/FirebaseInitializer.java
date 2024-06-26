@@ -22,16 +22,16 @@ public class FirebaseInitializer {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
 
-        String path = FirebaseInitializer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        System.out.println("Current file location: " + path); // Current file location: nested:/app.jar/!BOOT-INF/classes/!/
+//        String path = FirebaseInitializer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//        System.out.println("Current file location: " + path); // Current file location: nested:/app.jar/!BOOT-INF/classes/!/
+//
+//        // ClassLoader를 사용하여 JAR 파일 내부의 리소스를 읽음
+//        ClassPathResource classPathResource = new ClassPathResource("firebase.json");
+//        InputStream serviceAccount = classPathResource.getInputStream();
+//        System.out.println("classPathResource: " + classPathResource); // classPathResource: class path resource [firebase.json]
 
-        // ClassLoader를 사용하여 JAR 파일 내부의 리소스를 읽음
-        ClassPathResource classPathResource = new ClassPathResource("firebase.json");
-        InputStream serviceAccount = classPathResource.getInputStream();
-        System.out.println("classPathResource: " + classPathResource); // classPathResource: class path resource [firebase.json]
-
-//        FileInputStream serviceAccount =
-//                new FileInputStream("C:\\Users\\admin\\project\\bootcamp-game-project\\backend(springboot)\\springboot\\src\\main\\resources\\firebase.json");
+        FileInputStream serviceAccount =
+                new FileInputStream("C:\\Users\\admin\\project\\bootcamp-game-project\\backend(springboot)\\springboot\\src\\main\\resources\\firebase.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
