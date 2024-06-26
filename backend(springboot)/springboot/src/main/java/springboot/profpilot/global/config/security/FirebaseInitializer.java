@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,15 +21,20 @@ public class FirebaseInitializer {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        String path = FirebaseInitializer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        System.out.println("Current file location: " + path); // Current file location: nested:/app.jar/!BOOT-INF/classes/!/
 
-        // ClassLoader를 사용하여 JAR 파일 내부의 리소스를 읽음
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        InputStream serviceAccount = classLoader.getResourceAsStream("firebase.json");
-        ClassPathResource classPathResource = new ClassPathResource("firebase.json");
-        InputStream serviceAccount = classPathResource.getInputStream();
-        System.out.println("classPathResource: " + classPathResource); // classPathResource: class path resource [firebase.json]
+//        String path = FirebaseInitializer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//        System.out.println("Current file location: " + path); // Current file location: nested:/app.jar/!BOOT-INF/classes/!/
+
+//        // ClassLoader를 사용하여 JAR 파일 내부의 리소스를 읽음
+//        ClassPathResource classPathResource = new ClassPathResource("firebase.json");
+//        InputStream serviceAccount = classPathResource.getInputStream();
+//        System.out.println("classPathResource: " + classPathResource); // classPathResource: class path resource [firebase.json]
+
+        FileInputStream serviceAccount =
+                new FileInputStream("C:\\Users\\admin\\Documents\\GitHub\\bootcamp-game-project\\backend(springboot)\\springboot\\src\\main\\resources\\firebase.json");
+
+
+
 
         if (serviceAccount == null) {
             throw new IOException("Resource not found: firebase.json");
@@ -42,7 +48,6 @@ public class FirebaseInitializer {
         FirebaseApp app = FirebaseApp.initializeApp(options);
         return app;
     }
-
 
     @Bean
     public FirebaseAuth getFirebaseAuth() throws IOException {
