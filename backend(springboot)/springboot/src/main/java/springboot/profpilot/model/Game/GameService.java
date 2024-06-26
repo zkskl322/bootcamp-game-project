@@ -786,16 +786,16 @@ public class GameService {
 
         return gameState;
     }
-    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
-    public void updateGameStates() {
-        long currentTime = System.currentTimeMillis();
-        double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
-        lastUpdateTime = currentTime;
+@Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
+public void updateGameStates() {
+    long currentTime = System.currentTimeMillis();
+    double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
+    lastUpdateTime = currentTime;
 
-        games.forEach((gameId, gameState) -> {
-            GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
-            messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
-        });
+    games.forEach((gameId, gameState) -> {
+        GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
+    });
+}
 
-    }
 }
