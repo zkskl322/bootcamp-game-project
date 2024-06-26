@@ -28,7 +28,8 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   web_socket_channel: ^2.1.0
   stomp_dart_client: ^2.0.0
-  uuid: ^4.4.0
+  uuid: ^3.0.7
+  assets_audio_player: ^3.0.0
   
 
 flutter:
@@ -44,3 +45,4 @@ flutter:
   assets:
     - images/Google.png
     - images/game.png
+    - sounds/
