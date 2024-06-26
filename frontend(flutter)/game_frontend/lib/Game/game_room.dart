@@ -31,6 +31,7 @@ class _GamePageState extends State<GameRoomPage> {
   final List<Game> gameList = [];
   final socketUrl = 'http://localhost:8080/game';
 
+
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
       destination: '/topic/game/${widget.GameId}',
@@ -238,7 +239,9 @@ class _GamePageState extends State<GameRoomPage> {
                     Container(
                       width: 1100,
                       height: 700,
-                      decoration: const BoxDecoration(),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(1, 20, 189, 48),
+                      ),
                       child: CustomPaint(
                         painter: MyPainter(gameList),
                       ),

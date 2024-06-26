@@ -25,6 +25,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.3"
+  assets_audio_player:
+    dependency: "direct dev"
+    description:
+      name: assets_audio_player
+      sha256: "9a87062cf39be0730ba8bb31ed4d148ca4e892e0ae607113f346d3c9a8da5df0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
+  assets_audio_player_web:
+    dependency: transitive
+    description:
+      name: assets_audio_player_web
+      sha256: "24cf82e72c7e7f9292d67e1b52d7945a182d9695ce8f903f60e5c6b379cbcaac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
   async:
     dependency: transitive
     description:
@@ -217,14 +233,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.17.2"
-  fixnum:
-    dependency: transitive
-    description:
-      name: fixnum
-      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -512,6 +520,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.9.1"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -581,14 +597,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
-  sprintf:
-    dependency: transitive
-    description:
-      name: sprintf
-      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -649,10 +657,10 @@ packages:
     dependency: "direct dev"
     description:
       name: uuid
-      sha256: "814e9e88f21a176ae1359149021870e87f7cddaf633ab678a5d2b0bff7fd1ba8"
+      sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "3.0.7"
   vector_math:
     dependency: transitive
     description:

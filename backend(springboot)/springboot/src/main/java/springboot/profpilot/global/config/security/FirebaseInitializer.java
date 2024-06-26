@@ -36,9 +36,8 @@ public class FirebaseInitializer {
 
 
 
-        if (serviceAccount == null) {
-            throw new IOException("Resource not found: firebase.json");
-        }
+//        FileInputStream serviceAccount =
+//                new FileInputStream("C:\\Users\\admin\\project\\bootcamp-game-project\\backend(springboot)\\springboot\\src\\main\\resources\\firebase.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
