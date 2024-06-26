@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: UnsignedMainPage(),
-      home: Game_Lobby_Test(),
+      home: UnsignedMainPage(),
+      // home: Game_Lobby(),
     );
   }
 }
