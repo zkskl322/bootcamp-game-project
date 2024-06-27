@@ -202,40 +202,88 @@ class _GameRoomState extends State<GameRoom> {
             ),
           );
         } else {
-          showAboutDialog(
-              context: context,
-              applicationName: "Join Room",
-              children: [
-                Column(
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Center(
+                  child: Text(
+                    "Join Room",
+                    style: TextStyle(fontSize: 28),
+                  ),
+                ),
+                content: SizedBox(
+                  width: 300,
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Password is incorrect",
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        }
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Center(
+                child: Text(
+                  "Join Room",
+                  style: TextStyle(fontSize: 28),
+                ),
+              ),
+              content: SizedBox(
+                width: 300,
+                height: 150,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Password is incorrect"),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('OK'),
+                    Text(
+                      "Error: ${response.statusCode}",
+                      style: const TextStyle(fontSize: 24),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'OK',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ]);
-        }
-      } else {
-        showAboutDialog(
-            context: context,
-            applicationName: "Join Room",
-            children: [
-              Column(
-                children: [
-                  Text("Error: ${response.statusCode}"),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('OK'),
-                  ),
-                ],
               ),
-            ]);
+            );
+          },
+        );
       }
     } catch (e) {
       print('Error: $e');
@@ -243,25 +291,59 @@ class _GameRoomState extends State<GameRoom> {
   }
 
   Future<void> joinGameRoombtn(int roomId) async {
-    showAboutDialog(context: context, applicationName: "Join Room", children: [
-      Column(
-        children: [
-          Text("Room ID: $roomId"),
-          TextField(
-            controller: _roomPasswordController,
-            decoration: const InputDecoration(
-              labelText: 'Password',
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(
+            child: Text(
+              "Join Room",
+              style: TextStyle(fontSize: 28),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              checkPassword(roomId, _roomPasswordController.text);
-            },
-            child: Text('Join'),
+          content: SizedBox(
+            width: 300,
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                Text(
+                  "Room ID: $roomId",
+                  style: const TextStyle(fontSize: 20),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _roomPasswordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  ),
+                  style: const TextStyle(fontSize: 20),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 60),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(
+                          context); // Close the dialog before checking the password
+                      checkPassword(roomId, _roomPasswordController.text);
+                    },
+                    child: const Text(
+                      'Join',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
-    ]);
+        );
+      },
+    );
   }
 
   Future<void> showRankingModal() async {
