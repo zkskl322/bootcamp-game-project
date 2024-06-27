@@ -31,7 +31,10 @@ public class Team2OffenderAlgorithm {
             // 액션1. 3번 수비수가 중앙으로 이동한다.
             new Action(action::moveDefender3ToCenter)
         ));
-            
+
+
+
+
         AiNode Offender1_behaviorTree1 = new Selector(Arrays.asList(
             new Condition(() -> condition.isTeamWithBall(2)),
             new Sequence(Arrays.asList(
