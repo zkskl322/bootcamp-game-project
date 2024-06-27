@@ -74,7 +74,7 @@ class MainPageUnsign extends StatelessWidget {
                         context,
                         // MaterialPageRoute(builder: (context) => Login_Page()));
                         MaterialPageRoute(
-                            builder: (context) => const Login_Page()));
+                            builder: (context) => const LoginPageTest()));
                     print('Login 버튼이 눌렸습니다.');
                   },
                   borderRadius: BorderRadius.circular(2357.89),
