@@ -40,7 +40,7 @@ class _LobbyPageState extends State<LobbyPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => GameRoomPage(
-                    GameId: int.parse(_gameIdController.text),
+                    GameId: _gameIdController.text,
                     myUuid: _uuidController.text,
                   ),
                 ),

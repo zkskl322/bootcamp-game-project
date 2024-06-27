@@ -38,6 +38,8 @@ public class GameService {
     private long lastUpdateTime = System.currentTimeMillis();
     private final int time = 0;
     private Map<String, GameState> games = new ConcurrentHashMap<>();
+    private ExecutorService executorService  = Executors.newFixedThreadPool(10);
+
     private final GoalkeeperAiService goalkeeperAiService;
     private final PassAlgorithm passAlgorithm;
     private final Team1OffendAlgorithm Team1offendAlgorithm;
@@ -47,20 +49,20 @@ public class GameService {
     private final GameResultService gameResultService;
 
     public GameState startGame(String gameId) {
-        GameResult gameResult = gameResultService.findByGameId(Long.parseLong(gameId));
+//        GameResult gameResult = gameResultService.findByGameId(Long.parseLong(gameId));
 
 
-        if (gameResult == null) {
-            // gameResult가 null인 경우 처리
-            throw new IllegalArgumentException("gameResult cannot be null");
-        }
+//        if (gameResult == null) {
+//            // gameResult가 null인 경우 처리
+//            throw new IllegalArgumentException("gameResult cannot be null");
+//        }
+//        if (gameResult == null) {
+//            // gameResult가 null인 경우 처리
+//            throw new IllegalArgumentException("gameResult cannot be null");
+//        }
+
+//        String player1Name = gameResult.getPlayer1Name();
         GameState gameState = new GameState();
-        if (gameResult == null) {
-            // gameResult가 null인 경우 처리
-            throw new IllegalArgumentException("gameResult cannot be null");
-        }
-
-        String player1Name = gameResult.getPlayer1Name();
         // 게임 시작 로직 구현
 
         // 게임 초기화 ------------------------ //
@@ -69,8 +71,8 @@ public class GameService {
         gameState.setGameStatus("STARTED");
         gameState.setGameDatetime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTick(0);
-        gameState.setPlayer1Nickname(gameResult.getPlayer1Name());
-        gameState.setPlayer2Nickname(gameResult.getPlayer2Name());
+//        gameState.setPlayer1Nickname(gameResult.getPlayer1Name());
+//        gameState.setPlayer2Nickname(gameResult.getPlayer2Name());
 
         gameState.setScore1(0);
         gameState.setScore2(0);
@@ -85,7 +87,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(100); // 100초
+        gameState.setMax_time(100000); // 100초
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);
@@ -145,6 +147,7 @@ public class GameService {
         games.put(gameId, gameState);
         return gameState;
     }
+
     public GameState endGame(String gameId) {
         GameState gameState = games.get(gameId);
         if (gameState == null) {
@@ -154,6 +157,7 @@ public class GameService {
         games.remove(gameId);
         return gameState;
     }
+
     public void setGameReset(GameState gameState) {
 
         gameState.setBall_x(5.5);
@@ -191,7 +195,7 @@ public class GameService {
             players1.get(4).setPlayer_x(0.1);
             players1.get(4).setPlayer_y(3.5);
 
-            List <GamePlayer> players2 = gameState.getPlayer2_players().getPlayers();
+            List<GamePlayer> players2 = gameState.getPlayer2_players().getPlayers();
             players2.get(0).setPlayer_x(9.5);
             players2.get(0).setPlayer_y(5);
             players2.get(0).setPlayer_direction(3);
@@ -255,6 +259,7 @@ public class GameService {
             players2.get(4).setPlayer_y(3.5);
         }
     }
+
     public void processAction(GameAction action) throws IOException {
         if (action.isDone()) {
             return;
@@ -263,7 +268,7 @@ public class GameService {
         // 1. 게임이 존재하는지 확인
         GameState gameState = games.get(action.getGameId());
         if (gameState == null) {
-            return ;
+            return;
         }
 
         // 2. 게임 정보 가져오기
@@ -282,8 +287,7 @@ public class GameService {
             player_direction = gameState.getPlayer1_direction();
             player_possession = gameState.isPlayer1_possession();
             player_control_player = gameState.getPlayer1_control_player();
-        }
-        else {
+        } else {
             player_x = gameState.getPlayer2_x();
             player_y = gameState.getPlayer2_y();
 
@@ -508,7 +512,6 @@ public class GameService {
         }
 
 
-
         if (!player_possession) {
             // 플레이어 근처에 공이 있으면 플레이어의 진행 방향의 1만큼 앞에 공을 가지고 있으면서 소유
             if (Math.abs(player_x - ball_x) < 0.3 && Math.abs(player_y - ball_y) < 0.3) {
@@ -560,8 +563,7 @@ public class GameService {
             }
             gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_x(gameState.getPlayer1_x());
             gameState.getPlayer1_players().getPlayers().get(gameState.getPlayer1_control_player()).setPlayer_y(gameState.getPlayer1_y());
-        }
-        else {
+        } else {
             gameState.setPlayer2_x(player_x);
             gameState.setPlayer2_y(player_y);
             gameState.setPlayer2_direction(player_direction);
@@ -579,6 +581,7 @@ public class GameService {
         }
 
     }
+
     public GameState UpdateGameBall(GameState gameState, double deltaTime) {
         double direction_x = gameState.getBall_direction_x();
         double direction_y = gameState.getBall_direction_y();
@@ -688,7 +691,7 @@ public class GameService {
         }
 
         // 3. 충돌 처리
-        if (ball_x < 0 ) {
+        if (ball_x < 0) {
             leftover_x = 0 - ball_x;
             ball_x = 0;
         }
@@ -696,7 +699,7 @@ public class GameService {
             leftover_x = 11 - ball_x;
             ball_x = 11;
         }
-        if (ball_y < 0 ) {
+        if (ball_y < 0) {
             leftover_y = 0 - ball_y;
             ball_y = 0;
         }
@@ -712,8 +715,7 @@ public class GameService {
                 ball_x += direction_x * deltaTime * 5;
             }
             gameState.setBall_direction_x(direction_x);
-        }
-        else if (ball_y <= 0 || ball_y >= 7) {
+        } else if (ball_y <= 0 || ball_y >= 7) {
             direction_y = -direction_y;
             if (leftover_y != 0) {
                 ball_y += direction_y * deltaTime * 5;
@@ -727,6 +729,7 @@ public class GameService {
         gameState.setBall_y(ball_y);
         return gameState;
     }
+
     public GameState UpdateGamePlayer2(GameState gameState, double deltaTime) {
         List<GamePlayer> players_1 = gameState.getPlayer1_players().getPlayers();
         List<GamePlayer> players_2 = gameState.getPlayer2_players().getPlayers();
@@ -746,6 +749,7 @@ public class GameService {
         } // player2
         return gameState;
     }
+
     public GameState UpdateGamePlayer3(GameState gameState, double detlaTime) {
         if (gameState.getWho_has_ball() == 1) {
             gameState.setPlayer1_possession_time(gameState.getPlayer1_possession_time() + detlaTime);
@@ -754,6 +758,7 @@ public class GameService {
         }
         return gameState;
     }
+
     public GameState UpdateGamePlayer(GameState gameState, double deltaTime) {
 
         gameState = UpdateGamePlayer2(gameState, deltaTime);
@@ -765,6 +770,7 @@ public class GameService {
         gameState = Team2defenderAlgorithm.updateOnPossession(gameState);
         return gameState;
     }
+
     public GameState updateGameState(String gameId, GameState gameState, double deltaTime, Long time) {
 
         gameState.setTime(gameState.getTime() + deltaTime);
@@ -786,16 +792,65 @@ public class GameService {
 
         return gameState;
     }
-@Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
-public void updateGameStates() {
-    long currentTime = System.currentTimeMillis();
-    double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
-    lastUpdateTime = currentTime;
 
-    games.forEach((gameId, gameState) -> {
-        GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
-    });
-}
 
+    public void TestSingleThreadAverageExecuteTime() {
+        System.out.println("TestSingleThread : START");
+        System.out.println("games.size(): " + games.size());
+        String startTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS").format(LocalDateTime.now());
+        for (int i = 0; i < 3000000; i++) {
+            long currentTime = System.currentTimeMillis();
+            double deltaTime = (currentTime - lastUpdateTime) / 1000.0;
+            lastUpdateTime = currentTime;
+            games.forEach((gameId, gameState) -> {
+                GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+            });
+            if (i % 100000 == 0) {
+                System.out.println("i: " + i);
+            }
+        }
+        String endTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS").format(LocalDateTime.now());
+        System.out.println("TestSingleThread : END");
+        System.out.println("startTime: " + startTime);
+        System.out.println("endTime: " + endTime);
+    }
+
+
+    public void TestMultiThreadAverageExecuteTimeNotIndex() {
+        System.out.println("TestMultiThread : START");
+        System.out.println("games.size(): " + games.size());
+        String startTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS").format(LocalDateTime.now());
+        for (int i = 0; i < 3000000; i++) {
+            long currentTime = System.currentTimeMillis();
+            double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
+            lastUpdateTime = currentTime;
+
+            games.forEach((gameId, gameState) -> {
+                executorService.submit(() -> {
+                    GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+                });
+            });
+            if (i % 1000000 == 0) {
+                System.out.println("i: " + i);
+            }
+        }
+        String endTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS").format(LocalDateTime.now());
+        System.out.println("TestMultiThread : END");
+        System.out.println("startTime: " + startTime);
+        System.out.println("endTime: " + endTime);
+    }
+
+//    @Scheduled(fixedRate = 16) // 약 60 FPS (16ms)
+//    public void updateGameStates() {
+//        long currentTime = System.currentTimeMillis();
+//        double deltaTime = (currentTime - lastUpdateTime) / 1000.0; // 초 단위로 변환
+//        lastUpdateTime = currentTime;
+//
+//        games.forEach((gameId, gameState) -> {
+//            GameState updatedGameState = updateGameState(gameId, gameState, deltaTime, currentTime);
+//            messagingTemplate.convertAndSend("/topic/game/" + gameId, updatedGameState);
+//        });
+//    }
+//
+//}
 }
