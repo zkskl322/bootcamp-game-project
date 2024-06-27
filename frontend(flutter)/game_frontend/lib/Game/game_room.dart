@@ -31,6 +31,7 @@ class _GamePageState extends State<GameRoomPage> {
   final List<Game> gameList = [];
   final socketUrl = 'http://localhost:8080/game';
 
+
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
       destination: '/topic/game/${widget.GameId}',
@@ -44,6 +45,8 @@ class _GamePageState extends State<GameRoomPage> {
             score1: obj['score1'],
             score2: obj['score2'],
             who_has_ball: obj['who_has_ball'],
+            player1Nickname: obj['player1Nickname'],
+            player2Nickname: obj['player2Nickname'],
             // time ------------------------------ //
             // start_time: obj['start_time'],
             time: obj['time'],
@@ -201,29 +204,120 @@ class _GamePageState extends State<GameRoomPage> {
         },
         child: Center(
           child: Column(
+
             children: [
-              Text(
-                "Time: ${gameList.isNotEmpty ? gameList.last.time.floor() : 0} / ${gameList.isNotEmpty ? gameList.last.max_time : 0}",
-                style: const TextStyle(fontSize: 20),
-              ),
-              Text(
-                "Score: ${gameList.isNotEmpty ? gameList.last.score1 : 0} : ${gameList.isNotEmpty ? gameList.last.score2 : 0}",
-                style: const TextStyle(fontSize: 20),
-              ),
-              ElevatedButton(
-                onPressed: () => {
-                  sendStartMessage(),
-                },
-                child: const Icon(Icons.start),
-              ),
-              ElevatedButton(
-                onPressed: () => {
-                  _textController.text = 'END_GAME',
-                  sendAction(),
-                  _textController.clear(),
-                },
-                child: const Icon(Icons.stop),
-              ),
+              const SizedBox(height: 100),
+              
+              Row(
+                children: [
+
+                    // 300 + 100 + 10 + 100 + 300 = 810
+                    SizedBox(width: screenSize.width/2 - 410),
+                    Container(
+                      width: 300,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(228, 13, 29, 99),
+                      ),
+                      child:Center(
+                        child: 
+                          Text(
+                            gameList.isNotEmpty ? gameList.last.player1Nickname : 'Player1',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontFamily: 'Press Start 2P',
+                            ),
+                          ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 109, 255, 117),
+                      ),
+                      child:Center(
+                        child: 
+                          Text(
+                            gameList.isNotEmpty ? gameList.last.score1.toString() : '0',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontFamily: 'Press Start 2P',
+                            ),
+                          ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 109, 255, 117),
+                      ),
+                      child:Center(
+                        child: 
+                          Text(
+                            gameList.isNotEmpty ? gameList.last.score2.toString() : '0',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontFamily: 'Press Start 2P',
+                            ),
+                          ),
+                      ),
+                    ),
+                    Container(
+                      width: 300,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(228, 13, 29, 99),
+                      ),
+                      child:Center(
+                        child: 
+                          Text(
+                            gameList.isNotEmpty ? gameList.last.player2Nickname : 'Player2',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontFamily: 'Press Start 2P',
+                            ),
+                          ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 228, 135, 28),
+                      ),
+                      child:Center(
+                        child: 
+                          Text(
+                            gameList.isNotEmpty ? gameList.last.time.floor().toString() : '0',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontFamily: 'Press Start 2P',
+                            ),
+                          ),
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      child: ElevatedButton(
+                        onPressed: () => {
+                          sendStartMessage(),
+                        },
+                        child: const Text('Start'),
+                      ),
+                  ),
+                  ],
+                ),
               SizedBox(
                 width: 1300,
                 height: 800,
@@ -238,7 +332,9 @@ class _GamePageState extends State<GameRoomPage> {
                     Container(
                       width: 1100,
                       height: 700,
-                      decoration: const BoxDecoration(),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(1, 20, 189, 48),
+                      ),
                       child: CustomPaint(
                         painter: MyPainter(gameList),
                       ),

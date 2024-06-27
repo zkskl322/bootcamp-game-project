@@ -34,7 +34,7 @@ class MyPainter extends CustomPainter {
     // -------------------------------------- //
 
     Paint paintBall = Paint()
-      ..color = Colors.red
+      ..color = const Color.fromARGB(255, 0, 0, 0)
       ..style = PaintingStyle.fill;
 
     Paint paintPlayer1 = Paint()
@@ -42,13 +42,22 @@ class MyPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     Paint paintPlayer2 = Paint()
+      ..color = Color.fromARGB(255, 253, 2, 2)
+      ..style = PaintingStyle.fill;
+    
+    Paint fieldPaint = Paint()
       ..color = Colors.green
       ..style = PaintingStyle.fill;
 
     Paint paintLine = Paint()
-      ..color = const Color.fromARGB(255, 139, 139, 139)
+      ..color = Color.fromARGB(255, 255, 255, 255)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = 2;
+    
+    Paint paintfieldLine = Paint()
+      ..color = Color.fromARGB(255, 0, 0, 0)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
 
     Paint paintGoalline = Paint()
       ..color = Colors.red
@@ -60,14 +69,56 @@ class MyPainter extends CustomPainter {
       fontSize: 12,
     );
 
-    canvas.drawCircle(Offset(ballX, ballY), 10, paintBall);
-    canvas.drawCircle(Offset(player1X, player1Y), 10, paintPlayer1);
-    canvas.drawCircle(Offset(player2_X, player2_Y), 10, paintPlayer2);
+    canvas.drawRect(Offset.zero & size, fieldPaint);
 
     canvas.drawLine(
         const Offset(550, 0), const Offset(550, 700), paintLine); // 중앙선
     canvas.drawCircle(const Offset(550, 350), 90, paintLine); // 중앙원
     canvas.drawCircle(const Offset(550, 350), 2, paintLine); // 중앙원 중심
+
+    // 경기장 테두리
+    canvas.drawLine(const Offset(1, 1), const Offset(1099, 1), paintfieldLine);
+    canvas.drawLine(const Offset(1, 699), const Offset(1099, 699), paintfieldLine);
+    canvas.drawLine(const Offset(1, 1), const Offset(1, 699), paintfieldLine);
+    canvas.drawLine(const Offset(1099, 1), const Offset(1099, 699), paintfieldLine);
+
+
+    // 패널티 에어리어
+    canvas.drawLine(const Offset(0, 150), const Offset(170, 150), paintLine);
+    canvas.drawLine(const Offset(0, 550), const Offset(170, 550), paintLine);
+    canvas.drawLine(const Offset(170, 150), const Offset(170, 550), paintLine);
+
+    canvas.drawLine(
+        const Offset(930, 150), const Offset(1100, 150), paintLine);
+    canvas.drawLine(
+        const Offset(930, 550), const Offset(1100, 550), paintLine);
+    canvas.drawLine(const Offset(930, 150), const Offset(930, 550), paintLine);
+
+
+    // 골킥 에어리어
+    canvas.drawLine(
+        const Offset(0, 260), const Offset(50, 260), paintLine); // 왼쪽 상단 선
+    canvas.drawLine(
+        const Offset(0, 440), const Offset(50, 440), paintLine); // 왼쪽 하단 선
+    canvas.drawLine(
+        const Offset(50, 260), const Offset(50, 440), paintLine); // 왼쪽 선
+
+    canvas.drawLine(
+        const Offset(1050, 260), const Offset(1100, 260), paintLine); // 오른쪽 상단 선
+    canvas.drawLine(
+        const Offset(1050, 440), const Offset(1100, 440), paintLine); // 오른쪽 하단 선
+    canvas.drawLine(
+        const Offset(1050, 260), const Offset(1050, 440), paintLine); // 오른쪽 선
+
+    // 패널티 포인트
+    canvas.drawCircle(const Offset(110, 350), 2, paintLine); // 왼쪽 패널티 포인트
+    canvas.drawCircle(const Offset(990, 350), 2, paintLine); // 오른쪽 패널티 포인트
+
+    // 패널티 아크 : 패널티 포인트에서 9m 떨어진 지점을 가까운 골대 반대로 패널티 에어리어 닿기 전까지 그림
+    canvas.drawArc(Rect.fromCircle(center: const Offset(110, 350), radius: 90), 0, 0.80, false, paintLine);
+    canvas.drawArc(Rect.fromCircle(center: const Offset(110, 350), radius: 90), 5.45, 0.80, false, paintLine);
+    canvas.drawArc(Rect.fromCircle(center: const Offset(990, 350), radius: 90), 3.14, 0.80, false, paintLine);
+    canvas.drawArc(Rect.fromCircle(center: const Offset(990, 350), radius: 90), 2.36, 0.80, false, paintLine);
 
     canvas.drawLine(
         const Offset(0, 0), const Offset(0, 700), paintLine); // 왼쪽 선
@@ -91,6 +142,11 @@ class MyPainter extends CustomPainter {
         const Offset(0, 300), const Offset(0, 400), paintGoalline); // 골대
     canvas.drawLine(
         const Offset(1100, 300), const Offset(1100, 400), paintGoalline); // 골대
+
+
+    canvas.drawCircle(Offset(ballX, ballY), 10, paintBall);
+    canvas.drawCircle(Offset(player1X, player1Y), 10, paintPlayer1);
+    canvas.drawCircle(Offset(player2_X, player2_Y), 10, paintPlayer2);
 
     int i = -1;
     for (var player in currentGame.player1_players.players) {

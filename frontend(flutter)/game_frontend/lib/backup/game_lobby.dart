@@ -11,6 +11,8 @@ import 'package:game_frontend/backup/signed_main_page.dart';
 import 'package:game_frontend/backup/unsigned_main_page.dart';
 import 'package:game_frontend/dto/gameroom-dto.dart';
 import 'package:localstorage/localstorage.dart';
+import 'dart:math';
+import 'package:assets_audio_player/assets_audio_player.dart';
 
 class Game_Lobby extends StatelessWidget {
   @override
@@ -38,17 +40,59 @@ class _GameRoomState extends State<GameRoom> {
   String myWinScore = '';
   String myLoseScore = '';
   String myDrawScore = '';
+  String WinRate = '';
   List<GameRoomsDTO> _gamerooms = [];
 
   final Dio dio = Dio();
   final Storage _storage = window.localStorage;
   final TextEditingController _roomPasswordController = TextEditingController();
 
+
+  final AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
+  
+  final List<Audio> _audioFiles = [
+    Audio('sounds/background1-EL-tornado.mp3'),
+    Audio('sounds/background2-we-higher.mp3'),
+    Audio('sounds/background3-for-win.mp3'),
+    Audio('sounds/background4-Who-Gon-Win.mp3'),
+    Audio('sounds/background5-All-Time-Low.mp3'),
+    Audio('sounds/background6-OH-YEAH.mp3'),
+    Audio('sounds/background7-Jump-To-The-Light.mp3'),
+    Audio('sounds/background8-Holla.mp3'),
+    Audio('sounds/background9-MOVEMENTS.mp3'),
+    Audio('sounds/background10-new-history.mp3'),
+    Audio('sounds/background11-house-Rules.mp3'),
+  ];
+
+
+  void _initializeAudioPlayer() {
+    // 오디오 파일을 랜덤하게 섞기
+
+    if (window.localStorage['audio'] == 'true') {
+      return;
+    }
+
+    _audioFiles.shuffle(Random(DateTime.now().millisecondsSinceEpoch));
+    // 오디오 리스트를 오픈하고 자동 재생 설정
+    _assetsAudioPlayer.open(
+      Playlist(audios: _audioFiles),
+      loopMode: LoopMode.playlist,
+      autoStart: true,
+      showNotification: false,
+    );
+
+    _assetsAudioPlayer.play();
+    window.localStorage['audio'] = 'true';
+  }
+
   @override
   void initState() {
     super.initState();
+    _initializeAudioPlayer();
     fetchGameRooms();
   }
+
+
 
   Future<void> _handleLogoutButton(BuildContext context) async {
     final dio = Dio();
@@ -130,6 +174,16 @@ class _GameRoomState extends State<GameRoom> {
         myWinScore = data['winScore']!;
         myLoseScore = data['loseScore']!;
         myDrawScore = data['drawScore']!;
+        if (myWinScore == '0' && myLoseScore == '0' && myDrawScore == '0') {
+          WinRate = '0.00%';
+        } else {
+          WinRate = '${((int.parse(myWinScore) /
+                      (int.parse(myWinScore) +
+                          int.parse(myLoseScore) +
+                          int.parse(myDrawScore)) *
+                      100))
+                  .toStringAsFixed(2)}%';
+        }
         myTier = data['tier']!;
         myUuid = data['uuid']!;
       } else {
@@ -484,6 +538,7 @@ class _GameRoomState extends State<GameRoom> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 20),
                     InkWell(
                       onTap: () => _handleLogoutButton(context),
                       child: Container(
@@ -515,6 +570,44 @@ class _GameRoomState extends State<GameRoom> {
                                 height: 0.07,
                                 letterSpacing: 0.96,
                               ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    // 오디오 on/off 버튼
+                    InkWell(
+                      onTap: () {
+                        if (_assetsAudioPlayer.isPlaying.value) {
+                          _assetsAudioPlayer.pause();
+                          window.localStorage['audio'] = 'false';
+                        } else {
+                          _assetsAudioPlayer.play();
+                          window.localStorage['audio'] = 'true';
+                        }
+                      },
+                      child: Container(
+                        width: 250,
+                        height: 60,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFF758CFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            window.localStorage['audio'] == 'true'
+                                ? 'AUDIO OFF'
+                                : 'AUDIO ON',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontFamily: 'Press Start 2P',
+                              fontWeight: FontWeight.w400,
+                              height: 0.07,
+                              letterSpacing: 0.96,
                             ),
                           ),
                         ),
@@ -611,11 +704,11 @@ class _GameRoomState extends State<GameRoom> {
                               ),
                             ),
                           ),
-                          const SizedBox(
+                          SizedBox(
                             width: 350,
                             height: 50,
                             child: Text(
-                              'Win Rate : ',
+                              "Win Rate : $WinRate",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
