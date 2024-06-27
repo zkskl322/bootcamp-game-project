@@ -32,11 +32,19 @@ class GameSoccerTeam {
 }
 
 class Game {
+    //   private String  gameId;
+    // private String  gameName;
+    // private String  gameStatus;
+    // private String  gameDatetime;
+    // private String  player1Nickname;
+    // private String  player2Nickname;
   final String gameId;
   final String gameStatus;
   final int score1;
   final int score2;
   final int who_has_ball;
+  final String player1Nickname; // final String player1
+  final String player2Nickname; // final String player2
 
   // final String start_time;
   final double time;
@@ -67,6 +75,8 @@ class Game {
     required this.gameStatus,
     required this.score1,
     required this.who_has_ball,
+    required this.player1Nickname,
+    required this.player2Nickname,
     // required this.start_time,
     required this.time,
     required this.max_time,
