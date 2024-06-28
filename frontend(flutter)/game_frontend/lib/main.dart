@@ -16,7 +16,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key}); 
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: UnsignedMainPage(),
-      home: LobbyPage(),
+      home: UnsignedMainPage(),
+      // home: LobbyPage(),
     );
   }
 }

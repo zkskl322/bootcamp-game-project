@@ -2,7 +2,6 @@ package springboot.profpilot.model.emailverfiy;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import springboot.profpilot.model.member.Member;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -72,43 +71,6 @@ public class EmailService {
             Transport.send(message);
         }catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-
-    public static String sendApplyAuth(String university, Member member) {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", 587);
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
-
-        Authenticator auth = new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailAdd, password);
-            }
-        };
-
-        Session session = Session.getInstance(properties, auth);
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailAdd, "발신자이름"));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(companyEmail));
-            message.setSubject("ProfPilot: 교수 인증 신청");
-            message.setContent("교수 인증 신청이 들어왔습니다. 신청자 정보는 다음과 같습니다.\n" +
-                    "아이디: " + member.getId() + "\n" +
-                    "이름: " + member.getName() + "\n" +
-                    "학번: " + member.getStudentId() + "\n" +
-                    "이메일: " + member.getEmail() + "\n" +
-                    "대학교: " + university + "\n" +
-                    "신청일: " + member.getCreate_at() + "\n" +
-                    "인증여부: " + "대기중", type);
-            Transport.send(message);
-            return "success";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "fail";
         }
     }
 }

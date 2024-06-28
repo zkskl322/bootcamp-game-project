@@ -12,9 +12,7 @@ public class Sequence extends AiNode {
     @Override
     public boolean run() {
         for (AiNode child : children) {
-            if (!child.run()) {
-                return false;
-            }
+            if (!child.run()) {return false;}
         }
         return true;
     }
