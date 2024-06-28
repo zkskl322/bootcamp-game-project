@@ -42,7 +42,6 @@ public class FirebaseInitializer {
         return app;
     }
 
-
     @Bean
     public FirebaseAuth getFirebaseAuth() throws IOException {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp());
