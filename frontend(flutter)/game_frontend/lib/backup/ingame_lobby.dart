@@ -657,7 +657,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
                                 onPressed: () => {
                                   deleteRoom(),
                                 },
-                                child: const Text('Delete Room'),
+                                child: const Text('Delete or leave Room'),
                               ),
                               const SizedBox(width: 50),
                               ElevatedButton(

@@ -65,7 +65,7 @@ class _GameRoomState extends State<GameRoom> {
   ];
 
 
-  void _initializeAudioPlayer() {
+  Future<void> _initializeAudioPlayer()  async {
     // 오디오 파일을 랜덤하게 섞기
 
     if (window.localStorage['audio'] == 'true') {
@@ -579,13 +579,19 @@ class _GameRoomState extends State<GameRoom> {
                     // 오디오 on/off 버튼
                     InkWell(
                       onTap: () {
-                        if (_assetsAudioPlayer.isPlaying.value) {
+                        if (window.localStorage['audio'] == 'true') {
                           _assetsAudioPlayer.pause();
                           window.localStorage['audio'] = 'false';
+
                         } else {
                           _assetsAudioPlayer.play();
+                          _initializeAudioPlayer();
                           window.localStorage['audio'] = 'true';
+                          
                         }
+                        setState(() {
+                          
+                        });
                       },
                       child: Container(
                         width: 250,
