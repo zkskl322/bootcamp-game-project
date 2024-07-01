@@ -58,7 +58,7 @@ class _SignupPageState extends State<SignupPage> {
     // post 예시
     try {
       final Response response = await dio
-          .post('http://localhost:8080/user/signup/email/verify', data: {
+          .post('http://192.168.3.3:8080/user/signup/email/verify', data: {
         'email': _EmailController.text,
       });
       if (response.statusCode == 200) {
@@ -177,7 +177,7 @@ class _SignupPageState extends State<SignupPage> {
 
     try {
       final Response response = await dio
-          .post('http://localhost:8080/user/signup/email/verify/check', data: {
+          .post('http://192.168.3.3:8080/user/signup/email/verify/check', data: {
         'email': email,
         'verifyCode': verifycode,
       });
@@ -301,7 +301,7 @@ class _SignupPageState extends State<SignupPage> {
     final dio = Dio();
     try {
       final Response response =
-          await dio.post('http://localhost:8080/user/signup', data: {
+          await dio.post('http://192.168.3.3:8080/user/signup', data: {
         'email': _EmailController.text,
         'realname': _RealnameController.text,
         'nickname': _NicknameController.text,

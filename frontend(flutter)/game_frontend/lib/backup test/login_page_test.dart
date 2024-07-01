@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     final dio = Dio();
     try {
       final response = await dio.post(
-        'http://localhost:8080/login',
+        'http://192.168.3.3:8080/login',
         data: {
           'username': _nicknameController.text,
           'password': _passwordController.text,
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
     final dio = Dio();
     try {
       final response = await dio.post(
-        'http://localhost:8080/login',
+        'http://192.168.3.3:8080/login',
         options: Options(
           headers: {
             'Authorization': 'Bearer $idToken',

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import springboot.profpilot.model.DTO.auth.SignInDTO;
 import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.Gamer.GamerService;
-import springboot.profpilot.model.member.Member;
-import springboot.profpilot.model.member.MemberService;
 
 
 @Service

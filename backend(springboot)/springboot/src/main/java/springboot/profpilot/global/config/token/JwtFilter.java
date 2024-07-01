@@ -22,7 +22,6 @@ import springboot.profpilot.model.DTO.auth.SignInDTO;
 import springboot.profpilot.model.Gamer.Gamer;
 import springboot.profpilot.model.Gamer.GamerRepository;
 import springboot.profpilot.model.Gamer.GamerService;
-import springboot.profpilot.model.member.Member;
 
 import javax.swing.plaf.synth.SynthUI;
 import java.io.PrintWriter;

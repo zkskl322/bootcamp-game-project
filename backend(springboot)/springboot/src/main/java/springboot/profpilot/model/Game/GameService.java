@@ -85,7 +85,7 @@ public class GameService {
         // 시간 초기화 ------------------------ //
         gameState.setStartTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         gameState.setTime(0);
-        gameState.setMax_time(100); // 100초
+        gameState.setMax_time(120); // 100초
         gameState.setIsFirstHalf(1);
         gameState.setLast_kicker(-1); // -1: no one, 0: offender1, 1: offender2 2: defender1 3: defender2 4: goalkeeper
         gameState.setLast_passer(-1);

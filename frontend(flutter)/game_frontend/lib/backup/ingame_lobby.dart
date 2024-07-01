@@ -50,7 +50,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
 
   final TextEditingController _textController = TextEditingController();
   final List<Msg> list = [];
-  final socketUrl = 'http://localhost:8080/chatting';
+  final socketUrl = 'http://192.168.3.3:8080/chatting';
 
   void joinRoom() async {
     final Dio dio = Dio();
@@ -63,7 +63,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
           context, MaterialPageRoute(builder: (context) => const Login_Page()));
     }
     final response = await dio.post(
-      'http://localhost:8080/game/room/join',
+      'http://192.168.3.3:8080/game/room/join',
       options: Options(
         headers: {
           'access': accessToken,
@@ -140,7 +140,7 @@ class _IngameLobby2State extends State<IngameLobby2> {
     }
 
     final response = await dio.post(
-      'http://localhost:8080/game/room/delete',
+      'http://192.168.3.3:8080/game/room/delete',
       options: Options(
         headers: {
           'access': accessToken,

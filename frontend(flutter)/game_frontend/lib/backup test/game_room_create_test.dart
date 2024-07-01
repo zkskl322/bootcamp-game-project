@@ -27,7 +27,7 @@ class _CreateRoomState extends State<CreateRoomTest> {
     }
     try {
       final response = await dio.post(
-        'http://localhost:8080/game/room/create',
+        'http://192.168.3.3:8080/game/room/create',
         options: Options(headers: {
           'Content-Type': 'application/json',
           'access': accessToken,

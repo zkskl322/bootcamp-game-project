@@ -57,7 +57,7 @@ class _LoginPageState extends State<Login> {
 
     try {
       final Response response = await dio.post(
-        'http://localhost:8080/login',
+        'http://192.168.3.3:8080/login',
         data: {
           'username': _NicknameController.text,
           'password': _PasswordController.text,
@@ -113,7 +113,7 @@ class _LoginPageState extends State<Login> {
 
         // 서버에 로그인 요청 보내기
         final Response response = await dio.post(
-          'http://localhost:8080/login',
+          'http://192.168.3.3:8080/login',
           options: Options(
             headers: {
               'Authorization': 'Bearer $idToken', // 헤더에 인증 토큰 추가

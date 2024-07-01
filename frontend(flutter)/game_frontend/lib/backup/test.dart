@@ -69,7 +69,7 @@ class _GameRoomState extends State<GameRoom> {
 
     try {
       final Response response = await dio.post(
-        'http://localhost:8080/user/logout',
+        'http://192.168.3.3:8080/user/logout',
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',
@@ -98,7 +98,7 @@ class _GameRoomState extends State<GameRoom> {
     }
     try {
       final Response response =
-          await dio.get('http://localhost:8080/user/whoAmI',
+          await dio.get('http://192.168.3.3:8080/user/whoAmI',
               options: Options(
                 headers: {
                   'access': accessToken,
@@ -134,7 +134,7 @@ class _GameRoomState extends State<GameRoom> {
     }
     try {
       final Response response =
-          await dio.get('http://localhost:8080/page/main');
+          await dio.get('http://192.168.3.3:8080/page/main');
       if (response.statusCode == 200) {
         Map<String, dynamic> data = response.data;
         List<dynamic> gameRooms = data['gameRooms'];
@@ -170,7 +170,7 @@ class _GameRoomState extends State<GameRoom> {
     }
     try {
       final Response response =
-          await dio.post('http://localhost:8080/game/room/checkPassword',
+          await dio.post('http://192.168.3.3:8080/game/room/checkPassword',
               options: Options(
                 headers: {
                   'access': accessToken,
@@ -265,7 +265,7 @@ class _GameRoomState extends State<GameRoom> {
     }
 
     final Response response = await dio.get(
-      'http://localhost:8080/user/ranking',
+      'http://192.168.3.3:8080/user/ranking',
       options: Options(
         headers: {
           'access': accessToken,

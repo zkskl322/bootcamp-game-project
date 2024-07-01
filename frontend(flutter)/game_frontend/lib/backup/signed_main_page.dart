@@ -41,7 +41,7 @@ class MainPageSigned extends StatelessWidget {
     try {
       final Response response = await dio.post(
         // 'http://sprinboot-container:8080/user/logout',
-        'http://localhost:8080/user/logout',
+        'http://192.168.3.3:8080/user/logout',
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken', // accessToken 변수 사용
